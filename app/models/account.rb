@@ -23,4 +23,7 @@
 class Account < ApplicationRecord
   # == Associations ==
   belongs_to :owner, class_name: "User"
+
+  # == Concerns ==
+  include Identifiable
 end

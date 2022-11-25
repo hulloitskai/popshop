@@ -10,13 +10,19 @@ module Identifiable
 
   extend ActiveSupport::Concern
 
-  # == Attributes ==
-  sig { returns(String) }
-  def id!
-    self[:id] ||= SecureRandom.uuid
+  included do
+    T.bind(self, T.class_of(ApplicationRecord))
+
+    # == Attributes ==
+    attribute :id, :string, default: -> { SecureRandom.uuid }
   end
 
-  # == Methods: Short ==
+  sig { returns(String) }
+  def id!
+    T.must(id)
+  end
+
+  # == Methods: Short ID ==
   sig { returns(T.nilable(String)) }
   def short_id
     id.try! do |id|

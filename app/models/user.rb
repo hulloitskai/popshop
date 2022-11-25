@@ -31,10 +31,6 @@
 #  index_users_on_primary_account_id    (primary_account_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
-# Foreign Keys
-#
-#  fk_rails_...  (primary_account_id => accounts.id)
-#
 
 class User < ApplicationRecord
   # == Associations ==
@@ -42,7 +38,7 @@ class User < ApplicationRecord
            inverse_of: :owner,
            foreign_key: :owner_id,
            dependent: :destroy
-  belongs_to :primary_account, class_name: "Account"
+  belongs_to :primary_account, class_name: "Account", optional: true
 
   sig { returns(Account) }
   def primary_account!
@@ -64,6 +60,7 @@ class User < ApplicationRecord
             uniqueness: {
               case_sensitive: false,
             }
+  validates :primary_account, presence: true, if: :persisted?
 
   # == Callbacks ==
   before_create :build_primary_account
@@ -79,7 +76,7 @@ class User < ApplicationRecord
   # == Helpers ==
   sig { void }
   def build_primary_account
-    self.primary_account ||= scoped { Account.new }
+    self.primary_account ||= accounts.build(name: name)
   end
 end
 
