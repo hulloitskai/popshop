@@ -23,14 +23,32 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  primary_account_id     :uuid             not null
 #
 # Indexes
 #
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_primary_account_id    (primary_account_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (primary_account_id => accounts.id)
 #
 
 class User < ApplicationRecord
+  # == Associations ==
+  has_many :accounts,
+           inverse_of: :owner,
+           foreign_key: :owner_id,
+           dependent: :destroy
+  belongs_to :primary_account, class_name: "Account"
+
+  sig { returns(Account) }
+  def primary_account!
+    primary_account or raise ActiveRecord::RecordNotFound
+  end
+
   # == Concerns ==
   include Identifiable
   include Named
@@ -47,10 +65,21 @@ class User < ApplicationRecord
               case_sensitive: false,
             }
 
-  # == Admin ==
+  # == Callbacks ==
+  before_create :build_primary_account
+
+  # == Methods: Admin ==
   sig { returns(T::Boolean) }
   def admin?
     false
+  end
+
+  private
+
+  # == Helpers ==
+  sig { void }
+  def build_primary_account
+    self.primary_account ||= scoped { Account.new }
   end
 end
 

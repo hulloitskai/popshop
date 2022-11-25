@@ -2,6 +2,6 @@ query AccountEditPageQuery {
   viewer {
     id
     ...AppViewerFragment
-    ...AccountEditViewerFragment
+    ...AccountEditPageViewerFragment
   }
 }

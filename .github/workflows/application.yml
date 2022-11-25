@@ -70,7 +70,7 @@ jobs:
   #       uses: honeybadger-io/github-upload-sourcemap-action@master
   #       with:
   #         api_key: ${{ secrets.HONEYBADGER_CLIENT_API_KEY }}
-  #         minified_url: https://popshop.popshop.me/${{ steps.locate_files.outputs.minified_file }}
+  #         minified_url: https://popshop.itskai.me/${{ steps.locate_files.outputs.minified_file }}
   #         minified_file: public/${{ steps.locate_files.outputs.minified_file }}
   #         source_map: public/${{ steps.locate_files.outputs.source_map }}
   #     - name: Notify server deploy

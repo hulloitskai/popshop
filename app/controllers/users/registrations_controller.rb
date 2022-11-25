@@ -13,6 +13,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
     render(inertia: "AccountSignUpPage", props: { data: data })
   end
 
+  # GET /resource/edit
+  sig { void }
+  def edit
+    data = query!("AccountEditPageQuery")
+    render(inertia: "AccountEditPage", props: { data: data })
+  end
+
   # POST /account
   sig { override.void }
   def create
@@ -41,13 +48,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
         },
       )
     end
-  end
-
-  # GET /resource/edit
-  sig { void }
-  def edit
-    data = query!("AccountEditPageQuery")
-    render(inertia: "AccountEditPage", props: { data: data })
   end
 
   # PUT /resource
