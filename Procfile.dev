@@ -1,0 +1,5 @@
+docker: docker compose up postgres mailcatcher > /dev/null
+postgres: docker compose logs -f --no-log-prefix postgres
+mailcatcher: docker compose logs -f --no-log-prefix mailcatcher
+vite: bin/vite dev
+rails: bin/rails server

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%# == Favicon == %>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ed4444">
+    <meta name="msapplication-TileColor" content="#a0a9b4">
+    <meta name="theme-color" content="#ffffff">
+
+    <%# == Meta == %>
+    <%= csp_meta_tag %>
+    <%= action_cable_meta_tag %>
+    <%= display_meta_tags(
+      reverse: true,
+      site: "Popshop!",
+      # description: "Welcome to my little corner of the internet :)",
+      og: {
+        title: :title,
+        site_name: :site,
+        description: :description,
+        image: "/banner.png",
+      },
+    ) %>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="graphql-url" content="<%= graphql_path %>">
+
+    <%# == Scripts == %>
+    <%= vite_client_tag %>
+    <% if local_assigns.include?(:page) %>
+      <%= vite_react_refresh_tag %>
+      <%= vite_typescript_tag 'application' %>
+    <% end %>
+
+    <%# == Inertia == %>
+    <% InertiaRails.html_headers.each do |header| %>
+      <%== header %>
+    <% end %>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>

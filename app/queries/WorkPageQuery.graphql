@@ -1,0 +1,6 @@
+query WorkPageQuery {
+  viewer {
+    id
+    ...AppViewerFragment
+  }
+}

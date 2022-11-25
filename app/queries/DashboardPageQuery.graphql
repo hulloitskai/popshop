@@ -1,0 +1,6 @@
+query DashboardPageQuery {
+  viewer {
+    id
+    ...AppViewerFragment
+  }
+}

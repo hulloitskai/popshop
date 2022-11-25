@@ -1,0 +1,22 @@
+{
+  "all": {
+    "sourceCodeDir": "app",
+    "watchAdditionalPaths": [],
+    "ssrBuildEnabled": true,
+    "ssrEntrypoint": "~/ssr/application.{js,jsx,ts,tsx}",
+    "ssrOutputDir": "dist"
+  },
+  "development": {
+    "autoBuild": true,
+    "publicOutputDir": "dist-dev",
+    "port": 3036
+  },
+  "test": {
+    "autoBuild": true,
+    "publicOutputDir": "dist-test",
+    "port": 3037
+  },
+  "production": {
+    "publicOutputDir": "dist"
+  }
+}

@@ -1,0 +1,6 @@
+query HomePageQuery {
+  viewer {
+    id
+    ...AppViewerFragment
+  }
+}
