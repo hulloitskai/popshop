@@ -14,8 +14,11 @@ require_relative "lib/pry_ext"
 # TODO: No longer necessary when https://github.com/pry/pry/pull/2209 is merged.
 ENV["PAGER"] = " less --raw-control-chars -F -X"
 
-# == Commands ==
-Pry::Commands.block_command("clear", "Clear the screen.") { system("clear") }
+# == Commands
+Pry::Commands.block_command("clear", "Clear the screen.") do
+  system("clear")
+end
+
 Pry::Commands.block_command(
   "copy",
   "Copy argument to the system clipboard.",
@@ -25,9 +28,11 @@ Pry::Commands.block_command(
     f << value.to_s
   end
 end
+
 Pry::Commands.block_command("debug", "Debug the current binding.") do
   run "exit-all binding.break(pre: 'finish 38 ;; up')"
 end
+
 Pry::Commands.block_command("sql", "Perform an SQL query over AR.") do |query|
   if ENV["RAILS_ENV"] || defined?(Rails)
     pp(ActiveRecord::Base.connection.select_all(query))
@@ -35,6 +40,7 @@ Pry::Commands.block_command("sql", "Perform an SQL query over AR.") do |query|
     pp("Error: Not in a Rails environment.")
   end
 end
+
 Pry::Commands.block_command(
   "caller_method",
   "Show the caller method.",

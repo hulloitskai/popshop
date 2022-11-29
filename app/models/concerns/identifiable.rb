@@ -13,7 +13,7 @@ module Identifiable
   included do
     T.bind(self, T.class_of(ApplicationRecord))
 
-    # == Attributes ==
+    # == Attributes
     attribute :id, :string, default: -> { SecureRandom.uuid }
   end
 
@@ -22,7 +22,7 @@ module Identifiable
     T.must(id)
   end
 
-  # == Methods: Short ID ==
+  # == Methods: Short ID
   sig { returns(T.nilable(String)) }
   def short_id
     id.try! do |id|
@@ -36,7 +36,7 @@ module Identifiable
     ShortUUID.shorten(id!)
   end
 
-  # == Parameters ==
+  # == Parameters
   sig { returns(T.nilable(String)) }
   def to_param
     short_id
@@ -48,7 +48,7 @@ module Identifiable
 
     requires_ancestor { T.class_of(ApplicationRecord) }
 
-    # == Finders ==
+    # == Finders
     sig { params(args: T.untyped).returns(T.untyped) }
     def find(*args)
       id = args.first

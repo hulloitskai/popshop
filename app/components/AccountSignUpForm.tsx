@@ -8,11 +8,9 @@ export type AccountSignUpFormValues = {
   readonly passwordConfirmation: string;
 };
 
-export type AccountSignUpFormProps = {
-  readonly errors?: Record<string, string>;
-};
+export type AccountSignUpFormProps = {};
 
-const AccountSignUpForm: FC<AccountSignUpFormProps> = ({ errors }) => {
+const AccountSignUpForm: FC<AccountSignUpFormProps> = () => {
   const router = useRouter();
   const { getInputProps, onSubmit, setFieldValue, setErrors } =
     useForm<AccountSignUpFormValues>({
@@ -22,13 +20,7 @@ const AccountSignUpForm: FC<AccountSignUpFormProps> = ({ errors }) => {
         password: "",
         passwordConfirmation: "",
       },
-      initialErrors: errors,
     });
-  useEffect(() => {
-    if (errors) {
-      setErrors(errors);
-    }
-  }, [errors]);
   return (
     <form
       onSubmit={onSubmit(({ name, email, password, passwordConfirmation }) => {
@@ -42,9 +34,16 @@ const AccountSignUpForm: FC<AccountSignUpFormProps> = ({ errors }) => {
         };
         router.post("/account", data, {
           errorBag: "AccountSignUpForm",
-          onFinish: () => {
+          onError: errors => {
+            console.log("WHYYYY33333");
+            console.log({ errors });
             setFieldValue("password", "");
             setFieldValue("passwordConfirmation", "");
+            setErrors(errors);
+            showAlert({ message: "We couldn't register your account!" });
+          },
+          onFinish: () => {
+            console.log("WHYYYY");
           },
         });
       })}
@@ -58,19 +57,19 @@ const AccountSignUpForm: FC<AccountSignUpFormProps> = ({ errors }) => {
         />
         <TextInput
           label="Email"
-          placeholder="jonsnow@example.com"
+          placeholder="email@example.com"
           required
           {...getInputProps("email")}
         />
         <PasswordInput
           label="Password"
-          placeholder="abcd1234"
+          placeholder="password"
           required
           {...getInputProps("password")}
         />
         <PasswordInput
           label="Password Confirmation"
-          placeholder="abcd1234"
+          placeholder="password"
           required
           {...getInputProps("passwordConfirmation")}
         />

@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
-  # == Filters ==
+  # == Filters
   before_action :configure_sign_up_params, only: :create
 
-  # == Actions ==
+  # == Actions
   # GET /account/sign_up
   sig { override.void }
   def new
@@ -122,7 +122,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   private
 
-  # == Helpers ==
+  # == Helpers
   sig { returns(T::Hash[String, T.untyped]) }
   def inertia_errors
     error_bag = request.headers["X-Inertia-Error-Bag"]
@@ -138,7 +138,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     error_bag.present? ? { error_bag => errors } : errors
   end
 
-  # == Filters ==
+  # == Filters
   # If you have extra params to permit, append them to the sanitizer.
   sig { void }
   def configure_sign_up_params

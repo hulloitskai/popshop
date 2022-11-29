@@ -24,7 +24,6 @@ const AccountSignInForm: FC<AccountSignInFormProps> = () => {
       onSubmit={onSubmit(({ email, password }) => {
         const data = { user: { email, password } };
         router.post("/account/sign_in", data, {
-          errorBag: "AccountSignInForm",
           onBefore: () => {
             // Navigate to non-Inertia pages.
             removeInvalidResponseCallback.current = Inertia.on(
@@ -50,13 +49,13 @@ const AccountSignInForm: FC<AccountSignInFormProps> = () => {
       <Stack spacing="xs">
         <TextInput
           label="Email"
-          placeholder="friend@example.com"
+          placeholder="email@example.com"
           required
           {...getInputProps("email")}
         />
         <PasswordInput
           label="Password"
-          placeholder="potato-123"
+          placeholder="password"
           required
           {...getInputProps("password")}
         />

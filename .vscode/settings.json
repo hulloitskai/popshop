@@ -4,16 +4,13 @@
     "Gemfile.lock": "plaintext",
     "Aptfile": "plaintext"
   },
-  "files.exclude": {
-    "app/packs/generated/**/*.jsx": true
-  },
 
-  // == Ruby ==
+  // == Ruby
   "ruby.useLanguageServer": false,
   "ruby.intellisense": false,
   "ruby.format": false,
 
-  // == Formatting ==
+  // == Formatting
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -33,6 +30,6 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[ruby]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "Shopify.ruby-lsp"
   }
 }

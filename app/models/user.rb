@@ -33,7 +33,7 @@
 #
 
 class User < ApplicationRecord
-  # == Associations ==
+  # == Associations
   has_many :accounts,
            inverse_of: :owner,
            foreign_key: :owner_id,
@@ -45,11 +45,11 @@ class User < ApplicationRecord
     primary_account or raise ActiveRecord::RecordNotFound
   end
 
-  # == Concerns ==
+  # == Concerns
   include Identifiable
   include Named
 
-  # == Validations ==
+  # == Validations
   validates :name, presence: true, length: { maximum: 64 }
   validates :email,
             presence: true,
@@ -62,10 +62,10 @@ class User < ApplicationRecord
             }
   validates :primary_account, presence: true, if: :persisted?
 
-  # == Callbacks ==
+  # == Callbacks
   before_create :build_primary_account
 
-  # == Methods: Admin ==
+  # == Methods: Admin
   sig { returns(T::Boolean) }
   def admin?
     false
@@ -73,14 +73,14 @@ class User < ApplicationRecord
 
   private
 
-  # == Helpers ==
+  # == Helpers
   sig { void }
   def build_primary_account
     self.primary_account ||= accounts.build(name: name)
   end
 end
 
-# == Devise ==
+# == Devise
 class User
   # Others modules are: :lockable, :timeoutable, and :omniauthable.
   devise :database_authenticatable,
@@ -93,7 +93,7 @@ class User
          #  :omniauthable,
          reconfirmable: true
 
-  # == Configuration ==
+  # == Configuration
   self.filter_attributes += %i[
     encrypted_password
     reset_password_token
@@ -102,7 +102,7 @@ class User
   ]
 
   # rubocop:disable Layout/LineLength
-  # == OmniAuth ==
+  # == OmniAuth
   # sig { params(auth: OmniAuth::AuthHash).returns(User) }
   # def self.from_omniauth(auth)
   #   User.new

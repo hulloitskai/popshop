@@ -1,15 +1,11 @@
-import type { ErrorBag, Errors } from "@inertiajs/inertia";
+import type { Errors } from "@inertiajs/inertia";
 
-export const useBaggedErrors = (
-  errors: (Errors & ErrorBag) | undefined,
+export const unbagErrors = (
+  errors: Errors,
   errorBag: string,
 ): Errors | undefined => {
-  return useMemo(() => {
-    if (errors) {
-      const baggedErrors = errors[errorBag];
-      if (typeof baggedErrors === "object") {
-        return baggedErrors as Errors;
-      }
-    }
-  }, [errors, errorBag]);
+  const baggedErrors = errors[errorBag];
+  if (typeof baggedErrors === "object") {
+    return baggedErrors as Errors;
+  }
 };

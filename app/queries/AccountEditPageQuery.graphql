@@ -1,5 +1,5 @@
 query AccountEditPageQuery {
-  viewer {
+  viewer: authenticatedViewer {
     id
     ...AppViewerFragment
     ...AccountEditPageViewerFragment

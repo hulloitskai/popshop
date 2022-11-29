@@ -7,7 +7,7 @@ class ApplicationRecord < ActiveRecord::Base
 
     private
 
-    # == Helpers ==
+    # == Helpers
     sig { params(column_names: T.any(Symbol, String)).void }
     def requires_columns(*column_names)
       Kernel.suppress(ActiveRecord::ConnectionNotEstablished) do
@@ -33,10 +33,10 @@ class ApplicationRecord
 
   primary_abstract_class
 
-  # == Enumerize ==
+  # == Enumerize
   extend Enumerize
 
-  # == Sorbet ==
+  # == Sorbet
   # Support runtime type-checking for Sorbet-generated types.
   PrivateRelation = ActiveRecord::Relation
   PrivateRelationWhereChain = ActiveRecord::Relation
@@ -44,11 +44,11 @@ class ApplicationRecord
   PrivateAssociationRelationWhereChain = ActiveRecord::AssociationRelation
   PrivateCollectionProxy = ActiveRecord::Associations::CollectionProxy
 
-  # == Scopes ==
+  # == Scopes
   scope :chronological, -> { order(:created_at) }
   scope :reverse_chronological, -> { order(created_at: :desc) }
 
-  # == Serialization ==
+  # == Serialization
   sig { overridable.returns(T::Hash[String, T.untyped]) }
   def to_hash
     build_hash
@@ -59,9 +59,18 @@ class ApplicationRecord
     to_hash
   end
 
+  # == Pattern Matching
+  sig do
+    params(keys: T.nilable(T::Array[Symbol]))
+      .returns(T::Hash[Symbol, T.untyped])
+  end
+  def deconstruct_keys(keys = [])
+    serializable_hash(only: keys).symbolize_keys!
+  end
+
   private
 
-  # == Helpers ==
+  # == Helpers
   sig do
     params(hash: T.nilable(T::Hash[String, T.untyped]), options: T.untyped)
       .returns(T::Hash[String, T.untyped])

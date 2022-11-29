@@ -3,10 +3,10 @@
 
 # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
-  # == Healthcheck ==
+  # == Healthcheck
   Healthcheck.routes(self)
 
-  # == Devise ==
+  # == Devise
   devise_for :users,
              path: :account,
              controllers: {
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
                #  omniauth_callbacks: "users/omniauth_callbacks",
              }
 
-  # == API ==
+  # == API
   scope :api do
     mount GraphiQL::Rails::Engine,
           at: :/,
@@ -27,12 +27,12 @@ Rails.application.routes.draw do
     end
   end
 
-  # == Pages ==
+  # == Pages
   root "home#show"
   get :dashboard, to: "dashboard#show"
   get :test, to: "test#show"
 
-  # == Internal ==
+  # == Internal
   authenticate :user, ->(user) { user.owner? } do
     mount GoodJob::Engine, at: "/good_job"
   end

@@ -11,7 +11,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     @user = T.let(@user, T.nilable(User))
   end
 
-  # == Actions ==
+  # == Actions
   # # GET /account/auth/google/callback
   # sig { void }
   # def google

@@ -35,7 +35,6 @@ gem "image_processing", "~> 1.2"
 gem "ruby-vips", "~> 2.1", require: false
 
 # Use S3 as the backend for Active Storage
-gem "aws-sdk-core", require: false
 gem "aws-sdk-s3", "~> 1.117", require: false
 
 # Use Good Job as the backend for Active Job
@@ -58,7 +57,7 @@ gem "binding_of_caller"
 gem "rails-healthcheck"
 
 # Silence logs from certain actions
-gem "silencer", "~> 2.0.0", require: false
+gem "silencer", "~> 2.0", require: false
 
 # Validate emails, phone numbers, dates, arrays, and more
 gem "can_has_validations", "~> 1.6"

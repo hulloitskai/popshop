@@ -1,62 +1,61 @@
-import { Text } from "@mantine/core";
-import invariant from "tiny-invariant";
 import type { FC } from "react";
+import { Text } from "@mantine/core";
 
-import { AccountEmailFormQueryDocument } from "~/queries";
 import type { AccountEditPageViewerFragment } from "~/queries";
 
-export type AccountEmailFormValues = {
+import type { AccountEditPageProps } from "~/pages/AccountEditPage";
+
+export type AccountEditPageEmailFormValues = {
   readonly email: string;
 };
 
-export type AccountEmailFormProps = {
+export type AccountEditPageEmailFormProps = {
   readonly viewer: AccountEditPageViewerFragment;
-  readonly errors?: Record<string, string>;
 };
 
-const AccountEmailForm: FC<AccountEmailFormProps> = ({ viewer, errors }) => {
+const AccountEditPageEmailForm: FC<AccountEditPageEmailFormProps> = ({
+  viewer,
+}) => {
   const { email, unconfirmedEmail } = viewer;
-  const client = useApolloClient();
   const router = useRouter();
-  const initialValues = useMemo<AccountEmailFormValues>(
+  const initialValues = useMemo<AccountEditPageEmailFormValues>(
     () => ({ email: unconfirmedEmail || email }),
     [viewer],
   );
   const { getInputProps, onSubmit, setValues, setErrors } =
-    useForm<AccountEmailFormValues>({
+    useForm<AccountEditPageEmailFormValues>({
       initialValues: initialValues,
-      initialErrors: errors,
     });
-  useEffect(() => {
-    if (errors) {
-      setErrors(errors);
-    }
-  }, [errors]);
   return (
     <form
       onSubmit={onSubmit(({ email }) => {
         const data = { user: { email } };
         router.put("/account", data, {
           errorBag: "AccountEmailForm",
-          onSuccess: async () => {
-            const {
-              data: { viewer },
-            } = await client.query({
-              query: AccountEmailFormQueryDocument,
-              variables: {},
-              fetchPolicy: "network-only",
+          preserveScroll: true,
+          onSuccess: async page => {
+            const previouslyUnconfirmedEmail = unconfirmedEmail;
+            resolve(() => {
+              const {
+                data: {
+                  viewer: { email, unconfirmedEmail },
+                },
+              } = page.props as unknown as AccountEditPageProps;
+              if (unconfirmedEmail) {
+                showNotice({
+                  message:
+                    "Please check your email and follow the confirmation " +
+                    "link to confirm your new email address.",
+                });
+              } else if (previouslyUnconfirmedEmail) {
+                showNotice({
+                  message: "Your email change request has been cancelled.",
+                });
+              }
+              setValues({ email: unconfirmedEmail || email });
             });
-            invariant(viewer, "missing viewer");
-            const { email, unconfirmedEmail } = viewer;
-            setValues({ email: unconfirmedEmail || email });
-            if (unconfirmedEmail) {
-              showNotice({
-                message:
-                  "Please check your email and follow the confirmation link " +
-                  "to confirm your new email address.",
-              });
-            }
           },
+          onError: setErrors,
         });
       })}
     >
@@ -64,7 +63,7 @@ const AccountEmailForm: FC<AccountEmailFormProps> = ({ viewer, errors }) => {
         <Box>
           <TextInput
             label="Email"
-            placeholder="applesauce"
+            placeholder="email@example.com"
             required
             {...getInputProps("email")}
             {...(unconfirmedEmail
@@ -95,4 +94,4 @@ const AccountEmailForm: FC<AccountEmailFormProps> = ({ viewer, errors }) => {
   );
 };
 
-export default AccountEmailForm;
+export default AccountEditPageEmailForm;

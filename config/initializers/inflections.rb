@@ -14,7 +14,7 @@
 # end
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
-  # == Acronyms ==
+  # == Acronyms
   inflect.acronym("GlobalID")
   inflect.acronym("GraphQL")
   inflect.acronym("ShortID")

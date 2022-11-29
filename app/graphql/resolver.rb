@@ -8,7 +8,7 @@ module Resolver
   abstract!
   requires_ancestor { Kernel }
 
-  # == Methods ==
+  # == Methods
   sig { abstract.returns(GraphQL::Query::Context) }
   def context; end
 

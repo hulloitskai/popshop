@@ -3,19 +3,15 @@
 
 module Types
   class QueryType < BaseObject
-    extend T::Sig
-    extend T::Helpers
-
-    # == Relay ==
+    # == Relay
     # Add 'node' and 'nodes' fields.
     include GraphQL::Types::Relay::HasNodeField
     include GraphQL::Types::Relay::HasNodesField
 
-    # == Fields ==
+    # == Fields
     field :test_echo, resolver: Queries::TestEcho
 
-    field :viewer,
-          resolver: Queries::Viewer,
-          description: "The currently authenticated user."
+    field :authenticated_viewer, resolver: Queries::AuthenticatedViewer
+    field :viewer, resolver: Queries::Viewer
   end
 end

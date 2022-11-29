@@ -4,17 +4,17 @@
 class ApplicationController < ActionController::Base
   extend T::Sig
 
-  # == Exceptions ==
+  # == Exceptions
   # rescue_from ActionPolicy::Unauthorized, with: :show_unauthorized
 
-  # == Filters ==
+  # == Filters
   before_action :debug_action
   around_action :prepare_action
 
-  # == Modules ==
+  # == Modules
   include GraphQL::Querying
 
-  # == Inertia ==
+  # == Inertia
   inertia_share do
     T.bind(self, ApplicationController)
     flash = self.flash.to_h.presence
@@ -29,14 +29,14 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # == Exceptions ==
+  # == Exceptions
   # sig { params(exception: Exception).void }
   # def show_unauthorized(exception)
   #   raise exception if request.local?
   #   render("pages/401", status: :unauthorized)
   # end
 
-  # == Filters ==
+  # == Filters
   sig { void }
   def set_honeybadger_context
     current_user.try! do |user|

@@ -4,7 +4,7 @@
 class GraphQLChannel < ApplicationCable::Channel
   extend T::Sig
 
-  # == Concerns ==
+  # == Concerns
   include GraphQL::Helpers
 
   sig do
@@ -100,7 +100,7 @@ class GraphQLChannel < ApplicationCable::Channel
 
     # Skip introspection query, if applicable.
     if config.skip_introspection_query &&
-         query.index(/query IntrospectionQuery/)
+        query.index(/query IntrospectionQuery/)
       query = "    query IntrospectionQuery { ... }"
     end
 
@@ -146,6 +146,7 @@ class GraphQLChannel < ApplicationCable::Channel
   sig { params(data: T.untyped).returns(T.untyped) }
   def pretty(data)
     return "" if data.blank?
+
     data = JSON.parse(data) if data.is_a?(String)
     PP.pp(data, "")
   end

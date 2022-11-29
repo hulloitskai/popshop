@@ -2,16 +2,16 @@
 # frozen_string_literal: true
 
 module Queries
-  class Viewer < BaseQuery
+  class AuthenticatedViewer < BaseQuery
     extend T::Sig
     extend T::Helpers
 
     description "The currently authenticated user."
-    type Types::UserType, null: true
+    type Types::UserType, null: false
 
     sig { returns(T.nilable(User)) }
     def resolve
-      current_user
+      current_user or raise GraphQL::ExecutionError, "Not authenticated."
     end
   end
 end

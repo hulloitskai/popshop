@@ -4,13 +4,13 @@
 class GraphQLController < ApplicationController
   extend T::Sig
 
-  # == Configuration ==
+  # == Configuration
   protect_from_forgery with: :null_session, only: :execute
 
-  # == Modules ==
+  # == Modules
   include GraphQL::Helpers
 
-  # == Actions ==
+  # == Actions
   sig { void }
   def execute
     operation_name = params["operationName"]
@@ -36,6 +36,7 @@ class GraphQLController < ApplicationController
     render(json: result)
   rescue StandardError => e
     raise e unless Rails.env.development?
+
     handle_error_in_development(e)
   end
 

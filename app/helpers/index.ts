@@ -7,10 +7,10 @@ export { useMounted } from "./react";
 export { showAlert, showNotice } from "./notifications";
 export {
   layoutWithData,
+  unbagErrors,
   usePageErrors,
   usePageProps,
   usePageData,
-  useBaggedErrors,
   useRouter,
 } from "./inertia";
 export { formErrors } from "./validation";

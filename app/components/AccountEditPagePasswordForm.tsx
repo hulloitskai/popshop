@@ -1,32 +1,28 @@
 import type { FC } from "react";
 import { PasswordInput } from "@mantine/core";
 
-export type AccountPasswordFormValues = {
+export type AccountEditPagePasswordFormValues = {
   readonly password: string;
   readonly passwordConfirmation: string;
   readonly currentPassword: string;
 };
 
-export type AccountPasswordFormProps = {
-  readonly errors?: Record<string, string>;
-};
+export type AccountEditPagePasswordFormProps = {};
 
-const AccountPasswordForm: FC<AccountPasswordFormProps> = ({ errors }) => {
+const AccountEditPagePasswordForm: FC<
+  AccountEditPagePasswordFormProps
+> = () => {
   const router = useRouter();
+  const initialValues: AccountEditPagePasswordFormValues = useMemo(
+    () => ({
+      password: "",
+      passwordConfirmation: "",
+      currentPassword: "",
+    }),
+    [],
+  );
   const { getInputProps, onSubmit, reset, setErrors } =
-    useForm<AccountPasswordFormValues>({
-      initialValues: {
-        password: "",
-        passwordConfirmation: "",
-        currentPassword: "",
-      },
-      initialErrors: errors,
-    });
-  useEffect(() => {
-    if (errors) {
-      setErrors(errors);
-    }
-  }, [errors]);
+    useForm<AccountEditPagePasswordFormValues>({ initialValues });
   return (
     <form
       onSubmit={onSubmit(
@@ -40,13 +36,16 @@ const AccountPasswordForm: FC<AccountPasswordFormProps> = ({ errors }) => {
           };
           router.put("/account", data, {
             errorBag: "AccountPasswordForm",
+            preserveScroll: true,
             onSuccess: () => {
+              reset();
               showNotice({
                 message: "You've updated your account password.",
               });
             },
-            onFinish: () => {
+            onError: errors => {
               reset();
+              setErrors(errors);
             },
           });
         },
@@ -55,19 +54,19 @@ const AccountPasswordForm: FC<AccountPasswordFormProps> = ({ errors }) => {
       <Stack spacing="xs">
         <PasswordInput
           label="New Password"
-          placeholder="applesauce"
+          placeholder="new-password"
           required
           {...getInputProps("password")}
         />
         <PasswordInput
           label="New Password (confirm)"
-          placeholder="applesauce"
+          placeholder="new-password"
           required
           {...getInputProps("passwordConfirmation")}
         />
         <PasswordInput
           label="Current Password"
-          placeholder="potato-123"
+          placeholder="password"
           required
           {...getInputProps("currentPassword")}
         />
@@ -77,4 +76,4 @@ const AccountPasswordForm: FC<AccountPasswordFormProps> = ({ errors }) => {
   );
 };
 
-export default AccountPasswordForm;
+export default AccountEditPagePasswordForm;

@@ -1,13 +1,13 @@
-# == Dotenv ==
+# == Dotenv
 .env
 
 
-# == Vite Ruby ==
+# == Vite Ruby
 /dist/
 /public/dist*
 
 
-# == Rails ==
+# == Rails
 /public/assets/
 /public/sitemap*.xml.gz
 
@@ -47,7 +47,7 @@
 /config/master.key
 
 
-# == Node ==
+# == Node
 **/node_modules/
 **/jspm_packages/
 /.pnp
@@ -85,7 +85,7 @@
 # **/*.pid.lock
 
 
-# == IDE ==
+# == IDE
 # VSCode (keeping workspace configurations):
 **/.vscode/*
 !**/.vscode/tasks.json
@@ -97,7 +97,7 @@
 **/.idea/
 
 
-# == OS ==
+# == OS
 # macOS:
 **/.DS_Store
 **/.DS_Store?

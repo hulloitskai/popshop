@@ -478,7 +478,6 @@ DEPENDENCIES
   active_storage_validations (~> 0.9.6)
   addressable (~> 2.8)
   annotate
-  aws-sdk-core
   aws-sdk-s3 (~> 1.117)
   better_errors
   binding_of_caller
@@ -529,7 +528,7 @@ DEPENDENCIES
   ruby-vips (~> 2.1)
   selenium-webdriver
   shortuuid (~> 0.6.0)
-  silencer (~> 2.0.0)
+  silencer (~> 2.0)
   sorbet (~> 0.5.10554)
   sorbet-runtime (~> 0.5.10554)
   spoom

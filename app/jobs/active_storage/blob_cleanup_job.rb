@@ -5,12 +5,8 @@ module ActiveStorage
   class BlobCleanupJob < ApplicationJob
     extend T::Sig
 
-    # == Configuration ==
-    good_job_control_concurrency_with(
-      enqueue_limit: 1,
-      perform_limit: 1,
-      key: name,
-    )
+    # == Configuration
+    good_job_control_concurrency_with key: name, total_limit: 1
 
     sig { void }
     def perform

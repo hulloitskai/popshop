@@ -2,9 +2,9 @@ import type { PageComponent } from "~/helpers/inertia";
 import { Text } from "@mantine/core";
 import invariant from "tiny-invariant";
 
-import AccountProfileForm from "~/components/AccountProfileForm";
-import AccountEmailForm from "~/components/AccountEmailForm";
-import AccountPasswordForm from "~/components/AccountPasswordForm";
+import ProfileForm from "~/components/AccountEditPageProfileForm";
+import EmailForm from "~/components/AccountEditPageEmailForm";
+import PasswordForm from "~/components/AccountEditPagePasswordForm";
 
 import type { AccountEditPageQuery } from "~/queries";
 
@@ -14,11 +14,8 @@ export type AccountEditPageProps = {
 
 const AccountEditPage: PageComponent<AccountEditPageProps> = ({
   data: { viewer },
-  errors,
 }) => {
   invariant(viewer, "missing viewer");
-  const emailFormErrors = useBaggedErrors(errors, "AccountEmailForm");
-  const passwordFormErrors = useBaggedErrors(errors, "AccountPasswordForm");
   return (
     <Stack w={440}>
       <Card radius="md" withBorder>
@@ -28,7 +25,7 @@ const AccountEditPage: PageComponent<AccountEditPageProps> = ({
               Profile Information
             </Title>
           </Center>
-          <AccountProfileForm {...{ viewer }} />
+          <ProfileForm {...{ viewer }} />
         </Stack>
       </Card>
       <Card radius="md" withBorder>
@@ -41,7 +38,7 @@ const AccountEditPage: PageComponent<AccountEditPageProps> = ({
               Change your account email address.
             </Text>
           </Stack>
-          <AccountEmailForm errors={emailFormErrors} {...{ viewer }} />
+          <EmailForm {...{ viewer }} />
         </Stack>
       </Card>
       <Card radius="md" withBorder>
@@ -54,7 +51,7 @@ const AccountEditPage: PageComponent<AccountEditPageProps> = ({
               Change your login password.
             </Text>
           </Stack>
-          <AccountPasswordForm errors={passwordFormErrors} />
+          <PasswordForm />
         </Stack>
       </Card>
     </Stack>

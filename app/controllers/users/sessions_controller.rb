@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
-  # == Actions ==
+  # == Actions
   # GET /account/sign_in
   sig { override.void }
   def new

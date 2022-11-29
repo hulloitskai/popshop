@@ -3,9 +3,6 @@
 
 module Types
   class MutationType < BaseObject
-    extend T::Sig
-    extend T::Helpers
-
     field :test_mutation, mutation: Mutations::TestMutation
 
     field :account_update, mutation: Mutations::AccountUpdate
