@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
 import { AppShell } from "@mantine/core";
-import type { AppShellProps } from "@mantine/core";
+import type { AppShellProps, ContainerProps } from "@mantine/core";
 
 import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
@@ -12,19 +12,21 @@ import type { AppViewerFragment } from "~/queries";
 
 export type AppLayoutProps = AppShellProps & {
   readonly viewer: Maybe<AppViewerFragment>;
+  readonly containerProps?: ContainerProps;
   readonly withContainer?: boolean;
 };
 
 const AppLayout: FC<AppLayoutProps> = ({
   viewer,
-  withContainer = true,
+  withContainer,
+  containerProps,
   children,
   ...otherProps
 }) => {
   const content = useMemo(() => {
     if (withContainer) {
       return (
-        <Container size="sm" mb="xl" p={0}>
+        <Container size="sm" mb="xl" p={0} {...containerProps}>
           {children}
         </Container>
       );
@@ -41,7 +43,7 @@ const AppLayout: FC<AppLayoutProps> = ({
             display: "flex",
             flexDirection: "column",
             alignItems: "stretch",
-            paddingBottom: 0,
+            paddingBottom: 16,
           },
         }}
         {...otherProps}

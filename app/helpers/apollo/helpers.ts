@@ -5,11 +5,6 @@ export type AccountUpdatePayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	user?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type IdentifiableKeySpecifier = ('id' | 'shortId' | IdentifiableKeySpecifier)[];
-export type IdentifiableFieldPolicy = {
-	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	shortId?: FieldPolicy<any> | FieldReadFunction<any>
-};
 export type MutationKeySpecifier = ('accountUpdate' | 'testMutation' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	accountUpdate?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -19,9 +14,8 @@ export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('authenticatedViewer' | 'testEcho' | 'viewer' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('testEcho' | 'viewer' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
-	authenticatedViewer?: FieldPolicy<any> | FieldReadFunction<any>,
 	testEcho?: FieldPolicy<any> | FieldReadFunction<any>,
 	viewer?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -41,13 +35,12 @@ export type TestMutationPayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	model?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type UserKeySpecifier = ('email' | 'id' | 'isOwner' | 'name' | 'shortId' | 'unconfirmedEmail' | UserKeySpecifier)[];
+export type UserKeySpecifier = ('email' | 'id' | 'isOwner' | 'name' | 'unconfirmedEmail' | UserKeySpecifier)[];
 export type UserFieldPolicy = {
 	email?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	isOwner?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
-	shortId?: FieldPolicy<any> | FieldReadFunction<any>,
 	unconfirmedEmail?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ValidationErrorKeySpecifier = ('field' | 'message' | ValidationErrorKeySpecifier)[];
@@ -59,10 +52,6 @@ export type StrictTypedTypePolicies = {
 	AccountUpdatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | AccountUpdatePayloadKeySpecifier | (() => undefined | AccountUpdatePayloadKeySpecifier),
 		fields?: AccountUpdatePayloadFieldPolicy,
-	},
-	Identifiable?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | IdentifiableKeySpecifier | (() => undefined | IdentifiableKeySpecifier),
-		fields?: IdentifiableFieldPolicy,
 	},
 	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),

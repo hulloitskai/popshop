@@ -18,6 +18,7 @@ module Popshop
 
       # == Rails Extensions
       require "rails_ext"
+      require "actionview_ext"
 
       # == Library Extensions
       require "better_errors_ext"
@@ -59,8 +60,21 @@ module Popshop
       g.model_specs(false)
     end
 
+    # == Logging
+    if ENV["RAILS_LOG_TO_STDOUT"].truthy?
+      logger = ActiveSupport::Logger.new($stdout)
+      logger.formatter = config.log_formatter
+      config.logger = ActiveSupport::TaggedLogging.new(logger)
+    end
+
     # == Sessions
     config.session_store(:cookie_store, key: "session")
+
+    # == Exceptions
+    config.exceptions_app = T.unsafe(self).routes
+    config.action_dispatch.rescue_responses.merge!( # rubocop:disable Performance/RedundantMerge
+      "ActionPolicy::Unauthorized" => :unauthorized,
+    )
 
     # == Action View
     config.action_view.frozen_string_literal = true

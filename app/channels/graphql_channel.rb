@@ -15,8 +15,7 @@ class GraphQLChannel < ApplicationCable::Channel
     ).void
   end
   def initialize(connection, identifier, params)
-    super(connection, identifier, params)
-    @identifier = T.let(@identifier, T.untyped)
+    super
     @subscription_ids = T.let([], T::Array[String])
   end
 
@@ -26,11 +25,10 @@ class GraphQLChannel < ApplicationCable::Channel
     params(data: T::Hash[String, T.untyped]).returns(T.untyped)
   end
   def execute(data)
-    params =
-      T.let(
-        data.with_indifferent_access,
-        T::Hash[T.any(Symbol, String), T.untyped],
-      )
+    params = T.let(
+      data.with_indifferent_access,
+      T::Hash[T.any(Symbol, String), T.untyped],
+    )
 
     operation_name = params["operationName"]
     unless operation_name.nil?
@@ -43,15 +41,9 @@ class GraphQLChannel < ApplicationCable::Channel
 
     variables = prepare_variables(params["variables"])
     extensions = prepare_extensions(params["extensions"])
-    context = { extensions: extensions, current_user: current_user }
+    context = { channel: self, extensions:, current_user: }
 
-    result =
-      Schema.execute(
-        query,
-        variables: variables,
-        operation_name: operation_name,
-        context: context,
-      )
+    result = Schema.execute(query, variables:, operation_name:, context:)
     payload = { result: result.to_h, more: result.subscription? }
 
     # Track the subscription here so we can remove it
@@ -82,11 +74,10 @@ class GraphQLChannel < ApplicationCable::Channel
   def action_signature(action, data)
     signature = +"#{self.class.name}##{action}"
     config = GraphQL::RailsLogger.configuration
-    params =
-      T.let(
-        data.with_indifferent_access,
-        T::Hash[T.any(Symbol, String), T.untyped],
-      )
+    params = T.let(
+      data.with_indifferent_access,
+      T::Hash[T.any(Symbol, String), T.untyped],
+    )
 
     # Initialize lexers and formatters.
     formatter = Rouge::Formatters::Terminal256.new(config.theme)
@@ -132,9 +123,9 @@ class GraphQLChannel < ApplicationCable::Channel
       logger.debug(status)
     end
 
-    payload = { channel_class: self.class.name, data: data, via: via }
+    payload = { channel_class: self.class.name, data:, via: }
     ActiveSupport::Notifications.instrument("transmit.action_cable", payload) do
-      connection.transmit(identifier: @identifier, message: data)
+      connection.transmit(identifier:, message: data)
     end
   end
 

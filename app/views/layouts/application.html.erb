@@ -10,9 +10,44 @@
     <meta name="msapplication-TileColor" content="#a0a9b4">
     <meta name="theme-color" content="#ffffff">
 
-    <%# == Meta %>
+    <%# == Meta: Viewport %>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <%# == Meta: Content Security Policy %>
     <%= csp_meta_tag %>
+
+    <%# == Meta: Action Cable %>
     <%= action_cable_meta_tag %>
+
+    <%# == Meta: GraphQL %>
+    <meta name="graphql-url" content="<%= graphql_path %>">
+
+    <%# == Meta: Honeybadger %>
+    <% Honeybadger.config[:client_api_key].presence.try! do |api_key| %>
+      <meta name="honeybadger-api-key" content="<%= api_key %>">
+      <% Honeybadger.config[:revision].presence.try! do |revision| %>
+        <meta name="honeybadger-revision" content="<%= revision %>">
+      <% end %>
+      <% if user_signed_in? %>
+        <meta
+          name="honeybadger-context"
+          content="<%= current_user.honeybadger_context.to_json %>"
+        >
+      <% end %>
+    <% end %>
+
+    <%# == Meta: FullStory %>
+    <% ENV["FULLSTORY_ORG_ID"].presence.try! do |org_id| %>
+      <meta name="fullstory-org-id" content="<%= org_id %>">
+      <% if user_signed_in? %>
+        <meta
+          name="fullstory-identity"
+          content="<%= current_user.fullstory_identity.to_json %>"
+        >
+      <% end %>
+    <% end %>
+
+    <%# == Meta: SEO %>
     <%= display_meta_tags(
       reverse: true,
       site: "Popshop!",
@@ -24,14 +59,14 @@
         image: "/banner.png",
       },
     ) %>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="graphql-url" content="<%= graphql_path %>">
 
     <%# == Scripts %>
     <%= vite_client_tag %>
+    <%= vite_typescript_tag "honeybadger", async: true %>
+    <%= vite_typescript_tag "fullstory", async: true %>
     <% if local_assigns.include?(:page) %>
       <%= vite_react_refresh_tag %>
-      <%= vite_typescript_tag 'application' %>
+      <%= vite_typescript_tag "application", defer: true %>
     <% end %>
 
     <%# == Inertia %>

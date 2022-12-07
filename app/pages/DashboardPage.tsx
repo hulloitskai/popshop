@@ -16,7 +16,11 @@ const DashboardPage: PageComponent = () => {
 };
 
 DashboardPage.layout = layoutWithData<DashboardPageProps>(
-  (page, { viewer }) => <AppLayout {...{ viewer }}>{page}</AppLayout>,
+  (page, { viewer }) => (
+    <AppLayout withContainer {...{ viewer }}>
+      {page}
+    </AppLayout>
+  ),
 );
 
 export default DashboardPage;

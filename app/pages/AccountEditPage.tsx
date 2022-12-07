@@ -6,10 +6,11 @@ import ProfileForm from "~/components/AccountEditPageProfileForm";
 import EmailForm from "~/components/AccountEditPageEmailForm";
 import PasswordForm from "~/components/AccountEditPagePasswordForm";
 
+import type { DeepRequired } from "~/helpers/utils";
 import type { AccountEditPageQuery } from "~/queries";
 
 export type AccountEditPageProps = {
-  readonly data: AccountEditPageQuery;
+  readonly data: DeepRequired<AccountEditPageQuery, ["viewer"]>;
 };
 
 const AccountEditPage: PageComponent<AccountEditPageProps> = ({
@@ -59,7 +60,11 @@ const AccountEditPage: PageComponent<AccountEditPageProps> = ({
 };
 
 AccountEditPage.layout = layoutWithData<AccountEditPageProps>(
-  (page, { viewer }) => <CenterLayout {...{ viewer }}>{page}</CenterLayout>,
+  (page, { viewer }) => (
+    <AppLayout {...{ viewer }}>
+      <Center h="100%">{page}</Center>
+    </AppLayout>
+  ),
 );
 
 export default AccountEditPage;

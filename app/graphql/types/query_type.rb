@@ -11,7 +11,6 @@ module Types
     # == Fields
     field :test_echo, resolver: Queries::TestEcho
 
-    field :authenticated_viewer, resolver: Queries::AuthenticatedViewer
     field :viewer, resolver: Queries::Viewer
   end
 end

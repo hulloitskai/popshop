@@ -32,6 +32,13 @@ Rails.application.routes.draw do
   get :dashboard, to: "dashboard#show"
   get :test, to: "test#show"
 
+  # == Errors
+  scope controller: :errors do
+    match "/404", action: :not_found, via: :all
+    match "/500", action: :internal_server_error, via: :all
+    match "/401", action: :unauthorized, via: :all
+  end
+
   # == Internal
   authenticate :user, ->(user) { user.owner? } do
     mount GoodJob::Engine, at: "/good_job"

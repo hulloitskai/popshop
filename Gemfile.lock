@@ -165,6 +165,8 @@ GEM
     et-orbi (1.2.7)
       tzinfo
     ffi (1.15.5)
+    friendly_id (5.4.2)
+      activerecord (>= 4.0.0)
     fugit (1.7.2)
       et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
@@ -237,6 +239,7 @@ GEM
     minitest (5.16.3)
     msgpack (1.6.0)
     multi_xml (0.6.0)
+    nanoid (2.0.0)
     net-imap (0.3.1)
       net-protocol
     net-pop (0.1.2)
@@ -382,7 +385,6 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    shortuuid (0.6.0)
     silencer (2.0.0)
     sorbet (0.5.10564)
       sorbet-static (= 0.5.10564)
@@ -493,6 +495,7 @@ DEPENDENCIES
   dotenv (~> 2.7)
   email_validator (~> 2.2)
   enumerize (~> 2.5)
+  friendly_id (~> 5.4)
   good_job (~> 3.6)
   graphiql-rails
   graphql (~> 2.0)
@@ -506,6 +509,7 @@ DEPENDENCIES
   listen (~> 3.7)
   mailjet (~> 1.7)
   meta-tags (~> 2.16)
+  nanoid (~> 2.0)
   parser (~> 3.1.2.1)
   pg (~> 1.4)
   phonelib (~> 0.6.55)
@@ -527,7 +531,6 @@ DEPENDENCIES
   ruby-lsp
   ruby-vips (~> 2.1)
   selenium-webdriver
-  shortuuid (~> 0.6.0)
   silencer (~> 2.0)
   sorbet (~> 0.5.10554)
   sorbet-runtime (~> 0.5.10554)

@@ -6,9 +6,6 @@
       }
       const result: PossibleTypesResultData = {
   "possibleTypes": {
-    "Identifiable": [
-      "User"
-    ],
     "Node": [
       "User"
     ]

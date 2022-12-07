@@ -21,15 +21,6 @@ type AccountUpdatePayload {
 """An ISO 8601-encoded date"""
 scalar Date
 
-"""An object with an ID."""
-interface Identifiable implements Node {
-  """ID of the object."""
-  id: ID!
-
-  """ShortID of the object."""
-  shortId: ShortID!
-}
-
 type Mutation {
   accountUpdate(
     """Parameters for AccountUpdate"""
@@ -48,18 +39,11 @@ interface Node {
 }
 
 type Query {
-  """The currently authenticated user."""
-  authenticatedViewer: User!
   testEcho(text: String): String!
 
   """The currently authenticated user."""
   viewer: User
 }
-
-"""
-Represents a unique identifier that is Base64 obfuscated. It is often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"VXNlci0xMA=="`) or integer (such as `4`) input value will be accepted as an ID.
-"""
-scalar ShortID
 
 type Subscription {
   testSubscription: Int!
@@ -88,16 +72,13 @@ type TestMutationPayload {
   model: TestModel
 }
 
-type User implements Identifiable & Node {
+type User implements Node {
   email: String!
 
   """ID of the object."""
   id: ID!
   isOwner: Boolean!
   name: String!
-
-  """ShortID of the object."""
-  shortId: ShortID!
   unconfirmedEmail: String
 }
 

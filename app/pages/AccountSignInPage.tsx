@@ -35,7 +35,11 @@ const AccountSignInPage: PageComponent = () => {
 };
 
 AccountSignInPage.layout = layoutWithData<AccountSignInPageProps>(
-  (page, { viewer }) => <CenterLayout {...{ viewer }}>{page}</CenterLayout>,
+  (page, { viewer }) => (
+    <AppLayout {...{ viewer }}>
+      <Center h="100%">{page}</Center>
+    </AppLayout>
+  ),
 );
 
 export default AccountSignInPage;

@@ -4,9 +4,6 @@
 class ApplicationController < ActionController::Base
   extend T::Sig
 
-  # == Exceptions
-  # rescue_from ActionPolicy::Unauthorized, with: :show_unauthorized
-
   # == Filters
   before_action :debug_action
   around_action :prepare_action
@@ -28,13 +25,6 @@ class ApplicationController < ActionController::Base
   end
 
   private
-
-  # == Exceptions
-  # sig { params(exception: Exception).void }
-  # def show_unauthorized(exception)
-  #   raise exception if request.local?
-  #   render("pages/401", status: :unauthorized)
-  # end
 
   # == Filters
   sig { void }

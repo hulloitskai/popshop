@@ -19,7 +19,8 @@ module GraphQL::Querying
   end
   def query(name, variables = {})
     context = { current_user: current_user }
-    Schema.queries!.execute(name, variables: variables, context: context)
+    variables.deep_transform_keys! { |key| key.to_s.camelize(:lower) }
+    Schema.queries!.execute(name, variables:, context:)
   end
 
   sig do

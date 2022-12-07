@@ -71,6 +71,18 @@ class User < ApplicationRecord
     false
   end
 
+  # == Methods: Honeybadger
+  sig { returns(T::Hash[String, T.untyped]) }
+  def honeybadger_context
+    { "user_id" => id, "user_email" => email }
+  end
+
+  # == Methods: FullStory
+  sig { returns(T::Hash[String, T.untyped]) }
+  def fullstory_identity
+    { "uid" => id, "email" => email, "displayName" => name }
+  end
+
   private
 
   # == Helpers
