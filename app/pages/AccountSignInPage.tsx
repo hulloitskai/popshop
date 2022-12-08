@@ -18,7 +18,7 @@ const AccountSignInPage: PageComponent = () => {
           <Text size="sm" color="dimmed">
             Welcome back to{" "}
             <Text color="dark.4" weight={600} span>
-              It&apos;s Kai!
+              Popshop
             </Text>
           </Text>
         </Stack>

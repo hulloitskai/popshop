@@ -4,6 +4,8 @@ import type { BadgeProps } from "@mantine/core";
 import CogIcon from "~icons/heroicons/cog-6-tooth-20-solid";
 import SignOutIcon from "~icons/heroicons/arrow-left-on-rectangle-20-solid";
 
+import { createApolloLink } from "~/helpers/apollo/link";
+
 import type { Maybe } from "~/queries";
 import type { AppViewerFragment } from "~/queries";
 
@@ -13,6 +15,7 @@ export type AppMenuProps = {
 
 const AppMenu: FC<AppMenuProps> = ({ viewer }) => {
   const router = useRouter();
+  const client = useApolloClient();
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const badgeActiveColor = theme.colors.gray[5];
@@ -64,7 +67,17 @@ const AppMenu: FC<AppMenuProps> = ({ viewer }) => {
         <Menu.Item
           icon={<SignOutIcon />}
           onClick={() => {
-            router.delete("/account/sign_out");
+            router.delete("/account/sign_out", {
+              onSuccess: ({
+                props: {
+                  csrf: { token: csrfToken },
+                },
+              }: any) => {
+                const link = createApolloLink({ csrfToken });
+                client.setLink(link);
+                client.resetStore();
+              },
+            });
           }}
         >
           Sign Out

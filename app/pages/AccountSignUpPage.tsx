@@ -18,7 +18,7 @@ const AccountSignUpPage: PageComponent = () => {
           <Text size="sm" color="dimmed">
             Create an account on{" "}
             <Text color="dark.4" weight={600} span>
-              It&apos;s Popshop!
+              Popshop
             </Text>
           </Text>
         </Stack>
