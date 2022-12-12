@@ -1,0 +1,11 @@
+query ProductEditPageQuery($productId: ID!) {
+  viewer {
+    id
+    ...AppViewerFragment
+  }
+  product(id: $productId) {
+    id
+    name
+    ...ProductFormProductFragment
+  }
+}

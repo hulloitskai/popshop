@@ -5,10 +5,10 @@ module Mutations
   class ProductCreate < BaseMutation
     class Payload < T::Struct
       const :product, T.nilable(Product)
-      const :errors, T.nilable(ActiveModel::Errors)
+      const :errors, T.nilable(InputFieldErrors)
     end
 
-    field :errors, [Types::ValidationErrorType]
+    field :errors, [Types::InputFieldErrorType]
     field :product, Types::ProductType
 
     argument :account_id, ID, loads: Types::AccountType, required: false
@@ -32,7 +32,7 @@ module Mutations
       if product.valid?
         Payload.new(product:)
       else
-        Payload.new(errors: product.errors)
+        Payload.new(errors: product.input_field_errors)
       end
     end
   end

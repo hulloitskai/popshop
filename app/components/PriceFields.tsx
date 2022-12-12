@@ -18,6 +18,7 @@ export type PriceFieldsProps<
 > = Pick<CurrencyAmountFieldProps, "currencyCode"> & {
   readonly form: UseFormReturnType<Values, TransformValues>;
   readonly path: LooseKeys<Values>;
+  readonly showName?: boolean;
 };
 
 export type PriceValues = {
@@ -37,39 +38,32 @@ const PriceFields = <
   TransformValues extends (values: Values) => unknown,
 >({
   form,
-  path: parentPath,
+  path,
   currencyCode,
+  showName,
 }: PriceFieldsProps<Values, TransformValues>): ReactElement => {
-  const getInputProps = useCallback(
-    <Field extends LooseKeys<PriceValues>>(path: Field): any =>
-      form.getInputProps(`${String(parentPath)}.${path}`),
-    [form, parentPath],
-  );
-  const setFieldValue = useCallback(
-    <Field extends LooseKeys<PriceValues>>(
-      path: Field,
-      value: Field extends keyof PriceValues ? PriceValues[Field] : unknown,
-    ): any =>
-      form.setFieldValue(`${String(parentPath)}.${String(path)}`, value as any),
-    [form, parentPath],
-  );
-  const values = useMemo<PriceValues>(
-    () => get(form.values, parentPath),
-    [form],
-  );
-  const { scope } = values;
+  // == Form
+  const {
+    values: { scope, name },
+    isTouched,
+    getInputProps,
+    setFieldValue,
+  } = useNestedForm<PriceValues>(form, String(path));
 
-  useEffect(() => {
-    const { scope, name } = values;
-    const generatedName = titleCase(scopeLabel(scope));
-    if (generatedName !== name) {
-      setFieldValue("name", generatedName);
+  // == Effects
+  useDidUpdate(() => {
+    if (isTouched("scope")) {
+      const generatedName = titleCase(scopeLabel(scope));
+      if (generatedName !== name) {
+        setFieldValue("name", generatedName);
+      }
     }
   }, [scope]);
 
+  // == Markup
   return (
     <Stack spacing={4}>
-      <TextInput label="Name" {...getInputProps("name")} />
+      {showName && <TextInput label="Name" {...getInputProps("name")} />}
       <Radio.Group
         label="Scope"
         required
@@ -118,7 +112,7 @@ PriceFields.initialValues = (
     name,
     scope,
     amount: amount || "",
-    units: units?.singular || "",
+    units: scope === Scope.PerUnit ? units?.plural || "" : "",
   };
 };
 

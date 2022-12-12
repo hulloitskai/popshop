@@ -27,13 +27,14 @@ const TestPage: PageComponent<TestPageProps> = ({
   name: initialName,
 }) => {
   // == Form
-  const { values, getInputProps } = useForm<TestPageFormValues>({
+  const {
+    values: { name },
+    getInputProps,
+  } = useForm<TestPageFormValues>({
     initialValues: resolve<TestPageFormValues>(() => {
       return { name: initialName };
     }),
   });
-
-  const { name } = values;
   const nameDescription = useMemo(() => {
     return `Your name is: ${name}`;
   }, [name]);
@@ -54,7 +55,7 @@ const TestPage: PageComponent<TestPageProps> = ({
     });
   }, []);
 
-  // == Render
+  // == Markup
   return (
     <Stack spacing="xl">
       <Title>Test Page</Title>

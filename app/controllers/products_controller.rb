@@ -3,8 +3,8 @@
 
 class ProductsController < ApplicationController
   # == Filters
-  before_action :authenticate_user!
-  before_action :set_product, only: :show
+  before_action :authenticate_user!, except: :show
+  before_action :set_product, except: :new
 
   # == Actions
   sig { void }
@@ -20,6 +20,15 @@ class ProductsController < ApplicationController
   def new
     data = query!("ProductCreatePageQuery")
     render(inertia: "ProductCreatePage", props: { data: })
+  end
+
+  sig { void }
+  def edit
+    product = T.must(@product)
+    authorize!(product)
+    product_id = product.to_gid.to_s
+    data = query!("ProductEditPageQuery", { product_id: })
+    render(inertia: "ProductEditPage", props: { data: })
   end
 
   private

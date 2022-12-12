@@ -1,5 +1,8 @@
+import ProductCard from "~/components/ProductCard";
 import type { PageComponent } from "~/helpers/inertia";
 import type { DeepRequired } from "~/helpers/utils";
+
+import AddIcon from "~icons/heroicons/plus-circle-20-solid";
 
 import type { DashboardPageQuery } from "~/queries";
 
@@ -13,22 +16,24 @@ const DashboardPage: PageComponent<DashboardPageProps> = ({
       primaryAccount: { products },
     },
   },
-}) => {
-  return (
-    <Box>
-      <Title size="h2">Your Products</Title>
-      <List listStyleType="none">
-        {products.map(({ id, name, url }) => (
-          <List.Item key={id}>
-            <Anchor component={Link} href={url} color="indigo">
-              {name}
-            </Anchor>
-          </List.Item>
-        ))}
-      </List>
-    </Box>
-  );
-};
+}) => (
+  <Box>
+    <Title order={2}>Products</Title>
+    <Stack spacing={4}>
+      {products.map(product => {
+        const { id, url } = product;
+        return (
+          <Anchor key={id} component={Link} href={url} color="indigo">
+            <ProductCard {...{ product }} />
+          </Anchor>
+        );
+      })}
+      <Button component={Link} href="/products/new" leftIcon={<AddIcon />}>
+        New Product
+      </Button>
+    </Stack>
+  </Box>
+);
 
 DashboardPage.layout = layoutWithData<DashboardPageProps>(
   (page, { viewer }) => (

@@ -4,6 +4,9 @@ Requires that exactly one field must be supplied and that field must not be `nul
 directive @oneOf on INPUT_OBJECT
 
 type Account implements Node {
+  canDelete: Boolean!
+  canEdit: Boolean!
+
   """ID of the object."""
   id: ID!
   name: String!
@@ -22,7 +25,7 @@ input AccountUpdateInput {
 type AccountUpdatePayload {
   """A unique identifier for the client performing the mutation."""
   clientMutationId: String
-  errors: [ValidationError!]
+  errors: [InputFieldError!]
   user: User
 }
 
@@ -35,6 +38,11 @@ type Currency {
 
 """An ISO 8601-encoded date"""
 scalar Date
+
+type InputFieldError {
+  field: String!
+  message: String!
+}
 
 type Mutation {
   accountUpdate(
@@ -83,8 +91,11 @@ input PriceInput {
 
 type Product implements Node {
   account: Account!
+  canDelete: Boolean!
+  canEdit: Boolean!
   currencyCode: String!
   description: String
+  editUrl: String!
 
   """ID of the object."""
   id: ID!
@@ -109,7 +120,7 @@ input ProductCreateInput {
 type ProductCreatePayload {
   """A unique identifier for the client performing the mutation."""
   clientMutationId: String
-  errors: [ValidationError!]
+  errors: [InputFieldError!]
   product: Product
 }
 
@@ -119,6 +130,7 @@ input ProductUpdateInput {
   clientMutationId: String
   description: String
   name: String!
+  prices: [PriceInput!]!
   productId: ID!
 }
 
@@ -126,7 +138,7 @@ input ProductUpdateInput {
 type ProductUpdatePayload {
   """A unique identifier for the client performing the mutation."""
   clientMutationId: String
-  errors: [ValidationError!]
+  errors: [InputFieldError!]
   product: Product
 }
 
@@ -169,7 +181,7 @@ input TestMutationInput {
 type TestMutationPayload {
   """A unique identifier for the client performing the mutation."""
   clientMutationId: String
-  errors: [ValidationError!]
+  errors: [InputFieldError!]
   model: TestModel
 }
 
@@ -186,9 +198,4 @@ type User implements Node {
   name: String!
   primaryAccount: Account!
   unconfirmedEmail: String
-}
-
-type ValidationError {
-  field: String!
-  message: String!
 }

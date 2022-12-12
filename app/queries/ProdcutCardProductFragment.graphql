@@ -1,0 +1,4 @@
+fragment ProductCardProductFragment on Product {
+  name
+  description
+}

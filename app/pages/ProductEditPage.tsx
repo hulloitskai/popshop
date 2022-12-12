@@ -4,28 +4,35 @@ import type { FormErrors } from "@mantine/form";
 
 import ProductForm from "~/components/ProductForm";
 
-import { ProductCreateMutationDocument } from "~/queries";
-import type { ProductCreatePageQuery } from "~/queries";
+import { ProductUpdateMutationDocument } from "~/queries";
+import type { ProductEditPageQuery } from "~/queries";
 
-export type ProductCreatePageProps = {
-  readonly data: DeepRequired<ProductCreatePageQuery, ["viewer"]>;
+export type ProductEditPageProps = {
+  readonly data: DeepRequired<ProductEditPageQuery, ["viewer"] | ["product"]>;
 };
 
-const ProductCreatePage: PageComponent<ProductCreatePageProps> = () => {
+const ProductEditPage: PageComponent<ProductEditPageProps> = ({
+  data: { product },
+}) => {
+  const { id: productId, name } = product;
   const [errors, setErrors] = useState<FormErrors>({});
   const router = useRouter();
-  const onError = useApolloErrorCallback("Failed to create product");
+  const onError = useApolloErrorCallback("Failed to update product");
   const [runMutation, { loading }] = useMutation(
-    ProductCreateMutationDocument,
+    ProductUpdateMutationDocument,
     {
       onCompleted: ({ payload: { product, errors } }) => {
         if (product) {
-          const { url } = product;
-          router.visit(url);
+          const { url, name } = product;
+          router.visit(url, {
+            onSuccess: () => {
+              showNotice({ message: `'${name}' has been updated.` });
+            },
+          });
         } else {
           invariant(errors);
           setErrors(formErrors(errors));
-          showAlert({ message: "Failed to create product." });
+          showAlert({ message: "Failed to update product." });
         }
       },
       onError,
@@ -34,25 +41,26 @@ const ProductCreatePage: PageComponent<ProductCreatePageProps> = () => {
   return (
     <Stack spacing={4}>
       <Title order={1} size="h2">
-        New Product
+        Edit {name}
       </Title>
       <ProductForm
         onSubmit={values => {
           runMutation({
             variables: {
               input: {
-                ...values,
+                productId,
+                ...omit(values, "currencyCode"),
               },
             },
           });
         }}
-        {...{ loading, errors }}
+        {...{ product, loading, errors }}
       />
     </Stack>
   );
 };
 
-ProductCreatePage.layout = layoutWithData<ProductCreatePageProps>(
+ProductEditPage.layout = layoutWithData<ProductEditPageProps>(
   (page, { viewer }) => (
     <AppLayout withContainer withGutter containerSize="xs" {...{ viewer }}>
       {page}
@@ -60,4 +68,4 @@ ProductCreatePage.layout = layoutWithData<ProductCreatePageProps>(
   ),
 );
 
-export default ProductCreatePage;
+export default ProductEditPage;

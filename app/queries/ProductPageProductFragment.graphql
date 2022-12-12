@@ -1,0 +1,7 @@
+fragment ProductPageProductFragment on Product {
+  canEdit
+  editUrl
+  name
+  description
+  ...OrderCardProductFragment
+}

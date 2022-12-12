@@ -10,7 +10,7 @@ import DashboardIcon from "~icons/heroicons/rectangle-stack-20-solid";
 
 import logoPath from "~/assets/images/logo.png";
 
-const CARD_MAX_WIDTH = 440;
+const HomeCardMaxWidth = 440;
 
 export type HomePageProps = {
   readonly data: HomePageQuery;
@@ -47,7 +47,7 @@ export default HomePage;
 const NewUserCard: FC = () => {
   const buttonWidth = 140;
   return (
-    <Card withBorder w="100%" maw={CARD_MAX_WIDTH}>
+    <Card withBorder w="100%" maw={HomeCardMaxWidth}>
       <Stack spacing="xs" align="center">
         <Stack spacing={0} align="center">
           <Text color="gray.7" weight={600}>
@@ -91,7 +91,7 @@ type ReturningUserCardProps = {
 const ReturningUserCard: FC<ReturningUserCardProps> = ({ viewer }) => {
   const buttonWidth = 160;
   return (
-    <Card withBorder w="100%" maw={CARD_MAX_WIDTH}>
+    <Card withBorder w="100%" maw={HomeCardMaxWidth}>
       <Stack spacing="xs" align="center">
         <Stack spacing={0} align="center">
           <Text color="gray.7" weight={600}>

@@ -16,6 +16,8 @@ export type Scalars = {
 
 export type Account = Node & {
   __typename?: 'Account';
+  canDelete: Scalars['Boolean'];
+  canEdit: Scalars['Boolean'];
   /** ID of the object. */
   id: Scalars['ID'];
   name: Scalars['String'];
@@ -35,7 +37,7 @@ export type AccountUpdatePayload = {
   __typename?: 'AccountUpdatePayload';
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<ValidationError>>;
+  errors?: Maybe<Array<InputFieldError>>;
   user?: Maybe<User>;
 };
 
@@ -45,6 +47,12 @@ export type Currency = {
   exponent: Scalars['Int'];
   name: Scalars['String'];
   symbol: Scalars['String'];
+};
+
+export type InputFieldError = {
+  __typename?: 'InputFieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
 };
 
 export type Mutation = {
@@ -104,8 +112,11 @@ export type PriceInput = {
 export type Product = Node & {
   __typename?: 'Product';
   account: Account;
+  canDelete: Scalars['Boolean'];
+  canEdit: Scalars['Boolean'];
   currencyCode: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+  editUrl: Scalars['String'];
   /** ID of the object. */
   id: Scalars['ID'];
   name: Scalars['String'];
@@ -129,7 +140,7 @@ export type ProductCreatePayload = {
   __typename?: 'ProductCreatePayload';
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<ValidationError>>;
+  errors?: Maybe<Array<InputFieldError>>;
   product?: Maybe<Product>;
 };
 
@@ -139,6 +150,7 @@ export type ProductUpdateInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
+  prices: Array<PriceInput>;
   productId: Scalars['ID'];
 };
 
@@ -147,7 +159,7 @@ export type ProductUpdatePayload = {
   __typename?: 'ProductUpdatePayload';
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<ValidationError>>;
+  errors?: Maybe<Array<InputFieldError>>;
   product?: Maybe<Product>;
 };
 
@@ -207,7 +219,7 @@ export type TestMutationPayload = {
   __typename?: 'TestMutationPayload';
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<ValidationError>>;
+  errors?: Maybe<Array<InputFieldError>>;
   model?: Maybe<TestModel>;
 };
 
@@ -225,10 +237,4 @@ export type User = Node & {
   name: Scalars['String'];
   primaryAccount: Account;
   unconfirmedEmail?: Maybe<Scalars['String']>;
-};
-
-export type ValidationError = {
-  __typename?: 'ValidationError';
-  field: Scalars['String'];
-  message: Scalars['String'];
 };

@@ -1,0 +1,13 @@
+mutation ProductUpdateMutation($input: ProductUpdateInput!) {
+  payload: productUpdate(input: $input) {
+    product {
+      id
+      url
+      name
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

@@ -6,6 +6,9 @@ module Types
     # == Interfaces
     implements NodeType
 
+    # == Fields: Authorization
+    expose_authorization_rules :edit?, :delete?
+
     # == Fields
     field :name, String, null: false
     field :owner, UserType, null: false

@@ -4,11 +4,11 @@
 module Mutations
   class TestMutation < BaseMutation
     class Payload < T::Struct
-      const :errors, T.nilable(ActiveModel::Errors)
+      const :errors, T.nilable(InputFieldErrors)
       const :model, T.nilable(TestModel)
     end
 
-    field :errors, [Types::ValidationErrorType]
+    field :errors, [Types::InputFieldErrorType]
     field :model, Types::TestModelType
 
     argument :birthday, Types::DateType, required: false
@@ -26,7 +26,7 @@ module Mutations
       if model.valid?
         Payload.new(model: model)
       else
-        Payload.new(errors: model.errors)
+        Payload.new(errors: InputFieldErrors.from(model.errors))
       end
     end
   end

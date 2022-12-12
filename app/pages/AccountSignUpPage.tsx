@@ -1,7 +1,7 @@
 import type { PageComponent } from "~/helpers/inertia";
 import { Text } from "@mantine/core";
 
-import Form from "~/components/AccountSignUpPageForm";
+import AccountSignUpPageForm from "~/components/AccountSignUpPageForm";
 
 import type { AccountSignUpPageQuery } from "~/queries";
 
@@ -22,7 +22,7 @@ const AccountSignUpPage: PageComponent = () => {
             </Text>
           </Text>
         </Stack>
-        <Form />
+        <AccountSignUpPageForm />
         <Text size="xs" color="gray">
           Already have an account?{" "}
           <Anchor component={Link} href="/account/sign_in" color="indigo">

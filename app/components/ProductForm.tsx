@@ -40,6 +40,7 @@ const ProductForm: FC<ProductFormProps> = ({
   errors,
   onSubmit: handleSubmit,
 }) => {
+  // == Form
   const initialValues = useMemo<ProductValues>(() => {
     const { name, description, currencyCode, prices } = product ?? {};
     return {
@@ -64,20 +65,20 @@ const ProductForm: FC<ProductFormProps> = ({
     }),
   });
   const {
+    values: { currencyCode, prices },
+    reset,
+    setErrors,
     getInputProps,
     insertListItem,
     removeListItem,
-    setErrors,
     onSubmit,
-    values,
   } = form;
-  const { currencyCode, prices } = values;
-  useEffect(() => {
-    setErrors(errors);
-  }, [errors]);
-  useEffect(() => {
-    console.log("Prices changed", prices[0]?.amount);
-  }, [prices]);
+
+  // == Effects
+  useDidUpdate(() => setErrors(errors), [errors]);
+  useDidUpdate(reset, [initialValues]);
+
+  // == Markup
   return (
     <form onSubmit={onSubmit(handleSubmit)}>
       <Stack>
@@ -88,9 +89,11 @@ const ProductForm: FC<ProductFormProps> = ({
             required
             {...getInputProps("name")}
           />
-          <TextInput
+          <Textarea
             label="Description"
             placeholder="A box of local wines and cheeses!"
+            autosize
+            minRows={2}
             {...getInputProps("description")}
           />
         </Stack>
@@ -100,8 +103,18 @@ const ProductForm: FC<ProductFormProps> = ({
           </Text>
           <Stack spacing={8}>
             <CurrencyCodeField
-              label="Currency Code"
+              label="Currency"
               required
+              readOnly={!!product}
+              inputContainer={children => (
+                <Tooltip
+                  label="Changing active currency is not yet supported."
+                  withArrow
+                  disabled={!product}
+                >
+                  <div>{children}</div>
+                </Tooltip>
+              )}
               {...getInputProps("currencyCode")}
             />
             {prices.map(({ key }, index) => (
@@ -110,7 +123,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 labelElement="div"
                 label={
                   <>
-                    Price #{index + 1}
+                    {index > 0 ? `Additional Price #${index}` : "Price"}
                     {index > 0 && (
                       <>
                         {" "}
@@ -133,6 +146,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 <Card withBorder p="sm" pt={8}>
                   <PriceFields
                     path={`prices.${index}`}
+                    showName={prices.length > 1}
                     {...{ form, currencyCode }}
                   />
                 </Card>

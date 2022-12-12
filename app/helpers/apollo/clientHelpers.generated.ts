@@ -1,6 +1,8 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
-export type AccountKeySpecifier = ('id' | 'name' | 'owner' | 'products' | AccountKeySpecifier)[];
+export type AccountKeySpecifier = ('canDelete' | 'canEdit' | 'id' | 'name' | 'owner' | 'products' | AccountKeySpecifier)[];
 export type AccountFieldPolicy = {
+	canDelete?: FieldPolicy<any> | FieldReadFunction<any>,
+	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	owner?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -18,6 +20,11 @@ export type CurrencyFieldPolicy = {
 	exponent?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	symbol?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type InputFieldErrorKeySpecifier = ('field' | 'message' | InputFieldErrorKeySpecifier)[];
+export type InputFieldErrorFieldPolicy = {
+	field?: FieldPolicy<any> | FieldReadFunction<any>,
+	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type MutationKeySpecifier = ('accountUpdate' | 'productCreate' | 'productUpdate' | 'testMutation' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
@@ -40,11 +47,14 @@ export type PriceFieldPolicy = {
 	scope?: FieldPolicy<any> | FieldReadFunction<any>,
 	units?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductKeySpecifier = ('account' | 'currencyCode' | 'description' | 'id' | 'name' | 'prices' | 'url' | ProductKeySpecifier)[];
+export type ProductKeySpecifier = ('account' | 'canDelete' | 'canEdit' | 'currencyCode' | 'description' | 'editUrl' | 'id' | 'name' | 'prices' | 'url' | ProductKeySpecifier)[];
 export type ProductFieldPolicy = {
 	account?: FieldPolicy<any> | FieldReadFunction<any>,
+	canDelete?: FieldPolicy<any> | FieldReadFunction<any>,
+	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
 	currencyCode?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
+	editUrl?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	prices?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -99,11 +109,6 @@ export type UserFieldPolicy = {
 	primaryAccount?: FieldPolicy<any> | FieldReadFunction<any>,
 	unconfirmedEmail?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ValidationErrorKeySpecifier = ('field' | 'message' | ValidationErrorKeySpecifier)[];
-export type ValidationErrorFieldPolicy = {
-	field?: FieldPolicy<any> | FieldReadFunction<any>,
-	message?: FieldPolicy<any> | FieldReadFunction<any>
-};
 export type StrictTypedTypePolicies = {
 	Account?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier),
@@ -116,6 +121,10 @@ export type StrictTypedTypePolicies = {
 	Currency?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CurrencyKeySpecifier | (() => undefined | CurrencyKeySpecifier),
 		fields?: CurrencyFieldPolicy,
+	},
+	InputFieldError?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | InputFieldErrorKeySpecifier | (() => undefined | InputFieldErrorKeySpecifier),
+		fields?: InputFieldErrorFieldPolicy,
 	},
 	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
@@ -164,10 +173,6 @@ export type StrictTypedTypePolicies = {
 	User?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
 		fields?: UserFieldPolicy,
-	},
-	ValidationError?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | ValidationErrorKeySpecifier | (() => undefined | ValidationErrorKeySpecifier),
-		fields?: ValidationErrorFieldPolicy,
 	}
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

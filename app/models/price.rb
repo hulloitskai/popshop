@@ -26,6 +26,7 @@
 
 class Price < ApplicationRecord
   # == Concerns
+  include ::Named
   include Scoped
 
   # == Attributes: Amount

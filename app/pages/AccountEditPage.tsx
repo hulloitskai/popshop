@@ -2,9 +2,9 @@ import type { PageComponent } from "~/helpers/inertia";
 import { Text } from "@mantine/core";
 import type { DeepRequired } from "~/helpers/utils";
 
-import ProfileForm from "~/components/AccountEditPageProfileForm";
-import EmailForm from "~/components/AccountEditPageEmailForm";
-import PasswordForm from "~/components/AccountEditPagePasswordForm";
+import AccountEditPageProfileForm from "~/components/AccountEditPageProfileForm";
+import AccountEditPageEmailForm from "~/components/AccountEditPageEmailForm";
+import AccountEditPagePasswordForm from "~/components/AccountEditPagePasswordForm";
 
 import type { AccountEditPageQuery } from "~/queries";
 
@@ -23,7 +23,7 @@ const AccountEditPage: PageComponent<AccountEditPageProps> = ({
             Profile Information
           </Title>
         </Center>
-        <ProfileForm {...{ viewer }} />
+        <AccountEditPageProfileForm {...{ viewer }} />
       </Stack>
     </Card>
     <Card radius="md" withBorder>
@@ -36,7 +36,7 @@ const AccountEditPage: PageComponent<AccountEditPageProps> = ({
             Change your account email address.
           </Text>
         </Stack>
-        <EmailForm {...{ viewer }} />
+        <AccountEditPageEmailForm {...{ viewer }} />
       </Stack>
     </Card>
     <Card radius="md" withBorder>
@@ -49,7 +49,7 @@ const AccountEditPage: PageComponent<AccountEditPageProps> = ({
             Change your login password.
           </Text>
         </Stack>
-        <PasswordForm />
+        <AccountEditPagePasswordForm />
       </Stack>
     </Card>
   </Stack>

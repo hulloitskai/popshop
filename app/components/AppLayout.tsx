@@ -7,9 +7,9 @@ import type {
   MantineNumberSize,
 } from "@mantine/core";
 
-import Header from "./AppHeader";
-import Footer from "./AppFooter";
-import Flash from "./AppFlash";
+import AppHeader from "./AppHeader";
+import AppFooter from "./AppFooter";
+import AppFlash from "./AppFlash";
 
 import type { Maybe } from "~/queries";
 import type { AppViewerFragment } from "~/queries";
@@ -70,7 +70,7 @@ const AppLayout: FC<AppLayoutProps> = ({
   return (
     <>
       <AppShell
-        header={<Header {...{ viewer }} />}
+        header={<AppHeader {...{ viewer }} />}
         styles={{
           main: {
             minHeight: "calc(100vh - var(--mantine-footer-height, 0px))",
@@ -84,8 +84,8 @@ const AppLayout: FC<AppLayoutProps> = ({
       >
         {content}
       </AppShell>
-      <Footer />
-      <Flash />
+      <AppFooter />
+      <AppFlash />
     </>
   );
 };

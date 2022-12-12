@@ -39,4 +39,8 @@ end
 class ActiveModel::Error
   sig { returns(Symbol) }
   def attribute; end
+
+  sig {returns(String)}
+  def message
+  end
 end

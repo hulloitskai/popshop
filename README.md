@@ -2,6 +2,10 @@
 
 A really simple online store.
 
+## TODO
+
+- [ ] Set up application-wide breadcrumbs.
+
 ## Setup
 
 ```bash

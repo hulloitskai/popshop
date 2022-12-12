@@ -5,10 +5,10 @@ module Mutations
   class ProductUpdate < BaseMutation
     class Payload < T::Struct
       const :product, T.nilable(Product)
-      const :errors, T.nilable(ActiveModel::Errors)
+      const :errors, T.nilable(InputFieldErrors)
     end
 
-    field :errors, [Types::ValidationErrorType]
+    field :errors, [Types::InputFieldErrorType]
     field :product, Types::ProductType
 
     argument :description, String, required: false
@@ -27,11 +27,15 @@ module Mutations
     end
     def resolve(product:, prices:, **attributes)
       authorize!(product, to: :edit?)
-      product.update(attributes)
+      Product.transaction do
+        product.prices.destroy_all
+        product.prices.concat(prices)
+        product.update(attributes)
+      end
       if product.valid?
         Payload.new(product:)
       else
-        Payload.new(errors: product.errors)
+        Payload.new(errors: product.input_field_errors)
       end
     end
   end

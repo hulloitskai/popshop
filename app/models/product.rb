@@ -40,10 +40,12 @@ class Product < ApplicationRecord
   # == Associations
   belongs_to :account
 
-  has_many :prices, dependent: :destroy
+  has_many :prices, dependent: :destroy, autosave: true
 
   # == Validations
   validates :name, uniqueness: { scope: :account }
   validates :slug, uniqueness: { scope: :account }
+
   validates :prices, presence: true
+  validates_associated :prices
 end

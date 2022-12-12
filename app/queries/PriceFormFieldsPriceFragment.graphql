@@ -3,6 +3,6 @@ fragment PriceFormFieldsPriceFragment on Price {
   scope
   amount
   units {
-    singular
+    plural
   }
 }
