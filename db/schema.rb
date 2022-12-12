@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_25_212809) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_12_022903) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -20,6 +20,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_212809) do
     t.uuid "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at", precision: nil
     t.index ["owner_id"], name: "index_accounts_on_owner_id"
   end
 
@@ -132,6 +133,119 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_212809) do
     t.index ["to_id"], name: "index_obsidian_relations_on_to_id"
   end
 
+  create_table "pay_charges", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.bigint "subscription_id"
+    t.string "processor_id", null: false
+    t.integer "amount", null: false
+    t.string "currency"
+    t.integer "application_fee_amount"
+    t.integer "amount_refunded"
+    t.jsonb "metadata"
+    t.jsonb "data"
+    t.timestamp "created_at", precision: 6, null: false
+    t.timestamp "updated_at", precision: 6, null: false
+    t.index ["customer_id", "processor_id"], name: "index_pay_charges_on_customer_id_and_processor_id", unique: true
+    t.index ["subscription_id"], name: "index_pay_charges_on_subscription_id"
+  end
+
+  create_table "pay_customers", force: :cascade do |t|
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.string "processor", null: false
+    t.string "processor_id"
+    t.boolean "default"
+    t.jsonb "data"
+    t.timestamp "deleted_at"
+    t.timestamp "created_at", precision: 6, null: false
+    t.timestamp "updated_at", precision: 6, null: false
+    t.index ["owner_type", "owner_id", "deleted_at", "default"], name: "pay_customer_owner_index"
+    t.index ["processor", "processor_id"], name: "index_pay_customers_on_processor_and_processor_id", unique: true
+  end
+
+  create_table "pay_merchants", force: :cascade do |t|
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.string "processor", null: false
+    t.string "processor_id"
+    t.boolean "default"
+    t.jsonb "data"
+    t.timestamp "created_at", precision: 6, null: false
+    t.timestamp "updated_at", precision: 6, null: false
+    t.index ["owner_type", "owner_id", "processor"], name: "index_pay_merchants_on_owner_type_and_owner_id_and_processor"
+  end
+
+  create_table "pay_payment_methods", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "processor_id", null: false
+    t.boolean "default"
+    t.string "type"
+    t.jsonb "data"
+    t.timestamp "created_at", precision: 6, null: false
+    t.timestamp "updated_at", precision: 6, null: false
+    t.index ["customer_id", "processor_id"], name: "index_pay_payment_methods_on_customer_id_and_processor_id", unique: true
+  end
+
+  create_table "pay_subscriptions", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "name", null: false
+    t.string "processor_id", null: false
+    t.string "processor_plan", null: false
+    t.integer "quantity", default: 1, null: false
+    t.string "status", null: false
+    t.timestamp "current_period_start"
+    t.timestamp "current_period_end"
+    t.timestamp "trial_ends_at"
+    t.timestamp "ends_at"
+    t.boolean "metered"
+    t.string "pause_behavior"
+    t.timestamp "pause_starts_at"
+    t.timestamp "pause_resumes_at"
+    t.decimal "application_fee_percent", precision: 8, scale: 2
+    t.jsonb "metadata"
+    t.jsonb "data"
+    t.timestamp "created_at", precision: 6, null: false
+    t.timestamp "updated_at", precision: 6, null: false
+    t.index ["customer_id", "processor_id"], name: "index_pay_subscriptions_on_customer_id_and_processor_id", unique: true
+    t.index ["metered"], name: "index_pay_subscriptions_on_metered"
+    t.index ["pause_starts_at"], name: "index_pay_subscriptions_on_pause_starts_at"
+  end
+
+  create_table "pay_webhooks", force: :cascade do |t|
+    t.string "processor"
+    t.string "event_type"
+    t.jsonb "event"
+    t.timestamp "created_at", precision: 6, null: false
+    t.timestamp "updated_at", precision: 6, null: false
+  end
+
+  create_table "prices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "product_id", null: false
+    t.integer "amount_cents", null: false
+    t.string "name", null: false
+    t.string "scope", null: false
+    t.string "units"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id", "name"], name: "index_prices_on_product_id_and_name", unique: true
+    t.index ["product_id"], name: "index_prices_on_product_id"
+  end
+
+  create_table "products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.datetime "published_at", precision: nil
+    t.datetime "discarded_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "currency_code", limit: 3, null: false
+    t.string "slug", null: false
+    t.index ["account_id", "name"], name: "index_products_on_account_id_and_name", unique: true
+    t.index ["account_id", "slug"], name: "index_products_on_account_id_and_slug", unique: true
+    t.index ["account_id"], name: "index_products_on_account_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", null: false
     t.string "encrypted_password", null: false
@@ -160,4 +274,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_212809) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "obsidian_relations", "obsidian_notes", column: "from_id"
+  add_foreign_key "pay_charges", "pay_customers", column: "customer_id"
+  add_foreign_key "pay_charges", "pay_subscriptions", column: "subscription_id"
+  add_foreign_key "pay_payment_methods", "pay_customers", column: "customer_id"
+  add_foreign_key "pay_subscriptions", "pay_customers", column: "customer_id"
+  add_foreign_key "prices", "products"
+  add_foreign_key "products", "accounts"
 end

@@ -1,17 +1,17 @@
 import type { FC } from "react";
 
-import AppProviders from "./AppProviders";
-import AppProgress from "./AppProgress";
+import Providers from "./AppProviders";
+import Progress from "./AppProgress";
 
 import type { ProviderProps } from "~/helpers/inertia";
 
 export type AppContainerProps = ProviderProps;
 
 const AppContainer: FC<AppContainerProps> = ({ page, children }) => (
-  <AppProviders {...{ page }}>
+  <Providers {...{ page }}>
     {children}
-    <AppProgress />
-  </AppProviders>
+    <Progress />
+  </Providers>
 );
 
 export default AppContainer;

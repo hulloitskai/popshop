@@ -13,7 +13,13 @@ module Mutations
 
     argument :name, String, required: true
 
-    sig { override.params(attributes: T.untyped).returns(Payload) }
+    sig do
+      override(
+        allow_incompatible: true,
+      ).params(
+        attributes: T.untyped,
+      ).returns(Payload)
+    end
     def resolve(**attributes)
       user = current_user!
       if user.update_without_password(attributes)

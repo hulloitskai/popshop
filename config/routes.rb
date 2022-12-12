@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   root "home#show"
   get :dashboard, to: "dashboard#show"
   get :test, to: "test#show"
+  resources :products, only: %i[show new]
 
   # == Errors
   scope controller: :errors do

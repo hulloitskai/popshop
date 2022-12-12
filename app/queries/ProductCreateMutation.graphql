@@ -1,0 +1,12 @@
+mutation ProductCreateMutation($input: ProductCreateInput!) {
+  payload: productCreate(input: $input) {
+    product {
+      id
+      url
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

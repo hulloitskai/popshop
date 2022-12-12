@@ -11,6 +11,9 @@ module Types
     # == Fields
     field :test_echo, resolver: Queries::TestEcho
 
+    field :currencies, resolver: Queries::Currencies
+    field :currency, resolver: Queries::Currency
+    field :product, resolver: Queries::Product
     field :viewer, resolver: Queries::Viewer
   end
 end

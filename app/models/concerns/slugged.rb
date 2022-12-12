@@ -10,6 +10,16 @@ module Slugged
 
   extend ActiveSupport::Concern
 
+  included do
+    T.bind(self, T.all(T.class_of(ApplicationRecord), ClassMethods))
+
+    # == Dependencies
+    requires_columns :slug
+
+    # == Validations
+    validates :slug, presence: true, length: { maximum: slug_length }
+  end
+
   class_methods do
     extend T::Sig
 

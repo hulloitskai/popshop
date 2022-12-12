@@ -1,11 +1,11 @@
 import type { FC } from "react";
 import { Header, Image } from "@mantine/core";
 
+import Menu from "./AppMenu";
+import logoPath from "~/assets/images/logo.png";
+
 import type { Maybe } from "~/queries";
 import type { AppViewerFragment } from "~/queries";
-import AppMenu from "./AppMenu";
-
-import logoPath from "~/assets/images/logo.png";
 
 export type AppHeaderProps = {
   readonly viewer: Maybe<AppViewerFragment>;
@@ -44,7 +44,7 @@ const AppHeader: FC<AppHeaderProps> = ({ viewer }) => (
     >
       Popshop
     </Button>
-    <AppMenu {...{ viewer }} />
+    <Menu {...{ viewer }} />
   </Header>
 );
 

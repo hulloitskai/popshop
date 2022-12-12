@@ -106,7 +106,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
   end
 
-  sig { override.params(resource: User).returns(String) }
+  sig { override.params(resource: T.untyped).returns(String) }
   def after_sign_up_path_for(resource)
     dashboard_path
   end

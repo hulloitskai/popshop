@@ -1,0 +1,22 @@
+query ProductPageQuery($productId: ID!) {
+  viewer {
+    id
+    ...AppViewerFragment
+  }
+  product(id: $productId) {
+    id
+    name
+    description
+    currencyCode
+    prices {
+      id
+      name
+      scope
+      amount
+      units {
+        singular
+        plural
+      }
+    }
+  }
+}

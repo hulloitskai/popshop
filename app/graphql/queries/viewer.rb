@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module Queries
@@ -6,9 +6,11 @@ module Queries
     extend T::Sig
     extend T::Helpers
 
-    description "The currently authenticated user."
+    # == Type
     type Types::UserType, null: true
+    description "The currently authenticated user."
 
+    # == Resolver
     sig { returns(T.nilable(User)) }
     def resolve
       current_user

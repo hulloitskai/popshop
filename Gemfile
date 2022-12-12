@@ -130,6 +130,16 @@ gem "wrapped_print"
 # Enable additional operators and utilities for Active Record with PostgreSQL
 gem "active_record_extended", "~> 2.1"
 
+# Models for money, currencies, and conversions
+gem "monetize", "~> 1.12"
+gem "money", "~> 6.16"
+gem "money-rails", "~> 1.15"
+gem "eu_central_bank", "~> 1.7"
+
+# Perform transactions and collect payments with Pay
+gem "pay", "~> 6.1"
+gem "stripe", "~> 8.0"
+
 group :development, :test do
   # Auto-detect and warn about N+1 queries
   gem "bullet"

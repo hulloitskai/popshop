@@ -1,10 +1,9 @@
 import type { FC } from "react";
 import type { BadgeProps } from "@mantine/core";
+import { createApolloLink } from "~/helpers/apollo/link";
 
 import CogIcon from "~icons/heroicons/cog-6-tooth-20-solid";
 import SignOutIcon from "~icons/heroicons/arrow-left-on-rectangle-20-solid";
-
-import { createApolloLink } from "~/helpers/apollo/link";
 
 import type { Maybe } from "~/queries";
 import type { AppViewerFragment } from "~/queries";

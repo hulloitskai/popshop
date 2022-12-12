@@ -1,0 +1,4 @@
+fragment DashboardPageProductFragment on Product {
+  name
+  url
+}

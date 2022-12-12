@@ -33,6 +33,10 @@
 #
 
 class User < ApplicationRecord
+  # == Concerns
+  include Identifiable
+  include ::Named
+
   # == Associations
   has_many :accounts,
            inverse_of: :owner,
@@ -40,14 +44,12 @@ class User < ApplicationRecord
            dependent: :destroy
   belongs_to :primary_account, class_name: "Account", optional: true
 
+  has_many :products, through: :accounts
+
   sig { returns(Account) }
   def primary_account!
     primary_account or raise ActiveRecord::RecordNotFound
   end
-
-  # == Concerns
-  include Identifiable
-  include Named
 
   # == Validations
   validates :name, presence: true, length: { maximum: 64 }

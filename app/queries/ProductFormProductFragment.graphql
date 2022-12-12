@@ -1,0 +1,8 @@
+fragment ProductFormProductFragment on Product {
+  name
+  description
+  currencyCode
+  prices {
+    ...PriceFormFieldsPriceFragment
+  }
+}

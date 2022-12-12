@@ -17,6 +17,11 @@ module Resolver
     T.cast(Rails.application, Popshop::Application)
   end
 
+  T::Sig::WithoutRuntime.sig { returns(GeneratedUrlHelpersModule) }
+  def url_helpers
+    app.routes.url_helpers
+  end
+
   # sig { returns(T.nilable(GraphQLController)) }
   # def controller
   #   context[:controller]
@@ -49,10 +54,6 @@ module Resolver
   sig { returns(User) }
   def current_user!
     user = current_user
-    if user.nil?
-      raise GraphQL::ExecutionError,
-            "Not authenticated, please sign in to continue."
-    end
-    user
+    user or raise GraphQL::ExecutionError, "Not authenticated."
   end
 end

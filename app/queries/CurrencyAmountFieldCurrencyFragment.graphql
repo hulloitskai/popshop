@@ -1,0 +1,4 @@
+fragment CurrencyAmountFieldCurrencyFragment on Currency {
+  code
+  exponent
+}

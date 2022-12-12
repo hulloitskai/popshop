@@ -1,0 +1,8 @@
+fragment PriceFormFieldsPriceFragment on Price {
+  name
+  scope
+  amount
+  units {
+    singular
+  }
+}

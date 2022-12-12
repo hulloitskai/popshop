@@ -1,0 +1,6 @@
+query ProductCreatePageQuery {
+  viewer {
+    id
+    ...AppViewerFragment
+  }
+}

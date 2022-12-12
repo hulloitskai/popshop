@@ -18,4 +18,11 @@ class Users::SessionsController < Devise::SessionsController
     sign_in(resource_name, resource)
     respond_with(resource, location: after_sign_in_path_for(resource))
   end
+
+  private
+
+  sig { override.params(resource: T.untyped).returns(String) }
+  def after_sign_in_path_for(resource)
+    dashboard_path
+  end
 end

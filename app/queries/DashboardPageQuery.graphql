@@ -1,6 +1,13 @@
 query DashboardPageQuery {
   viewer {
     id
+    primaryAccount {
+      id
+      products {
+        id
+        ...DashboardPageProductFragment
+      }
+    }
     ...AppViewerFragment
   }
 }

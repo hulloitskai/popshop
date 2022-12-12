@@ -1,0 +1,5 @@
+fragment CurrencyCodeFieldCurrencyFragment on Currency {
+  name
+  code
+  symbol
+}

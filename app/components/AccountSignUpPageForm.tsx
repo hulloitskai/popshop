@@ -1,19 +1,19 @@
 import type { FC } from "react";
 import { PasswordInput } from "@mantine/core";
 
-export type AccountSignUpFormValues = {
+export type AccountSignUpPageFormValues = {
   readonly name: string;
   readonly email: string;
   readonly password: string;
   readonly passwordConfirmation: string;
 };
 
-export type AccountSignUpFormProps = {};
+export type AccountSignUpPageFormProps = {};
 
-const AccountSignUpForm: FC<AccountSignUpFormProps> = () => {
+const AccountSignUpPageForm: FC<AccountSignUpPageFormProps> = () => {
   const router = useRouter();
   const { getInputProps, onSubmit, setFieldValue, setErrors } =
-    useForm<AccountSignUpFormValues>({
+    useForm<AccountSignUpPageFormValues>({
       initialValues: {
         name: "",
         email: "",
@@ -33,17 +33,12 @@ const AccountSignUpForm: FC<AccountSignUpFormProps> = () => {
           },
         };
         router.post("/account", data, {
-          errorBag: "AccountSignUpForm",
+          errorBag: AccountSignUpPageForm.name,
           onError: errors => {
-            console.log("WHYYYY33333");
-            console.log({ errors });
             setFieldValue("password", "");
             setFieldValue("passwordConfirmation", "");
             setErrors(errors);
-            showAlert({ message: "We couldn't register your account!" });
-          },
-          onFinish: () => {
-            console.log("WHYYYY");
+            showAlert({ message: "Failed to register account." });
           },
         });
       })}
@@ -79,4 +74,4 @@ const AccountSignUpForm: FC<AccountSignUpFormProps> = () => {
   );
 };
 
-export default AccountSignUpForm;
+export default AccountSignUpPageForm;

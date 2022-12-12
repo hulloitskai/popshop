@@ -1,23 +1,38 @@
 import type { PageComponent } from "~/helpers/inertia";
-import { Text } from "@mantine/core";
+import type { DeepRequired } from "~/helpers/utils";
 
 import type { DashboardPageQuery } from "~/queries";
 
 export type DashboardPageProps = {
-  readonly data: DashboardPageQuery;
+  readonly data: DeepRequired<DashboardPageQuery, ["viewer"]>;
 };
 
-const DashboardPage: PageComponent = () => {
+const DashboardPage: PageComponent<DashboardPageProps> = ({
+  data: {
+    viewer: {
+      primaryAccount: { products },
+    },
+  },
+}) => {
   return (
     <Box>
-      <Text>Yuh</Text>
+      <Title size="h2">Your Products</Title>
+      <List listStyleType="none">
+        {products.map(({ id, name, url }) => (
+          <List.Item key={id}>
+            <Anchor component={Link} href={url} color="indigo">
+              {name}
+            </Anchor>
+          </List.Item>
+        ))}
+      </List>
     </Box>
   );
 };
 
 DashboardPage.layout = layoutWithData<DashboardPageProps>(
   (page, { viewer }) => (
-    <AppLayout withContainer {...{ viewer }}>
+    <AppLayout withContainer withGutter containerSize="xs" {...{ viewer }}>
       {page}
     </AppLayout>
   ),

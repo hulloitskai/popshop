@@ -205,6 +205,20 @@ class User
     sig { params(value: T.nilable(::Account)).void }
     def primary_account=(value); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def product_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def product_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :products, through: :accounts`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Product::PrivateCollectionProxy) }
+    def products; end
+
+    sig { params(value: T::Enumerable[::Product]).void }
+    def products=(value); end
+
     sig { returns(T.nilable(::Account)) }
     def reload_primary_account; end
   end

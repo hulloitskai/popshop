@@ -8,8 +8,8 @@ module Types
 
     # == Fields
     field :email, String, null: false
-    field :is_owner, Boolean, null: false, method: :owner?
     field :name, String, null: false
+    field :primary_account, AccountType, null: false
     field :unconfirmed_email, String
   end
 end

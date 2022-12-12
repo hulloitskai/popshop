@@ -7,6 +7,9 @@
       const result: PossibleTypesResultData = {
   "possibleTypes": {
     "Node": [
+      "Account",
+      "Price",
+      "Product",
       "User"
     ]
   }

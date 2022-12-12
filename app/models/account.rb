@@ -5,11 +5,12 @@
 #
 # Table name: accounts
 #
-#  id         :uuid             not null, primary key
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  owner_id   :uuid             not null
+#  id           :uuid             not null, primary key
+#  discarded_at :datetime
+#  name         :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  owner_id     :uuid             not null
 #
 # Indexes
 #
@@ -21,9 +22,12 @@
 #
 
 class Account < ApplicationRecord
+  # == Concerns
+  include Identifiable
+  include Discardable
+
   # == Associations
   belongs_to :owner, class_name: "User"
 
-  # == Concerns
-  include Identifiable
+  has_many :products, dependent: :destroy
 end

@@ -19,12 +19,7 @@ class ApplicationPolicy < ActionPolicy::Base
   # Always permit admins.
   pre_check :allow_admin!
 
-  # == Default Rules
-  sig { returns(T::Boolean) }
-  def index?
-    false
-  end
-
+  # == Rules
   sig { returns(T::Boolean) }
   def show?
     true

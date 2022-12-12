@@ -24,3 +24,17 @@ end
 module GraphQL::Schema::Interface
   mixes_in_class_methods GraphQL::Schema::Member::RelayShortcuts
 end
+
+class GraphQL::Schema::InputObject
+  sig {returns(GraphQL::Execution::Interpreter::Arguments)}
+  def arguments
+  end
+
+  sig {returns(T::Hash[Symbol, T.untyped])}
+  def to_h
+  end
+
+  sig {returns(T::Hash[Symbol, T.untyped])}
+  def to_hash
+  end
+end

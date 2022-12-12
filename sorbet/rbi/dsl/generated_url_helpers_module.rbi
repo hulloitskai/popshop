@@ -39,6 +39,9 @@ module GeneratedUrlHelpersModule
   def graphql_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_product_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -55,6 +58,12 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_user_session_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def pay_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def product_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def rails_blob_representation_proxy_url(*args); end

@@ -1,0 +1,5 @@
+query CurrencyAmountFieldQuery($currencyCode: String!) {
+  currency(code: $currencyCode) {
+    ...CurrencyAmountFieldCurrencyFragment
+  }
+}
