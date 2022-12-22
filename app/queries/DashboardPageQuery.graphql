@@ -8,16 +8,17 @@ query DashboardPageQuery {
         ...DashboardPageProductFragment
       }
       orders {
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
         edges {
           node {
             id
             ...OrderCardOrderFragment
           }
         }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
       ...DashboardStripeAlertAccountFragment
     }

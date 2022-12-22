@@ -53,7 +53,13 @@ Rails.application.routes.draw do
   end
 
   # == Internal
-  authenticate :user, ->(user) { user.owner? } do
+  authenticate :user, ->(user) { user.admin? } do
+    # == Good Job
     mount GoodJob::Engine, at: "/good_job"
+
+    # == Mailcatcher
+    if Rails.env.development?
+      get "/mailcatcher", to: redirect("//localhost:1080", status: 302)
+    end
   end
 end

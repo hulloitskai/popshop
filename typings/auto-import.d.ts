@@ -15,6 +15,7 @@ declare global {
   const Container: typeof import('@mantine/core')['Container']
   const DateTime: typeof import('luxon')['DateTime']
   const Divider: typeof import('@mantine/core')['Divider']
+  const Empty: typeof import('~/components')['Empty']
   const Group: typeof import('@mantine/core')['Group']
   const Head: typeof import('~/components')['Head']
   const Link: typeof import('@inertiajs/inertia-react')['Link']

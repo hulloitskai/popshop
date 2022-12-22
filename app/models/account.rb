@@ -75,16 +75,17 @@ class Account < ApplicationRecord
       account: stripe_account_id!,
       refresh_url: dashboard_url(stripe_account_refresh: 1),
       return_url: dashboard_url(stripe_account_connected: 1),
-      metadata: {
-        account_id: id!,
-      },
     )
   end
 
   sig { returns(Stripe::Account) }
   def create_stripe_account
     Stripe::Account.create(
-      type: "standard", email: owner!.email,
+      type: "standard",
+      email: owner!.email,
+      metadata: {
+        account_id: id!,
+      },
     ).tap do |account|
       update_columns( # rubocop:disable Rails/SkipsModelValidations
         stripe_account_id: account.id,
@@ -99,8 +100,4 @@ class Account < ApplicationRecord
       Stripe::Account.delete(account_id)
     end
   end
-
-  # def stripe_account_link
-  #   Stripe::AccountLink.create()
-  # end
 end

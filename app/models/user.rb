@@ -84,9 +84,26 @@ class User < ApplicationRecord
   end
 
   # == Methods: Admin
+  sig { returns(String) }
+  def self.admin_email
+    unless instance_variable_defined?(:@admin_email)
+      @admin_email = T.let(ENV.fetch("ADMIN_EMAIL"), T.nilable(String))
+      raise "Admin email must not be blank" if @admin_email.blank?
+    end
+    T.must(@admin_email)
+  end
+
+  sig { returns(T.nilable(User)) }
+  def self.admin = find_by(email: admin_email)
+
+  sig { returns(User) }
+  def self.admin!
+    admin or raise ActiveRecord::RecordNotFound
+  end
+
   sig { returns(T::Boolean) }
   def admin?
-    false
+    email == User.admin_email
   end
 
   # == Methods: Honeybadger

@@ -65,7 +65,7 @@ export const imports: Array<ImportsMap | PresetName> = [
     luxon: ["DateTime"],
     "react-use": ["useEvent"],
     "tiny-invariant": [["default", "invariant"]],
-    "~/components": ["Head", "ActionBar", "AppLayout", "PageHeader"],
+    "~/components": ["Head", "PageHeader", "ActionBar", "AppLayout", "Empty"],
     "~/helpers": [
       "resolve",
       "getMeta",
