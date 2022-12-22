@@ -12,6 +12,9 @@ module GeneratedUrlHelpersModule
   def api_status_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def cancel_order_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def cancel_user_registration_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -63,7 +66,7 @@ module GeneratedUrlHelpersModule
   def new_user_session_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pay_url(*args); end
+  def order_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def product_url(*args); end
@@ -145,6 +148,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def root_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def success_order_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_url(*args); end

@@ -12,8 +12,8 @@ module Mutations
     field :product, Types::ProductType
 
     argument :description, String, required: false
+    argument :items, [Types::ProductItemInputType]
     argument :name, String
-    argument :prices, [Types::PriceInputType]
     argument :product_id, ID, loads: Types::ProductType
 
     sig do
@@ -21,18 +21,13 @@ module Mutations
         allow_incompatible: true,
       ).params(
         product: Product,
-        prices: T::Array[Price],
         attributes: T.untyped,
       ).returns(Payload)
     end
-    def resolve(product:, prices:, **attributes)
+    def resolve(product:, **attributes)
       authorize!(product, to: :edit?)
-      Product.transaction do
-        product.prices.destroy_all
-        product.prices.concat(prices)
-        product.update(attributes)
-      end
-      if product.valid?
+      product.attributes = attributes
+      if product.save
         Payload.new(product:)
       else
         Payload.new(errors: product.input_field_errors)

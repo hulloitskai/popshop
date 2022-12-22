@@ -7,6 +7,19 @@ query DashboardPageQuery {
         id
         ...DashboardPageProductFragment
       }
+      orders {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        edges {
+          node {
+            id
+            ...OrderCardOrderFragment
+          }
+        }
+      }
+      ...DashboardStripeAlertAccountFragment
     }
     ...AppViewerFragment
   }

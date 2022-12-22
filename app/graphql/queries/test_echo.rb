@@ -14,8 +14,6 @@ module Queries
 
     # == Resolver
     sig { params(text: T.nilable(String)).returns(String) }
-    def resolve(text: nil)
-      text || ""
-    end
+    def resolve(text: nil) = text || ""
   end
 end

@@ -612,6 +612,7 @@ class ActiveRecord::Base
   include ::ActiveModel::ForbiddenAttributesProtection
   include ::ActiveModel::AttributeAssignment
   include ::ActiveModel::Serialization
+  extend ::ActiveRecordExtended::RelationPatch::QueryDelegation
   extend ::Devise::Models
 end
 
@@ -2543,21 +2544,6 @@ module Devise::Models::Authenticatable
   # source://devise//lib/devise/models/authenticatable.rb#97
   def inactive_message; end
 
-  # Redefine inspect using serializable_hash, to ensure we don't accidentally
-  # leak passwords into exceptions.
-  #
-  # source://devise//lib/devise/models/authenticatable.rb#124
-  def inspect; end
-
-  # Redefine serializable_hash in models for more secure defaults.
-  # By default, it removes from the serializable model all attributes that
-  # are *not* accessible. You can remove this default by using :force_except
-  # and passing a new list of attributes you want to exempt. All attributes
-  # given to :except will simply add names to exempt to Devise internal list.
-  #
-  # source://devise//lib/devise/models/authenticatable.rb#109
-  def serializable_hash(options = T.unsafe(nil)); end
-
   # source://devise//lib/devise/models/authenticatable.rb#89
   def unauthenticated_message; end
 
@@ -3495,45 +3481,6 @@ class Devise::Models::MissingAttribute < ::StandardError
   def message; end
 end
 
-# Adds OmniAuth support to your model.
-#
-# == Options
-#
-# Oauthable adds the following options to +devise+:
-#
-#   * +omniauth_providers+: Which providers are available to this model. It expects an array:
-#
-#       devise :database_authenticatable, :omniauthable, omniauth_providers: [:twitter]
-#
-# source://devise//lib/devise/models/omniauthable.rb#17
-module Devise::Models::Omniauthable
-  extend ::ActiveSupport::Concern
-
-  mixes_in_class_methods ::Devise::Models::Omniauthable::ClassMethods
-
-  class << self
-    # source://devise//lib/devise/models/omniauthable.rb#20
-    def required_fields(klass); end
-  end
-end
-
-# source://devise//lib/devise/models/omniauthable.rb#24
-module Devise::Models::Omniauthable::ClassMethods
-  # source://devise//lib/devise/models.rb#37
-  def omniauth_providers; end
-
-  # source://devise//lib/devise/models.rb#47
-  def omniauth_providers=(value); end
-
-  class << self
-    # source://devise//lib/devise/models.rb#32
-    def available_configs; end
-
-    # source://devise//lib/devise/models.rb#32
-    def available_configs=(_arg0); end
-  end
-end
-
 # Recoverable takes care of resetting the user password and send reset instructions.
 #
 # ==Options
@@ -4021,81 +3968,6 @@ Devise::Models::Validatable::VALIDATIONS = T.let(T.unsafe(nil), Array)
 #
 # source://devise//lib/devise.rb#59
 Devise::NO_INPUT = T.let(T.unsafe(nil), Array)
-
-# source://devise//lib/devise/omniauth.rb#23
-module Devise::OmniAuth; end
-
-# source://devise//lib/devise/omniauth/config.rb#13
-class Devise::OmniAuth::Config
-  # @return [Config] a new instance of Config
-  #
-  # source://devise//lib/devise/omniauth/config.rb#17
-  def initialize(provider, args); end
-
-  # Returns the value of attribute args.
-  #
-  # source://devise//lib/devise/omniauth/config.rb#15
-  def args; end
-
-  # source://devise//lib/devise/omniauth/config.rb#37
-  def autoload_strategy; end
-
-  # source://devise//lib/devise/omniauth/config.rb#30
-  def find_strategy; end
-
-  # Returns the value of attribute options.
-  #
-  # source://devise//lib/devise/omniauth/config.rb#15
-  def options; end
-
-  # Returns the value of attribute provider.
-  #
-  # source://devise//lib/devise/omniauth/config.rb#15
-  def provider; end
-
-  # Returns the value of attribute strategy.
-  #
-  # source://devise//lib/devise/omniauth/config.rb#14
-  def strategy; end
-
-  # Sets the attribute strategy
-  #
-  # @param value the value to set the attribute strategy to.
-  #
-  # source://devise//lib/devise/omniauth/config.rb#14
-  def strategy=(_arg0); end
-
-  # source://devise//lib/devise/omniauth/config.rb#26
-  def strategy_class; end
-
-  # Returns the value of attribute strategy_name.
-  #
-  # source://devise//lib/devise/omniauth/config.rb#15
-  def strategy_name; end
-end
-
-# source://devise//lib/devise/omniauth/config.rb#5
-class Devise::OmniAuth::StrategyNotFound < ::NameError
-  # @return [StrategyNotFound] a new instance of StrategyNotFound
-  #
-  # source://devise//lib/devise/omniauth/config.rb#6
-  def initialize(strategy); end
-end
-
-# source://devise//lib/devise/omniauth/url_helpers.rb#5
-module Devise::OmniAuth::UrlHelpers
-  # source://devise//lib/devise/omniauth/url_helpers.rb#6
-  def omniauth_authorize_path(resource_or_scope, provider, *args); end
-
-  # source://devise//lib/devise/omniauth/url_helpers.rb#11
-  def omniauth_authorize_url(resource_or_scope, provider, *args); end
-
-  # source://devise//lib/devise/omniauth/url_helpers.rb#16
-  def omniauth_callback_path(resource_or_scope, provider, *args); end
-
-  # source://devise//lib/devise/omniauth/url_helpers.rb#21
-  def omniauth_callback_url(resource_or_scope, provider, *args); end
-end
 
 class Devise::OmniauthCallbacksController < ::DeviseController
   def failure; end

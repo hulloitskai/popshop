@@ -2,7 +2,7 @@ import type { PageComponent } from "~/helpers/inertia";
 import type { DeepRequired } from "~/helpers/utils";
 import { Spoiler, Text } from "@mantine/core";
 
-// import OrderCard from "~/components/OrderCard";
+import OrderForm from "~/components/OrderForm";
 
 import EditIcon from "~icons/heroicons/pencil-20-solid";
 
@@ -42,7 +42,7 @@ const ProductPage: PageComponent<ProductPageProps> = ({
           <Text sx={{ whiteSpace: "pre-line" }}>{description}</Text>
         </Spoiler>
       )}
-      {/* <MediaQuery
+      <MediaQuery
         largerThan="xs"
         styles={({ spacing }) => ({
           paddingTop: spacing.lg,
@@ -50,9 +50,14 @@ const ProductPage: PageComponent<ProductPageProps> = ({
         })}
       >
         <Center>
-          <OrderCard w="100%" {...{ product }} />
+          <Card withBorder w="100%" maw={540}>
+            <Stack spacing={4}>
+              <Title order={3}>Place Order</Title>
+              <OrderForm {...{ product }} />
+            </Stack>
+          </Card>
         </Center>
-      </MediaQuery> */}
+      </MediaQuery>
     </Stack>
   );
 };

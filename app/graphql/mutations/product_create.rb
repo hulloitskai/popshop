@@ -14,8 +14,8 @@ module Mutations
     argument :account_id, ID, loads: Types::AccountType, required: false
     argument :currency_code, String
     argument :description, String, required: false
+    argument :items, [Types::ProductItemInputType]
     argument :name, String
-    argument :prices, [Types::PriceInputType]
 
     sig do
       override(
@@ -28,8 +28,8 @@ module Mutations
     def resolve(account: nil, **attributes)
       account ||= current_user!.primary_account!
       authorize!(account, to: :edit?)
-      product = account.products.create(attributes)
-      if product.valid?
+      product = account.products.build(attributes)
+      if product.save
         Payload.new(product:)
       else
         Payload.new(errors: product.input_field_errors)

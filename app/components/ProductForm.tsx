@@ -4,8 +4,11 @@ import type { FormErrors } from "@mantine/form";
 
 import CurrencyCodeField from "./CurrencyCodeField";
 
-import PriceFields from "./PriceFields";
-import type { PriceValues, PriceValuesForSubmission } from "./PriceFields";
+import ProductItemFields from "./ProductItemFields";
+import type {
+  ProductItemValues,
+  ProductItemValuesForSubmission,
+} from "./ProductItemFields";
 
 import AddIcon from "~icons/heroicons/plus-circle-20-solid";
 
@@ -21,17 +24,17 @@ export type ProductFormProps = {
 
 export type ProductValuesForSubmission = Omit<
   ProductValues,
-  "description" | "prices"
+  "description" | "items"
 > & {
   readonly description: string | null;
-  readonly prices: PriceValuesForSubmission[];
+  readonly items: ProductItemValuesForSubmission[];
 };
 
 export type ProductValues = {
   readonly name: string;
   readonly description: string;
   readonly currencyCode: string;
-  readonly prices: PriceValues[];
+  readonly items: ProductItemValues[];
 };
 
 const ProductForm: FC<ProductFormProps> = ({
@@ -42,14 +45,14 @@ const ProductForm: FC<ProductFormProps> = ({
 }) => {
   // == Form
   const initialValues = useMemo<ProductValues>(() => {
-    const { name, description, currencyCode, prices } = product ?? {};
+    const { name, description, currency, items } = product ?? {};
     return {
       name: name || "",
       description: description || "",
-      currencyCode: currencyCode || "CAD",
-      prices: prices
-        ? prices.map(PriceFields.initialValues)
-        : [PriceFields.initialValues()],
+      currencyCode: currency?.code || "CAD",
+      items: items
+        ? items.map(ProductItemFields.initialValues)
+        : [ProductItemFields.initialValues()],
     };
   }, [product]);
   const form = useForm<
@@ -58,14 +61,14 @@ const ProductForm: FC<ProductFormProps> = ({
   >({
     initialValues,
     initialErrors: errors,
-    transformValues: ({ description, prices, ...values }) => ({
+    transformValues: ({ description, items, ...values }) => ({
       ...values,
       description: description || null,
-      prices: prices.map(PriceFields.transformValues),
+      items: items.map(ProductItemFields.transformValues),
     }),
   });
   const {
-    values: { currencyCode, prices },
+    values: { name, currencyCode, items },
     reset,
     setErrors,
     getInputProps,
@@ -94,36 +97,40 @@ const ProductForm: FC<ProductFormProps> = ({
             placeholder="A box of local wines and cheeses!"
             autosize
             minRows={2}
+            maxRows={10}
             {...getInputProps("description")}
+          />
+          <CurrencyCodeField
+            label="Currency"
+            required
+            readOnly={!!product}
+            inputContainer={children => (
+              <Tooltip
+                label="You cannot change the currency of a product."
+                withArrow
+                disabled={!product}
+              >
+                <div>{children}</div>
+              </Tooltip>
+            )}
+            {...getInputProps("currencyCode")}
           />
         </Stack>
         <Box>
           <Text size="lg" weight={700}>
-            Pricing
+            Items
+          </Text>
+          <Text size="sm" color="dimmed" mt={-4}>
+            Add one or more items that customers can order.
           </Text>
           <Stack spacing={8}>
-            <CurrencyCodeField
-              label="Currency"
-              required
-              readOnly={!!product}
-              inputContainer={children => (
-                <Tooltip
-                  label="Changing active currency is not yet supported."
-                  withArrow
-                  disabled={!product}
-                >
-                  <div>{children}</div>
-                </Tooltip>
-              )}
-              {...getInputProps("currencyCode")}
-            />
-            {prices.map(({ key }, index) => (
+            {items.map(({ key }, index) => (
               <Input.Wrapper
                 key={key}
                 labelElement="div"
                 label={
                   <>
-                    {index > 0 ? `Additional Price #${index}` : "Price"}
+                    Item {index + 1}
                     {index > 0 && (
                       <>
                         {" "}
@@ -132,7 +139,7 @@ const ProductForm: FC<ProductFormProps> = ({
                           type="button"
                           color="red"
                           onClick={() => {
-                            removeListItem("prices", index);
+                            removeListItem("items", index);
                           }}
                         >
                           (remove)
@@ -144,9 +151,9 @@ const ProductForm: FC<ProductFormProps> = ({
                 required={index === 0}
               >
                 <Card withBorder p="sm" pt={8}>
-                  <PriceFields
-                    path={`prices.${index}`}
-                    showName={prices.length > 1}
+                  <ProductItemFields
+                    path={`items.${index}`}
+                    name={items.length === 1 ? name : undefined}
                     {...{ form, currencyCode }}
                   />
                 </Card>
@@ -158,11 +165,11 @@ const ProductForm: FC<ProductFormProps> = ({
               leftIcon={<AddIcon />}
               styles={{ leftIcon: { marginRight: 6 } }}
               onClick={() => {
-                const values = PriceFields.initialValues();
-                insertListItem("prices", values);
+                const values = ProductItemFields.initialValues();
+                insertListItem("items", values);
               }}
             >
-              Add Price
+              Add Item
             </Button>
           </Stack>
         </Box>

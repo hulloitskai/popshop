@@ -1,8 +1,10 @@
 fragment ProductFormProductFragment on Product {
   name
   description
-  currencyCode
-  prices {
-    ...PriceFormFieldsPriceFragment
+  currency {
+    code
+  }
+  items {
+    ...ProductItemFieldsItemFragment
   }
 }

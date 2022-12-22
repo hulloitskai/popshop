@@ -10,15 +10,9 @@ module Identifiable
 
   extend ActiveSupport::Concern
 
-  included do
-    T.bind(self, T.class_of(ApplicationRecord))
-
-    # == Attributes
-    attribute :id, :string, default: -> { SecureRandom.uuid }
-  end
-
+  # == Attributes
   sig { returns(String) }
   def id!
-    T.must(id)
+    self.id ||= SecureRandom.uuid
   end
 end

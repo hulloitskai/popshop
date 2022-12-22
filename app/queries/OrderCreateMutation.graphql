@@ -1,0 +1,12 @@
+mutation OrderCreateMutation($input: OrderCreateInput!) {
+  payload: orderCreate(input: $input) {
+    order {
+      id
+      stripeCheckoutSessionUrl
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

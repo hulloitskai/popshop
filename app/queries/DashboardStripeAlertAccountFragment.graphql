@@ -1,0 +1,3 @@
+fragment DashboardStripeAlertAccountFragment on Account {
+  isStripeConnected
+}

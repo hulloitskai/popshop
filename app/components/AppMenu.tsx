@@ -4,6 +4,7 @@ import { createApolloLink } from "~/helpers/apollo/link";
 
 import CogIcon from "~icons/heroicons/cog-6-tooth-20-solid";
 import SignOutIcon from "~icons/heroicons/arrow-left-on-rectangle-20-solid";
+import DashboardIcon from "~icons/heroicons/rectangle-stack-20-solid";
 
 import type { Maybe } from "~/queries";
 import type { AppViewerFragment } from "~/queries";
@@ -60,13 +61,16 @@ const AppMenu: FC<AppMenuProps> = ({ viewer }) => {
         </Badge>
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Item component={Link} href="/account/edit" icon={<CogIcon />}>
+        <Menu.Item component={Link} href="/user/settings" icon={<CogIcon />}>
           Settings
+        </Menu.Item>
+        <Menu.Item component={Link} href="/dashboard" icon={<DashboardIcon />}>
+          Dashboard
         </Menu.Item>
         <Menu.Item
           icon={<SignOutIcon />}
           onClick={() => {
-            router.delete("/account/sign_out", {
+            router.delete("/user/logout", {
               onSuccess: ({
                 props: {
                   csrf: { token: csrfToken },
@@ -84,12 +88,7 @@ const AppMenu: FC<AppMenuProps> = ({ viewer }) => {
       </Menu.Dropdown>
     </Menu>
   ) : (
-    <Badge
-      component={Link}
-      href="/account/sign_in"
-      color="gray.4"
-      {...badgeProps}
-    >
+    <Badge component={Link} href="/user/login" color="gray.4" {...badgeProps}>
       Sign In
     </Badge>
   );

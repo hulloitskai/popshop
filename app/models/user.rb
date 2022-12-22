@@ -23,13 +23,17 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  primary_account_id     :uuid             not null
+#  primary_account_id     :uuid
 #
 # Indexes
 #
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_primary_account_id    (primary_account_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (primary_account_id => accounts.id)
 #
 
 class User < ApplicationRecord
@@ -45,10 +49,14 @@ class User < ApplicationRecord
   belongs_to :primary_account, class_name: "Account", optional: true
 
   has_many :products, through: :accounts
+  has_many :orders, through: :accounts
 
   sig { returns(Account) }
   def primary_account!
-    primary_account or raise ActiveRecord::RecordNotFound
+    self.primary_account ||= accounts.first!.tap do |account|
+      account = T.let(account, Account)
+      update_column("primary_account_id", account.id) # rubocop:disable Rails/SkipsModelValidations
+    end
   end
 
   # == Validations
@@ -62,10 +70,18 @@ class User < ApplicationRecord
             uniqueness: {
               case_sensitive: false,
             }
-  validates :primary_account, presence: true, if: :persisted?
+  validates :accounts, presence: true
 
   # == Callbacks
-  before_create :build_primary_account
+  before_save :set_primary_account, unless: :primary_account?
+
+  # == Initialization
+  after_initialize do
+    T.bind(self, User)
+    if accounts.empty?
+      accounts.build(name: name)
+    end
+  end
 
   # == Methods: Admin
   sig { returns(T::Boolean) }
@@ -85,12 +101,16 @@ class User < ApplicationRecord
     { "uid" => id, "email" => email, "displayName" => name }
   end
 
+  # == Methods
+  sig { returns(T::Boolean) }
+  def primary_account? = primary_account_id?
+
   private
 
   # == Helpers
   sig { void }
-  def build_primary_account
-    self.primary_account ||= accounts.build(name: name)
+  def set_primary_account
+    self.primary_account = accounts.first!
   end
 end
 

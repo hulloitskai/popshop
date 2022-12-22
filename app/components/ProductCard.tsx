@@ -14,7 +14,7 @@ const ProductCard: FC<ProductCardProps> = ({
 }) => (
   <Card withBorder p="xs" sx={({ fontSizes }) => ({ fontSize: fontSizes.sm })}>
     <Text weight={600}>{name}</Text>
-    {!!description && <Text>{}</Text>}
+    {!!description && <Text>{description}</Text>}
   </Card>
 );
 

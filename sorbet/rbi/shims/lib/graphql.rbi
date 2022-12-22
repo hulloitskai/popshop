@@ -21,20 +21,63 @@ class GraphQL::Schema
   def self.execute(query_str = nil, **kwargs); end
 end
 
+class GraphQL::Query::Context
+  sig {returns(GraphQL::Dataloader)}
+  def dataloader
+  end
+end
+
+class GraphQL::Schema::Object
+  sig {returns(GraphQL::Dataloader)}
+  def dataloader
+  end
+end
+
+class GraphQL::Dataloader
+  sig do
+    params(
+      source_class: Class,
+      batch_args: T.untyped,
+      batch_kwargs: T.untyped,
+    ).returns(GraphQL::Dataloader::Source)
+  end
+  def with(source_class, *batch_args, **batch_kwargs); end
+end
+
+class GraphQL::Dataloader::Source
+  sig {params(key: T.untyped).returns(GraphQL::Dataloader::Request)}
+  def request(key); end
+
+  sig {params(keys: T::Array[T.untyped]).returns(GraphQL::Dataloader::RequestAll)}
+  def request_all(keys); end
+end
+
+class GraphQL::Dataloader::Request
+  sig {returns(Object)}
+  def load
+  end
+end
+
+class GraphQL::Dataloader::RequestAll
+  sig {returns(T::Array[Object])}
+  def load
+  end
+end
+
 module GraphQL::Schema::Interface
   mixes_in_class_methods GraphQL::Schema::Member::RelayShortcuts
 end
 
-class GraphQL::Schema::InputObject
-  sig {returns(GraphQL::Execution::Interpreter::Arguments)}
-  def arguments
-  end
-
-  sig {returns(T::Hash[Symbol, T.untyped])}
+class GraphQL::Result
+  sig {returns(T::Hash[String, T.untyped])}
   def to_h
   end
+end
 
-  sig {returns(T::Hash[Symbol, T.untyped])}
-  def to_hash
-  end
+class GraphQL::Execution::Lookahead
+  sig {params(field_name: T.any(String, Symbol), selected_type: T.untyped, arguments: T.untyped).returns(T.nilable(T.self_type))}
+  def selection(field_name, selected_type: T.unsafe(nil), arguments: T.unsafe(nil)); end
+
+  sig {params(field_name: T.any(String, Symbol), selected_type: T.untyped, arguments: T.untyped).returns(T::Boolean)}
+  def selects?(field_name, selected_type: T.unsafe(nil), arguments: T.unsafe(nil)); end
 end

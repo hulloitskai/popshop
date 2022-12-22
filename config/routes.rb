@@ -8,12 +8,18 @@ Rails.application.routes.draw do
 
   # == Devise
   devise_for :users,
-             path: :account,
-             controllers: {
-               sessions: "users/sessions",
-               registrations: "users/registrations",
-               #  omniauth_callbacks: "users/omniauth_callbacks",
-             }
+             except: ["passwords"],
+            controllers: {
+              sessions: "users/sessions",
+              registrations: "users/registrations",
+            },
+            path: :user,
+            path_names: {
+              sign_in: :login,
+              sign_out: :logout,
+              sign_up: :register,
+              edit: :settings,
+            }
 
   # == API
   scope :api do
@@ -32,6 +38,12 @@ Rails.application.routes.draw do
   get :dashboard, to: "dashboard#show"
   get :test, to: "test#show"
   resources :products, only: %i[show new edit]
+  resources :orders, only: :show do
+    member do
+      get :success
+      get :cancel
+    end
+  end
 
   # == Errors
   scope controller: :errors do

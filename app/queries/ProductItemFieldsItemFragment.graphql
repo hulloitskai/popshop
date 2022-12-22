@@ -1,0 +1,8 @@
+fragment ProductItemFieldsItemFragment on ProductItem {
+  name
+  units {
+    plural
+  }
+  orderScope
+  price
+}

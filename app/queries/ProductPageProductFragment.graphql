@@ -3,5 +3,5 @@ fragment ProductPageProductFragment on Product {
   editUrl
   name
   description
-  ...OrderCardProductFragment
+  ...OrderFormProductFragment
 }

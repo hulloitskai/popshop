@@ -1,0 +1,11 @@
+fragment OrderFormProductFragment on Product {
+  id
+  currency {
+    code
+    exponent
+  }
+  items {
+    id
+    ...OrderFormProductItemFragment
+  }
+}

@@ -185,6 +185,20 @@ class Account
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_owner!(*args, &blk); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def order_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def order_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Account` class because it declared `has_many :orders, through: :products`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Order::PrivateCollectionProxy) }
+    def orders; end
+
+    sig { params(value: T::Enumerable[::Order]).void }
+    def orders=(value); end
+
     sig { returns(T.nilable(::User)) }
     def owner; end
 
@@ -649,6 +663,12 @@ class Account
     def restore_owner_id!; end
 
     sig { void }
+    def restore_stripe_account_email!; end
+
+    sig { void }
+    def restore_stripe_account_id!; end
+
+    sig { void }
     def restore_updated_at!; end
 
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
@@ -681,11 +701,113 @@ class Account
     sig { returns(T::Boolean) }
     def saved_change_to_owner_id?; end
 
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_stripe_account_email; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_stripe_account_email?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_stripe_account_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_stripe_account_id?; end
+
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
     def saved_change_to_updated_at; end
 
     sig { returns(T::Boolean) }
     def saved_change_to_updated_at?; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_email; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def stripe_account_email=(value); end
+
+    sig { returns(T::Boolean) }
+    def stripe_account_email?; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_email_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def stripe_account_email_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def stripe_account_email_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def stripe_account_email_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def stripe_account_email_change_to_be_saved; end
+
+    sig { returns(T::Boolean) }
+    def stripe_account_email_changed?; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_email_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def stripe_account_email_previous_change; end
+
+    sig { returns(T::Boolean) }
+    def stripe_account_email_previously_changed?; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_email_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_email_was; end
+
+    sig { void }
+    def stripe_account_email_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def stripe_account_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def stripe_account_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def stripe_account_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def stripe_account_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def stripe_account_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def stripe_account_id_change_to_be_saved; end
+
+    sig { returns(T::Boolean) }
+    def stripe_account_id_changed?; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def stripe_account_id_previous_change; end
+
+    sig { returns(T::Boolean) }
+    def stripe_account_id_previously_changed?; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def stripe_account_id_was; end
+
+    sig { void }
+    def stripe_account_id_will_change!; end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
     def updated_at; end
@@ -746,6 +868,12 @@ class Account
 
     sig { returns(T::Boolean) }
     def will_save_change_to_owner_id?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_stripe_account_email?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_stripe_account_id?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_updated_at?; end

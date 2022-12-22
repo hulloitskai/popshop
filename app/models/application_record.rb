@@ -37,6 +37,9 @@ class ApplicationRecord
 
   primary_abstract_class
 
+  # == Concerns
+  include Routing
+
   # == Enumerize
   extend Enumerize
 

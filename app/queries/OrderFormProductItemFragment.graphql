@@ -1,0 +1,9 @@
+fragment OrderFormProductItemFragment on ProductItem {
+  name
+  units {
+    singular
+    plural
+  }
+  orderScope
+  price
+}

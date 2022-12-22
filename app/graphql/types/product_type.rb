@@ -15,20 +15,28 @@ module Types
 
     # == Fields
     field :account, AccountType, null: false
-    field :currency_code, String, null: false
+    field :currency, CurrencyType, null: false
     field :description, String
+    field :items, [ProductItemType], null: false, authorized_scope: true
     field :name, String, null: false
-    field :prices, [PriceType], null: false
 
     # == Resolvers: URLs
     sig { returns(String) }
     def url
-      url_helpers.product_url(object)
+      product_url(object)
     end
 
     sig { returns(String) }
     def edit_url
-      url_helpers.edit_product_url(object)
+      edit_product_url(object)
+    end
+
+    # == Resolvers
+    sig { returns(Account) }
+    def account
+      context.dataloader
+        .with(Sources::RecordById, Account)
+        .load(object.account_id)
     end
   end
 end

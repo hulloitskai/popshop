@@ -81,11 +81,11 @@ module Popshop
     config.action_view.frozen_string_literal = true
 
     # == Active Record
-    # config.active_record.destroy_association_async_batch_size = 1000
     config.active_record.internal_metadata_table_name =
       "active_record_internal_metadata"
     config.active_record.schema_migrations_table_name =
       "active_record_schema_migrations"
+    config.active_record.index_nested_attribute_errors = true
 
     # == Action Cable
     config.action_cable.mount_path = "/rails/action_cable/cable"

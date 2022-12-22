@@ -35,17 +35,39 @@ class Product < ApplicationRecord
 
   # == Concerns: FriendlyId
   include FriendlyId::Concern
-  friendly_id :name, use: :scoped, scope: :account
+  friendly_id :name, use: %i[slugged scoped], scope: :account
 
   # == Associations
   belongs_to :account
+  has_many :items,
+           class_name: "ProductItem",
+           dependent: :destroy,
+           autosave: true
+  has_many :orders, dependent: :destroy_async
 
-  has_many :prices, dependent: :destroy, autosave: true
+  sig { returns(Account) }
+  def account!
+    account or raise ActiveRecord::RecordNotFound
+  end
+
+  sig { override.params(values: T::Enumerable[::ProductItem]).void }
+  def items=(values)
+    items.kept.where.missing(:order_items).destroy_all
+    items.kept.where.associated(:order_items).discard_all
+    items.concat(values)
+  end
 
   # == Validations
   validates :name, uniqueness: { scope: :account }
   validates :slug, uniqueness: { scope: :account }
+  validates :currency_code, presence: true, inclusion: { in: Currencies.codes }
 
-  validates :prices, presence: true
-  validates_associated :prices
+  validates :items, presence: true
+  validates_associated :items
+
+  # == Methods: Currency
+  sig { returns(Money::Currency) }
+  def currency
+    Money::Currency.find(currency_code)
+  end
 end

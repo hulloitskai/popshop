@@ -199,6 +199,20 @@ class User
     sig { params(args: T.untyped, blk: T.untyped).returns(::Account) }
     def create_primary_account!(*args, &blk); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def order_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def order_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :orders, through: :accounts`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Order::PrivateCollectionProxy) }
+    def orders; end
+
+    sig { params(value: T::Enumerable[::Order]).void }
+    def orders=(value); end
+
     sig { returns(T.nilable(::Account)) }
     def primary_account; end
 
@@ -950,10 +964,10 @@ class User
     sig { void }
     def name_will_change!; end
 
-    sig { returns(::String) }
+    sig { returns(T.nilable(::String)) }
     def primary_account_id; end
 
-    sig { params(value: ::String).returns(::String) }
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
     def primary_account_id=(value); end
 
     sig { returns(T::Boolean) }
@@ -968,10 +982,10 @@ class User
     sig { returns(T::Boolean) }
     def primary_account_id_came_from_user?; end
 
-    sig { returns(T.nilable([::String, ::String])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def primary_account_id_change; end
 
-    sig { returns(T.nilable([::String, ::String])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def primary_account_id_change_to_be_saved; end
 
     sig { returns(T::Boolean) }
@@ -980,7 +994,7 @@ class User
     sig { returns(T.nilable(::String)) }
     def primary_account_id_in_database; end
 
-    sig { returns(T.nilable([::String, ::String])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def primary_account_id_previous_change; end
 
     sig { returns(T::Boolean) }
@@ -1259,7 +1273,7 @@ class User
     sig { returns(T::Boolean) }
     def saved_change_to_name?; end
 
-    sig { returns(T.nilable([::String, ::String])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_primary_account_id; end
 
     sig { returns(T::Boolean) }

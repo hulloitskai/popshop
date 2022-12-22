@@ -1,0 +1,24 @@
+fragment OrderCardOrderFragment on Order {
+  createdAt
+  code
+  stripePaymentIntentUrl
+  customer {
+    id
+    firstName
+    lastName
+    email
+  }
+  product {
+    id
+    name
+    url
+  }
+  items {
+    id
+    productItem {
+      id
+      name
+    }
+    quantity
+  }
+}

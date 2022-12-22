@@ -8,8 +8,11 @@
   "possibleTypes": {
     "Node": [
       "Account",
-      "Price",
+      "Customer",
+      "Order",
+      "OrderItem",
       "Product",
+      "ProductItem",
       "User"
     ]
   }

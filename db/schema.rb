@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_12_022903) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_21_235022) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -21,7 +21,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_12_022903) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at", precision: nil
+    t.string "stripe_account_id"
+    t.string "stripe_account_email"
     t.index ["owner_id"], name: "index_accounts_on_owner_id"
+    t.index ["stripe_account_id"], name: "index_accounts_on_stripe_account_id", unique: true
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -50,6 +53,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_12_022903) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "customers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug", null: false
+    t.uuid "account_id", null: false
+    t.string "stripe_customer_id"
+    t.index ["account_id", "email"], name: "index_customers_on_account_id_and_email", unique: true
+    t.index ["account_id"], name: "index_customers_on_account_id"
+    t.index ["stripe_customer_id"], name: "index_customers_on_stripe_customer_id", unique: true
   end
 
   create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -133,102 +150,61 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_12_022903) do
     t.index ["to_id"], name: "index_obsidian_relations_on_to_id"
   end
 
-  create_table "pay_charges", force: :cascade do |t|
-    t.bigint "customer_id", null: false
-    t.bigint "subscription_id"
-    t.string "processor_id", null: false
-    t.integer "amount", null: false
-    t.string "currency"
-    t.integer "application_fee_amount"
-    t.integer "amount_refunded"
-    t.jsonb "metadata"
-    t.jsonb "data"
-    t.timestamp "created_at", precision: 6, null: false
-    t.timestamp "updated_at", precision: 6, null: false
-    t.index ["customer_id", "processor_id"], name: "index_pay_charges_on_customer_id_and_processor_id", unique: true
-    t.index ["subscription_id"], name: "index_pay_charges_on_subscription_id"
+  create_table "order_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "order_id", null: false
+    t.uuid "product_item_id", null: false
+    t.integer "quantity", null: false
+    t.integer "subtotal_cents", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["product_item_id"], name: "index_order_items_on_product_item_id"
   end
 
-  create_table "pay_customers", force: :cascade do |t|
-    t.string "owner_type"
-    t.bigint "owner_id"
-    t.string "processor", null: false
-    t.string "processor_id"
-    t.boolean "default"
-    t.jsonb "data"
-    t.timestamp "deleted_at"
-    t.timestamp "created_at", precision: 6, null: false
-    t.timestamp "updated_at", precision: 6, null: false
-    t.index ["owner_type", "owner_id", "deleted_at", "default"], name: "pay_customer_owner_index"
-    t.index ["processor", "processor_id"], name: "index_pay_customers_on_processor_and_processor_id", unique: true
-  end
-
-  create_table "pay_merchants", force: :cascade do |t|
-    t.string "owner_type"
-    t.bigint "owner_id"
-    t.string "processor", null: false
-    t.string "processor_id"
-    t.boolean "default"
-    t.jsonb "data"
-    t.timestamp "created_at", precision: 6, null: false
-    t.timestamp "updated_at", precision: 6, null: false
-    t.index ["owner_type", "owner_id", "processor"], name: "index_pay_merchants_on_owner_type_and_owner_id_and_processor"
-  end
-
-  create_table "pay_payment_methods", force: :cascade do |t|
-    t.bigint "customer_id", null: false
-    t.string "processor_id", null: false
-    t.boolean "default"
-    t.string "type"
-    t.jsonb "data"
-    t.timestamp "created_at", precision: 6, null: false
-    t.timestamp "updated_at", precision: 6, null: false
-    t.index ["customer_id", "processor_id"], name: "index_pay_payment_methods_on_customer_id_and_processor_id", unique: true
-  end
-
-  create_table "pay_subscriptions", force: :cascade do |t|
-    t.bigint "customer_id", null: false
-    t.string "name", null: false
-    t.string "processor_id", null: false
-    t.string "processor_plan", null: false
-    t.integer "quantity", default: 1, null: false
+  create_table "orders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "code", null: false
     t.string "status", null: false
-    t.timestamp "current_period_start"
-    t.timestamp "current_period_end"
-    t.timestamp "trial_ends_at"
-    t.timestamp "ends_at"
-    t.boolean "metered"
-    t.string "pause_behavior"
-    t.timestamp "pause_starts_at"
-    t.timestamp "pause_resumes_at"
-    t.decimal "application_fee_percent", precision: 8, scale: 2
-    t.jsonb "metadata"
-    t.jsonb "data"
-    t.timestamp "created_at", precision: 6, null: false
-    t.timestamp "updated_at", precision: 6, null: false
-    t.index ["customer_id", "processor_id"], name: "index_pay_subscriptions_on_customer_id_and_processor_id", unique: true
-    t.index ["metered"], name: "index_pay_subscriptions_on_metered"
-    t.index ["pause_starts_at"], name: "index_pay_subscriptions_on_pause_starts_at"
-  end
-
-  create_table "pay_webhooks", force: :cascade do |t|
-    t.string "processor"
-    t.string "event_type"
-    t.jsonb "event"
-    t.timestamp "created_at", precision: 6, null: false
-    t.timestamp "updated_at", precision: 6, null: false
-  end
-
-  create_table "prices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "customer_id", null: false
     t.uuid "product_id", null: false
-    t.integer "amount_cents", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "stripe_checkout_session_id"
+    t.string "stripe_checkout_session_url"
+    t.uuid "account_id", null: false
+    t.index ["account_id"], name: "index_orders_on_account_id"
+    t.index ["code"], name: "index_orders_on_code", unique: true
+    t.index ["customer_id"], name: "index_orders_on_customer_id"
+    t.index ["product_id"], name: "index_orders_on_product_id"
+    t.index ["status"], name: "index_orders_on_status"
+    t.index ["stripe_checkout_session_id"], name: "index_orders_on_stripe_checkout_session_id", unique: true
+    t.index ["stripe_checkout_session_url"], name: "index_orders_on_stripe_checkout_session_url", unique: true
+  end
+
+  create_table "product_item_questions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "prompt", null: false
+    t.uuid "product_item_id", null: false
+    t.string "type", null: false
+    t.string "choices", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_item_id"], name: "index_product_item_questions_on_product_item_id"
+  end
+
+  create_table "product_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "product_id", null: false
+    t.integer "price_cents", null: false
     t.string "name", null: false
-    t.string "scope", null: false
+    t.string "order_scope", null: false
     t.string "units"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_id", "name"], name: "index_prices_on_product_id_and_name", unique: true
-    t.index ["product_id"], name: "index_prices_on_product_id"
+    t.text "description"
+    t.string "stripe_product_id"
+    t.string "stripe_price_id"
+    t.datetime "discarded_at", precision: nil
+    t.index ["product_id"], name: "index_product_items_on_product_id"
+    t.index ["stripe_price_id"], name: "index_product_items_on_stripe_price_id", unique: true
+    t.index ["stripe_product_id"], name: "index_product_items_on_stripe_product_id", unique: true
   end
 
   create_table "products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -264,7 +240,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_12_022903) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name", null: false
-    t.uuid "primary_account_id", null: false
+    t.uuid "primary_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["primary_account_id"], name: "index_users_on_primary_account_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -273,11 +249,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_12_022903) do
   add_foreign_key "accounts", "users", column: "owner_id"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "customers", "accounts"
   add_foreign_key "obsidian_relations", "obsidian_notes", column: "from_id"
-  add_foreign_key "pay_charges", "pay_customers", column: "customer_id"
-  add_foreign_key "pay_charges", "pay_subscriptions", column: "subscription_id"
-  add_foreign_key "pay_payment_methods", "pay_customers", column: "customer_id"
-  add_foreign_key "pay_subscriptions", "pay_customers", column: "customer_id"
-  add_foreign_key "prices", "products"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "order_items", "product_items"
+  add_foreign_key "orders", "accounts"
+  add_foreign_key "orders", "customers"
+  add_foreign_key "orders", "products"
+  add_foreign_key "product_item_questions", "product_items"
+  add_foreign_key "product_items", "products"
   add_foreign_key "products", "accounts"
+  add_foreign_key "users", "accounts", column: "primary_account_id"
 end

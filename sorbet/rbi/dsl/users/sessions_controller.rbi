@@ -14,7 +14,6 @@ class Users::SessionsController
     include ::InertiaRails::Helper
     include ::ViteRails::TagHelpers
     include ::ActionController::Base::HelperMethods
-    include ::Pay::ApplicationHelper
     include ::DeviseHelper
     include ::ApplicationController::HelperMethods
 

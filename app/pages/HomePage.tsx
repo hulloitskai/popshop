@@ -60,7 +60,7 @@ const NewUserCard: FC = () => {
         <Group spacing="xs" position="center" w="100%">
           <Button
             component={Link}
-            href="/account/sign_up"
+            href="/user/register"
             leftIcon={<SignUpIcon />}
             w={buttonWidth}
           >
@@ -71,7 +71,7 @@ const NewUserCard: FC = () => {
           </Text>
           <Button
             component={Link}
-            href="/account/sign_in"
+            href="/user/login"
             variant="outline"
             leftIcon={<SignInIcon />}
             w={buttonWidth}

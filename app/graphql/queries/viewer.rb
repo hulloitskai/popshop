@@ -12,8 +12,6 @@ module Queries
 
     # == Resolver
     sig { returns(T.nilable(User)) }
-    def resolve
-      current_user
-    end
+    def resolve = current_user
   end
 end

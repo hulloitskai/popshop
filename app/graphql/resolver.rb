@@ -8,6 +8,9 @@ module Resolver
   abstract!
   requires_ancestor { Kernel }
 
+  # == Concerns
+  include Routing
+
   # == Methods
   sig { abstract.returns(GraphQL::Query::Context) }
   def context; end
@@ -15,11 +18,6 @@ module Resolver
   sig { returns(Popshop::Application) }
   def app
     T.cast(Rails.application, Popshop::Application)
-  end
-
-  T::Sig::WithoutRuntime.sig { returns(GeneratedUrlHelpersModule) }
-  def url_helpers
-    app.routes.url_helpers
   end
 
   # sig { returns(T.nilable(GraphQLController)) }

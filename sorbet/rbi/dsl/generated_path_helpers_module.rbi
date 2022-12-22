@@ -12,6 +12,9 @@ module GeneratedPathHelpersModule
   def api_status_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def cancel_order_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def cancel_user_registration_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -63,7 +66,7 @@ module GeneratedPathHelpersModule
   def new_user_session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pay_path(*args); end
+  def order_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def product_path(*args); end
@@ -145,6 +148,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def root_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def success_order_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_path(*args); end

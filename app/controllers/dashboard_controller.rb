@@ -7,7 +7,13 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
 
   def show
-    data = query!("DashboardPageQuery")
-    render(inertia: "DashboardPage", props: { data: data })
+    if params[:stripe_account_connected].truthy?
+      redirect_to(dashboard_path, notice: "Successfully connected with Stripe")
+    elsif params[:stripe_account_refresh].truthy?
+      redirect_to(dashboard_path, alert: "Failed to connect with Stripe")
+    else
+      data = query!("DashboardPageQuery")
+      render(inertia: "DashboardPage", props: { data: data })
+    end
   end
 end

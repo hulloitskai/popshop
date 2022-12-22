@@ -1,0 +1,5 @@
+mutation AccountOnboardToStripe($input: AccountOnboardToStripeInput!) {
+  payload: accountOnboardToStripe(input: $input) {
+    url
+  }
+}

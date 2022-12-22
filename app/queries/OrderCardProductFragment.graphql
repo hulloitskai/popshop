@@ -1,8 +1,0 @@
-fragment OrderCardProductFragment on Product {
-  prices {
-    id
-    name
-    amount
-    currencyCode
-  }
-}

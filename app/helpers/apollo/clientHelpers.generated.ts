@@ -1,18 +1,19 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
-export type AccountKeySpecifier = ('canDelete' | 'canEdit' | 'id' | 'name' | 'owner' | 'products' | AccountKeySpecifier)[];
+export type AccountKeySpecifier = ('canDelete' | 'canEdit' | 'id' | 'isStripeConnected' | 'name' | 'orders' | 'owner' | 'products' | AccountKeySpecifier)[];
 export type AccountFieldPolicy = {
 	canDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	isStripeConnected?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	orders?: FieldPolicy<any> | FieldReadFunction<any>,
 	owner?: FieldPolicy<any> | FieldReadFunction<any>,
 	products?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type AccountUpdatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'user' | AccountUpdatePayloadKeySpecifier)[];
-export type AccountUpdatePayloadFieldPolicy = {
+export type AccountOnboardToStripePayloadKeySpecifier = ('clientMutationId' | 'url' | AccountOnboardToStripePayloadKeySpecifier)[];
+export type AccountOnboardToStripePayloadFieldPolicy = {
 	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
-	errors?: FieldPolicy<any> | FieldReadFunction<any>,
-	user?: FieldPolicy<any> | FieldReadFunction<any>
+	url?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CurrencyKeySpecifier = ('code' | 'exponent' | 'name' | 'symbol' | CurrencyKeySpecifier)[];
 export type CurrencyFieldPolicy = {
@@ -21,43 +22,89 @@ export type CurrencyFieldPolicy = {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	symbol?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type CustomerKeySpecifier = ('account' | 'email' | 'firstName' | 'id' | 'lastName' | CustomerKeySpecifier)[];
+export type CustomerFieldPolicy = {
+	account?: FieldPolicy<any> | FieldReadFunction<any>,
+	email?: FieldPolicy<any> | FieldReadFunction<any>,
+	firstName?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	lastName?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type InputFieldErrorKeySpecifier = ('field' | 'message' | InputFieldErrorKeySpecifier)[];
 export type InputFieldErrorFieldPolicy = {
 	field?: FieldPolicy<any> | FieldReadFunction<any>,
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('accountUpdate' | 'productCreate' | 'productUpdate' | 'testMutation' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productUpdate' | 'testMutation' | 'userUpdate' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
-	accountUpdate?: FieldPolicy<any> | FieldReadFunction<any>,
+	accountOnboardToStripe?: FieldPolicy<any> | FieldReadFunction<any>,
+	orderCreate?: FieldPolicy<any> | FieldReadFunction<any>,
 	productCreate?: FieldPolicy<any> | FieldReadFunction<any>,
 	productUpdate?: FieldPolicy<any> | FieldReadFunction<any>,
-	testMutation?: FieldPolicy<any> | FieldReadFunction<any>
+	testMutation?: FieldPolicy<any> | FieldReadFunction<any>,
+	userUpdate?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PriceKeySpecifier = ('amount' | 'amountCents' | 'currencyCode' | 'id' | 'name' | 'scope' | 'units' | PriceKeySpecifier)[];
-export type PriceFieldPolicy = {
-	amount?: FieldPolicy<any> | FieldReadFunction<any>,
-	amountCents?: FieldPolicy<any> | FieldReadFunction<any>,
-	currencyCode?: FieldPolicy<any> | FieldReadFunction<any>,
+export type OrderKeySpecifier = ('account' | 'code' | 'createdAt' | 'customer' | 'id' | 'items' | 'product' | 'stripeCheckoutSessionUrl' | 'stripePaymentIntentUrl' | OrderKeySpecifier)[];
+export type OrderFieldPolicy = {
+	account?: FieldPolicy<any> | FieldReadFunction<any>,
+	code?: FieldPolicy<any> | FieldReadFunction<any>,
+	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
+	customer?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	name?: FieldPolicy<any> | FieldReadFunction<any>,
-	scope?: FieldPolicy<any> | FieldReadFunction<any>,
-	units?: FieldPolicy<any> | FieldReadFunction<any>
+	items?: FieldPolicy<any> | FieldReadFunction<any>,
+	product?: FieldPolicy<any> | FieldReadFunction<any>,
+	stripeCheckoutSessionUrl?: FieldPolicy<any> | FieldReadFunction<any>,
+	stripePaymentIntentUrl?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductKeySpecifier = ('account' | 'canDelete' | 'canEdit' | 'currencyCode' | 'description' | 'editUrl' | 'id' | 'name' | 'prices' | 'url' | ProductKeySpecifier)[];
+export type OrderConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | OrderConnectionKeySpecifier)[];
+export type OrderConnectionFieldPolicy = {
+	edges?: FieldPolicy<any> | FieldReadFunction<any>,
+	nodes?: FieldPolicy<any> | FieldReadFunction<any>,
+	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>,
+	totalCount?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type OrderCreatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'order' | OrderCreatePayloadKeySpecifier)[];
+export type OrderCreatePayloadFieldPolicy = {
+	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
+	errors?: FieldPolicy<any> | FieldReadFunction<any>,
+	order?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type OrderEdgeKeySpecifier = ('cursor' | 'node' | OrderEdgeKeySpecifier)[];
+export type OrderEdgeFieldPolicy = {
+	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
+	node?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type OrderItemKeySpecifier = ('currency' | 'id' | 'productItem' | 'quantity' | 'subtotal' | 'subtotalCents' | OrderItemKeySpecifier)[];
+export type OrderItemFieldPolicy = {
+	currency?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	productItem?: FieldPolicy<any> | FieldReadFunction<any>,
+	quantity?: FieldPolicy<any> | FieldReadFunction<any>,
+	subtotal?: FieldPolicy<any> | FieldReadFunction<any>,
+	subtotalCents?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type PageInfoKeySpecifier = ('endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | PageInfoKeySpecifier)[];
+export type PageInfoFieldPolicy = {
+	endCursor?: FieldPolicy<any> | FieldReadFunction<any>,
+	hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>,
+	hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>,
+	startCursor?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductKeySpecifier = ('account' | 'canDelete' | 'canEdit' | 'currency' | 'description' | 'editUrl' | 'id' | 'items' | 'name' | 'url' | ProductKeySpecifier)[];
 export type ProductFieldPolicy = {
 	account?: FieldPolicy<any> | FieldReadFunction<any>,
 	canDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
-	currencyCode?: FieldPolicy<any> | FieldReadFunction<any>,
+	currency?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
 	editUrl?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	items?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
-	prices?: FieldPolicy<any> | FieldReadFunction<any>,
 	url?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ProductCreatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'product' | ProductCreatePayloadKeySpecifier)[];
@@ -65,6 +112,17 @@ export type ProductCreatePayloadFieldPolicy = {
 	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductItemKeySpecifier = ('currency' | 'description' | 'id' | 'name' | 'orderScope' | 'price' | 'priceCents' | 'units' | ProductItemKeySpecifier)[];
+export type ProductItemFieldPolicy = {
+	currency?: FieldPolicy<any> | FieldReadFunction<any>,
+	description?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	orderScope?: FieldPolicy<any> | FieldReadFunction<any>,
+	price?: FieldPolicy<any> | FieldReadFunction<any>,
+	priceCents?: FieldPolicy<any> | FieldReadFunction<any>,
+	units?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ProductUpdatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'product' | ProductUpdatePayloadKeySpecifier)[];
 export type ProductUpdatePayloadFieldPolicy = {
@@ -109,18 +167,28 @@ export type UserFieldPolicy = {
 	primaryAccount?: FieldPolicy<any> | FieldReadFunction<any>,
 	unconfirmedEmail?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type UserUpdatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'user' | UserUpdatePayloadKeySpecifier)[];
+export type UserUpdatePayloadFieldPolicy = {
+	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
+	errors?: FieldPolicy<any> | FieldReadFunction<any>,
+	user?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type StrictTypedTypePolicies = {
 	Account?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier),
 		fields?: AccountFieldPolicy,
 	},
-	AccountUpdatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | AccountUpdatePayloadKeySpecifier | (() => undefined | AccountUpdatePayloadKeySpecifier),
-		fields?: AccountUpdatePayloadFieldPolicy,
+	AccountOnboardToStripePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | AccountOnboardToStripePayloadKeySpecifier | (() => undefined | AccountOnboardToStripePayloadKeySpecifier),
+		fields?: AccountOnboardToStripePayloadFieldPolicy,
 	},
 	Currency?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CurrencyKeySpecifier | (() => undefined | CurrencyKeySpecifier),
 		fields?: CurrencyFieldPolicy,
+	},
+	Customer?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CustomerKeySpecifier | (() => undefined | CustomerKeySpecifier),
+		fields?: CustomerFieldPolicy,
 	},
 	InputFieldError?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | InputFieldErrorKeySpecifier | (() => undefined | InputFieldErrorKeySpecifier),
@@ -134,9 +202,29 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | NodeKeySpecifier | (() => undefined | NodeKeySpecifier),
 		fields?: NodeFieldPolicy,
 	},
-	Price?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | PriceKeySpecifier | (() => undefined | PriceKeySpecifier),
-		fields?: PriceFieldPolicy,
+	Order?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | OrderKeySpecifier | (() => undefined | OrderKeySpecifier),
+		fields?: OrderFieldPolicy,
+	},
+	OrderConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | OrderConnectionKeySpecifier | (() => undefined | OrderConnectionKeySpecifier),
+		fields?: OrderConnectionFieldPolicy,
+	},
+	OrderCreatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | OrderCreatePayloadKeySpecifier | (() => undefined | OrderCreatePayloadKeySpecifier),
+		fields?: OrderCreatePayloadFieldPolicy,
+	},
+	OrderEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | OrderEdgeKeySpecifier | (() => undefined | OrderEdgeKeySpecifier),
+		fields?: OrderEdgeFieldPolicy,
+	},
+	OrderItem?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | OrderItemKeySpecifier | (() => undefined | OrderItemKeySpecifier),
+		fields?: OrderItemFieldPolicy,
+	},
+	PageInfo?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier),
+		fields?: PageInfoFieldPolicy,
 	},
 	Product?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductKeySpecifier | (() => undefined | ProductKeySpecifier),
@@ -145,6 +233,10 @@ export type StrictTypedTypePolicies = {
 	ProductCreatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductCreatePayloadKeySpecifier | (() => undefined | ProductCreatePayloadKeySpecifier),
 		fields?: ProductCreatePayloadFieldPolicy,
+	},
+	ProductItem?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ProductItemKeySpecifier | (() => undefined | ProductItemKeySpecifier),
+		fields?: ProductItemFieldPolicy,
 	},
 	ProductUpdatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductUpdatePayloadKeySpecifier | (() => undefined | ProductUpdatePayloadKeySpecifier),
@@ -173,6 +265,10 @@ export type StrictTypedTypePolicies = {
 	User?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
 		fields?: UserFieldPolicy,
+	},
+	UserUpdatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | UserUpdatePayloadKeySpecifier | (() => undefined | UserUpdatePayloadKeySpecifier),
+		fields?: UserUpdatePayloadFieldPolicy,
 	}
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

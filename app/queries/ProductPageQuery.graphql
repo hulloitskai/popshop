@@ -7,16 +7,18 @@ query ProductPageQuery($productId: ID!) {
     id
     name
     description
-    currencyCode
-    prices {
+    currency {
+      code
+    }
+    items {
       id
       name
-      scope
-      amount
       units {
         singular
         plural
       }
+      orderScope
+      price
     }
     ...ProductPageProductFragment
   }

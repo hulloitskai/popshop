@@ -1,7 +1,0 @@
-query AccountEditPageQuery {
-  viewer {
-    id
-    ...AppViewerFragment
-    ...AccountEditPageViewerFragment
-  }
-}

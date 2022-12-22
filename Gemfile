@@ -10,7 +10,10 @@ gem "rails", "~> 7.0.3", ">= 7.0.3.1"
 gem "pg", "~> 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.0"
+#
+# TODO: Upgrade to Puma 6 when https://github.com/puma/puma/issues/2999 is
+# resolved.
+gem "puma", "~> 5.6"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails", "~> 3.4"
@@ -104,6 +107,7 @@ gem "action_policy-graphql", "~> 0.5.3"
 
 # Expose a GraphQL API
 gem "graphql", "~> 2.0"
+gem "graphql-connections", "~> 1.3"
 gem "graphql-persisted_queries", "~> 1.6"
 gem "graphql-rails_logger"
 gem "graphiql-rails"
@@ -137,7 +141,6 @@ gem "money-rails", "~> 1.15"
 gem "eu_central_bank", "~> 1.7"
 
 # Perform transactions and collect payments with Pay
-gem "pay", "~> 6.1"
 gem "stripe", "~> 8.0"
 
 group :development, :test do

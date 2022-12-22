@@ -15,23 +15,19 @@ module Slugged
 
     # == Dependencies
     requires_columns :slug
-
-    # == Validations
-    validates :slug, presence: true, length: { maximum: slug_length }
+    validates :slug, presence: true
   end
 
   class_methods do
     extend T::Sig
 
     sig { returns(Integer) }
-    def slug_length
-      @slug_length || 16
-    end
+    def generated_slug_length = @generated_slug_length || 16
 
     sig { params(size: Integer).returns(Integer) }
-    def slug_length=(size)
-      @slug_length = T.let(@slug_length, T.nilable(Integer))
-      @slug_length = size
+    def generated_slug_length=(size)
+      @generated_slug_length = T.let(@generated_slug_length, T.nilable(Integer))
+      @generated_slug_length = size
     end
 
     sig { returns(String) }
@@ -39,22 +35,8 @@ module Slugged
       Nanoid.generate(
         alphabet:
           "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        size: slug_length,
+        size: generated_slug_length,
       )
     end
-  end
-
-  # == Attributes
-  sig { returns(String) }
-  def slug!
-    self.slug ||= generate_slug
-  end
-
-  private
-
-  # == Helpers
-  sig { returns(String) }
-  def generate_slug
-    T.cast(self.class, ClassMethods).generate_slug
   end
 end

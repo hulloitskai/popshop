@@ -19,7 +19,7 @@ class ErrorsController < ApplicationController
       title: "Internal Error",
       description:
         "Sorry about this, but something went wrong while processing this " \
-        "request! Kai's been notified about it, and he'll check it out soon.",
+        "request!",
     )
   end
 

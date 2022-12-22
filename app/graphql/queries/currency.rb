@@ -13,9 +13,7 @@ module Queries
     argument :code, String
 
     # == Resolver
-    sig { params(code: String).returns(Money::Currency) }
-    def resolve(code:)
-      Money::Currency.find(code)
-    end
+    sig { params(code: String).returns(T.nilable(Money::Currency)) }
+    def resolve(code:) = ::Currencies.find(code)
   end
 end
