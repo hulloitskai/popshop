@@ -7,6 +7,9 @@ import type {
   MantineNumberSize,
 } from "@mantine/core";
 
+import AppMeta from "./AppMeta";
+import type { AppMetaProps } from "./AppMeta";
+
 import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
 import AppFlash from "./AppFlash";
@@ -14,16 +17,20 @@ import AppFlash from "./AppFlash";
 import type { Maybe } from "~/queries";
 import type { AppViewerFragment } from "~/queries";
 
-export type AppLayoutProps = AppShellProps & {
-  readonly viewer: Maybe<AppViewerFragment>;
-  readonly containerSize?: MantineNumberSize;
-  readonly containerProps?: ContainerProps;
-  readonly withContainer?: boolean;
-  readonly withGutter?: boolean;
-};
+export type AppLayoutProps = AppShellProps &
+  AppMetaProps & {
+    readonly viewer: Maybe<AppViewerFragment>;
+    readonly containerSize?: MantineNumberSize;
+    readonly containerProps?: ContainerProps;
+    readonly withContainer?: boolean;
+    readonly withGutter?: boolean;
+  };
 
 const AppLayout: FC<AppLayoutProps> = ({
   viewer,
+  title,
+  description,
+  imageUrl,
   containerSize,
   containerProps,
   withContainer,
@@ -69,6 +76,7 @@ const AppLayout: FC<AppLayoutProps> = ({
   }, [withContainer, children]);
   return (
     <>
+      <AppMeta {...{ title, description, imageUrl }} />
       <AppShell
         header={<AppHeader {...{ viewer }} />}
         styles={{

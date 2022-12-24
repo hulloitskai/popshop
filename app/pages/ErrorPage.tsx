@@ -4,10 +4,10 @@ import { Text } from "@mantine/core";
 import type { ErrorPageQuery } from "~/queries";
 
 export type ErrorPageProps = {
-  readonly data: ErrorPageQuery;
   readonly title: string;
   readonly description: string;
-  readonly code: string;
+  readonly code: number;
+  readonly data: ErrorPageQuery;
 };
 
 const ErrorPage: PageComponent<ErrorPageProps> = ({
@@ -31,8 +31,12 @@ const ErrorPage: PageComponent<ErrorPageProps> = ({
   </Stack>
 );
 
-ErrorPage.layout = layoutWithData<ErrorPageProps>((page, { viewer }) => (
-  <AppLayout {...{ viewer }}>{page}</AppLayout>
-));
+ErrorPage.layout = buildLayout<ErrorPageProps>(
+  (page, { title, description, data: { viewer } }) => (
+    <AppLayout {...{ title, description }} {...{ viewer }}>
+      {page}
+    </AppLayout>
+  ),
+);
 
 export default ErrorPage;

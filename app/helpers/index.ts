@@ -7,7 +7,7 @@ export { useDateTime } from "./luxon";
 export { useMounted } from "./react";
 export { showAlert, showNotice } from "./notifications";
 export {
-  layoutWithData,
+  buildLayout,
   usePageErrors,
   usePageProps,
   usePageData,

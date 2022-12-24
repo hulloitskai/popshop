@@ -57,9 +57,15 @@ const DashboardPage: PageComponent<DashboardPageProps> = ({
   );
 };
 
-DashboardPage.layout = layoutWithData<DashboardPageProps>(
-  (page, { viewer }) => (
-    <AppLayout withContainer withGutter containerSize="xs" {...{ viewer }}>
+DashboardPage.layout = buildLayout<DashboardPageProps>(
+  (page, { data: { viewer } }) => (
+    <AppLayout
+      title="Dashboard"
+      withContainer
+      withGutter
+      containerSize="xs"
+      {...{ viewer }}
+    >
       {page}
     </AppLayout>
   ),

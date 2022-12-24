@@ -935,7 +935,7 @@ class ActionView::Base
   include ::ActionView::Helpers::NumberHelper
   include ::ActionView::Helpers::RenderingHelper
   include ::ActionView::Helpers
-  include ::MetaTags::ViewHelper
+  include ::MoneyRails::ActionViewExtension
   include ::ActionCable::Helpers::ActionCableHelper
   include ::ViteRails::TagHelpers
   include ::Devise::Controllers::UrlHelpers
@@ -9975,7 +9975,6 @@ class ActionView::Helpers::TagHelper::TagBuilder
   # source://actionview//lib/action_view/helpers/tag_helper.rb#60
   def attributes(attributes); end
 
-  # source://actionview//lib/action_view/helpers/tag_helper.rb#133
   def boolean_tag_option(key); end
 
   # source://actionview//lib/action_view/helpers/tag_helper.rb#80

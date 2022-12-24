@@ -52,19 +52,6 @@
       <% end %>
     <% end %>
 
-    <%# == Meta: SEO %>
-    <%= display_meta_tags(
-      reverse: true,
-      site: "Popshop",
-      # description: "Welcome to my little corner of the internet :)",
-      og: {
-        title: :title,
-        site_name: :site,
-        description: :description,
-        image: "/banner.png",
-      },
-    ) %>
-
     <%# == Scripts %>
     <%= vite_client_tag %>
     <%= vite_typescript_tag "honeybadger", async: true %>

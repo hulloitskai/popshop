@@ -36,7 +36,7 @@ const HomePage: PageComponent<HomePageProps> = ({ data: { viewer } }) => {
   );
 };
 
-HomePage.layout = layoutWithData<HomePageProps>((page, { viewer }) => (
+HomePage.layout = buildLayout<HomePageProps>((page, { data: { viewer } }) => (
   <AppLayout withContainer {...{ viewer }}>
     {page}
   </AppLayout>

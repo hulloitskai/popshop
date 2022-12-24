@@ -53,13 +53,9 @@ class ProductItem < ApplicationRecord
     end
   end
 
-  sig { returns(T.nilable(String)) }
-  def units_singular
-    if order_scope == :per_person
-      "person"
-    else
-      units&.singularize
-    end
+  sig { override.params(value: T.nilable(String)).returns(T.nilable(String)) }
+  def units=(value)
+    super(value&.pluralize)
   end
 
   # == Attributes: Stripe
@@ -71,6 +67,12 @@ class ProductItem < ApplicationRecord
   sig { returns(String) }
   def stripe_price_id!
     stripe_price_id or stripe_product![:default_price]
+  end
+
+  # == Attributes
+  sig { params(value: T.nilable(String)).returns(T.nilable(String)) }
+  def description=(value)
+    super(value.presence)
   end
 
   # == Associations
@@ -240,6 +242,16 @@ class ProductItem < ApplicationRecord
   sig { returns(T.nilable(Money::Currency)) }
   def currency = product&.currency
 
+  # == Methods: Units
+  sig { returns(T.nilable(String)) }
+  def units_singular
+    if order_scope == :per_person
+      "person"
+    else
+      units&.singularize
+    end
+  end
+
   private
 
   # == Validations
@@ -254,16 +266,13 @@ class ProductItem < ApplicationRecord
   # == Callbacks
   sig { void }
   def normalize_units
-    self.units = if order_scope == :per_unit
-      self[:units]&.pluralize
-    end
+    self.units = nil unless order_scope == :per_unit
   end
 
-  # == Callbacks ==
   sig { void }
   def normalize_question_ids
     ids = questions.map(&:id!)
-    current_ids = T.let(self[:question_ids], T::Array[String])
+    current_ids = T.let(self[:question_ids] || [], T::Array[String])
     next_ids = current_ids + (ids - current_ids) - (current_ids - ids)
     self[:question_ids] = next_ids if next_ids != current_ids
   end

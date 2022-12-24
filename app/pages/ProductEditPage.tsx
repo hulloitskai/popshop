@@ -60,8 +60,8 @@ const ProductEditPage: PageComponent<ProductEditPageProps> = ({
   );
 };
 
-ProductEditPage.layout = layoutWithData<ProductEditPageProps>(
-  (page, { viewer }) => (
+ProductEditPage.layout = buildLayout<ProductEditPageProps>(
+  (page, { data: { viewer } }) => (
     <AppLayout withContainer withGutter containerSize="xs" {...{ viewer }}>
       {page}
     </AppLayout>

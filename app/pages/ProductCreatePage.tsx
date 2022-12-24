@@ -52,8 +52,8 @@ const ProductCreatePage: PageComponent<ProductCreatePageProps> = () => {
   );
 };
 
-ProductCreatePage.layout = layoutWithData<ProductCreatePageProps>(
-  (page, { viewer }) => (
+ProductCreatePage.layout = buildLayout<ProductCreatePageProps>(
+  (page, { data: { viewer } }) => (
     <AppLayout withContainer withGutter containerSize="xs" {...{ viewer }}>
       {page}
     </AppLayout>

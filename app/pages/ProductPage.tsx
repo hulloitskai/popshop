@@ -62,10 +62,18 @@ const ProductPage: PageComponent<ProductPageProps> = ({
   );
 };
 
-ProductPage.layout = layoutWithData<ProductPageProps>((page, { viewer }) => (
-  <AppLayout withContainer withGutter {...{ viewer }}>
-    {page}
-  </AppLayout>
-));
+ProductPage.layout = buildLayout<ProductPageProps>(
+  (page, { data: { viewer, product } }) => (
+    <AppLayout
+      title={product.name}
+      description={product.description}
+      withContainer
+      withGutter
+      {...{ viewer }}
+    >
+      {page}
+    </AppLayout>
+  ),
+);
 
 export default ProductPage;

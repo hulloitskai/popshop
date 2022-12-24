@@ -34,9 +34,9 @@ const UserRegisterPage: PageComponent = () => {
   );
 };
 
-UserRegisterPage.layout = layoutWithData<UserRegisterPageProps>(
-  (page, { viewer }) => (
-    <AppLayout {...{ viewer }}>
+UserRegisterPage.layout = buildLayout<UserRegisterPageProps>(
+  (page, { data: { viewer } }) => (
+    <AppLayout title="Sign Up" {...{ viewer }}>
       <Center h="100%">{page}</Center>
     </AppLayout>
   ),

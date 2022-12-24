@@ -55,8 +55,8 @@ const UserSettingsPage: PageComponent<UserSettingsPageProps> = ({
   </Stack>
 );
 
-UserSettingsPage.layout = layoutWithData<UserSettingsPageProps>(
-  (page, { viewer }) => (
+UserSettingsPage.layout = buildLayout<UserSettingsPageProps>(
+  (page, { data: { viewer } }) => (
     <AppLayout {...{ viewer }}>
       <Center h="100%">{page}</Center>
     </AppLayout>
