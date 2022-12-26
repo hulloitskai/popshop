@@ -9,6 +9,7 @@ module Types
     field :account_onboard_to_stripe,
           mutation: Mutations::AccountOnboardToStripe
 
+    field :user_change_email, mutation: Mutations::UserChangeEmail
     field :user_update, mutation: Mutations::UserUpdate
 
     field :product_create, mutation: Mutations::ProductCreate

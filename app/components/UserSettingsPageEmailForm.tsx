@@ -1,12 +1,12 @@
 import type { FC } from "react";
-import { Text } from "@mantine/core";
+import { PasswordInput, Text } from "@mantine/core";
 
-import type { UserSettingsPageProps } from "~/pages/UserSettingsPage";
-
+import { UserChangeEmailMutationDocument } from "~/queries";
 import type { UserSettingsPageViewerFragment } from "~/queries";
 
 export type UserSettingsPageEmailFormValues = {
   readonly email: string;
+  readonly currentPassword: string;
 };
 
 export type UserSettingsPageEmailFormProps = {
@@ -18,29 +18,34 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
 }) => {
   const { email, unconfirmedEmail } = viewer;
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+
+  // == Form
   const initialValues = useMemo<UserSettingsPageEmailFormValues>(
-    () => ({ email: unconfirmedEmail || email }),
+    () => ({
+      email: unconfirmedEmail || email,
+      currentPassword: "",
+    }),
     [viewer],
   );
-  const { getInputProps, onSubmit, setValues, setErrors } =
-    useForm<UserSettingsPageEmailFormValues>({ initialValues });
-  return (
-    <form
-      onSubmit={onSubmit(({ email }) => {
-        const data = { user: { email } };
-        router.put("/user", data, {
-          errorBag: UserSettingsPageEmailForm.name,
-          preserveScroll: true,
-          onBefore: () => setLoading(true),
-          onSuccess: async page => {
-            const previouslyUnconfirmedEmail = unconfirmedEmail;
-            resolve(() => {
-              const {
-                data: {
-                  viewer: { email, unconfirmedEmail },
-                },
-              } = page.props as unknown as UserSettingsPageProps;
+  const { getInputProps, onSubmit, setValues, setErrors, isDirty, resetDirty } =
+    useForm<UserSettingsPageEmailFormValues>({
+      initialValues: initialValues,
+    });
+  useDidUpdate(() => {
+    setValues(initialValues);
+    resetDirty(initialValues);
+  }, [initialValues]);
+
+  // == Mutation
+  const onError = useApolloErrorCallback("Failed to change email");
+  const [runMutation, { loading }] = useMutation(
+    UserChangeEmailMutationDocument,
+    {
+      onCompleted: ({ payload: { user, errors } }) => {
+        if (user) {
+          const { unconfirmedEmail } = user;
+          router.reload({
+            onSuccess: () => {
               if (unconfirmedEmail) {
                 showNotice({
                   title: "Confirm New Email",
@@ -48,19 +53,34 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
                     "Please check your email and follow the confirmation " +
                     "link to confirm your new email address.",
                 });
-              } else if (previouslyUnconfirmedEmail) {
+              } else {
                 showNotice({
-                  message: "Email change request has been cancelled",
+                  message: "Email change request has been cancelled.",
                 });
               }
-              setValues({ email: unconfirmedEmail || email });
-            });
+            },
+          });
+        } else {
+          invariant(errors);
+          setErrors(formErrors(errors));
+          showAlert({ message: "Failed to change email" });
+        }
+      },
+      onError,
+    },
+  );
+
+  // == Markup
+  return (
+    <form
+      onSubmit={onSubmit(({ email, currentPassword }) => {
+        runMutation({
+          variables: {
+            input: {
+              email,
+              currentPassword,
+            },
           },
-          onError: errors => {
-            setErrors(errors);
-            showAlert({ message: "Failed to change email" });
-          },
-          onFinish: () => setLoading(false),
         });
       })}
     >
@@ -93,7 +113,23 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             </Text>
           )}
         </Box>
-        <Button type="submit" {...{ loading }}>
+        <Transition transition="fade" mounted={isDirty("email")}>
+          {style => (
+            <PasswordInput
+              label="Current Password"
+              description="Please confirm your current password to make changes."
+              placeholder="potato-123"
+              required
+              {...{ style }}
+              {...getInputProps("currentPassword")}
+            />
+          )}
+        </Transition>
+        <Button
+          type="submit"
+          disabled={!(isDirty("email") && isDirty("currentPassword"))}
+          {...{ loading }}
+        >
           Change Email
         </Button>
       </Stack>

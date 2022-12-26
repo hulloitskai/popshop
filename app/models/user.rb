@@ -41,6 +41,13 @@ class User < ApplicationRecord
   include Identifiable
   include ::Named
 
+  # == Attributes
+  sig { override.params(value: String).returns(String) }
+  def email=(value)
+    self.unconfirmed_email = nil if value == email && unconfirmed_email?
+    super(value)
+  end
+
   # == Associations
   has_many :accounts,
            inverse_of: :owner,
@@ -72,6 +79,9 @@ class User < ApplicationRecord
             uniqueness: {
               case_sensitive: false,
             }
+  validates :password,
+            password_strength: { use_dictionary: true },
+            allow_nil: true
   validates :accounts, presence: true
 
   # == Callbacks: Accounts
@@ -170,9 +180,21 @@ class User
     invitation_token
   ]
 
+  # == Methods
+  sig do
+    params(
+      params: T::Hash[Symbol, T.untyped],
+      options: T.untyped,
+    ).returns(T::Boolean)
+  end
+  def update_without_password(params, *options)
+    params.delete(:email)
+    super(params)
+  end
+
   protected
 
-  # == Confirmation
+  # == Callbacks
   sig { override.void }
   def after_confirmation
     update_account_emails

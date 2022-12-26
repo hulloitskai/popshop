@@ -89,23 +89,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
 
-  sig do
-    override
-      .params(resource: User, params: T::Hash[T.untyped, T.untyped])
-      .returns(T::Boolean)
-  end
-  def update_resource(resource, params)
-    if params[:password].present?
-      resource.update_with_password(params)
-    else
-      attributes = params.excluding("password_confirmation", "current_password")
-      if params["email"] == resource["email"]
-        attributes["unconfirmed_email"] = ""
-      end
-      resource.update_without_password(attributes)
-    end
-  end
-
   sig { override.params(resource: T.untyped).returns(String) }
   def after_sign_up_path_for(resource)
     dashboard_path
@@ -133,7 +116,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         .transform_keys! { |key| key.to_s.camelize(:lower) }
         .transform_values! do |errors|
           error = T.must(errors.first)
-          error.full_message + "."
+          error.message.upcase_first
         end
     error_bag.present? ? { error_bag => errors } : errors
   end

@@ -15,21 +15,25 @@ const UserSettingsPageProfileForm: FC<UserSettingsPageProfileFormProps> = ({
   viewer,
 }) => {
   const router = useRouter();
+
+  // == Form
   const initialValues = useMemo<UserSettingsPageProfileFormValues>(
     () => pick(viewer, "name"),
     [viewer],
   );
-  const { getInputProps, onSubmit, setErrors } =
+  const { getInputProps, onSubmit, setErrors, isDirty } =
     useForm<UserSettingsPageProfileFormValues>({
       initialValues,
     });
-  const onError = useApolloErrorCallback("Failed to update account");
+
+  // == Mutation
+  const onError = useApolloErrorCallback("Failed to update profile");
   const [runMutation, { loading }] = useMutation(UserUpdateMutationDocument, {
     onCompleted: ({ payload: { user, errors } }) => {
       if (user) {
         router.reload({
           onSuccess: () => {
-            showNotice({ message: "Profile updated" });
+            showNotice({ message: "Profile updated successfully" });
           },
         });
       } else {
@@ -40,24 +44,22 @@ const UserSettingsPageProfileForm: FC<UserSettingsPageProfileFormProps> = ({
     },
     onError,
   });
+
+  // == Markup
   return (
     <form
       onSubmit={onSubmit(values => {
-        runMutation({
-          variables: {
-            input: { ...values },
-          },
-        });
+        runMutation({ variables: { input: { ...values } } });
       })}
     >
       <Stack spacing="xs">
         <TextInput
           label="Name"
-          placeholder="A Friend"
+          placeholder="Jon Snow"
           required
           {...getInputProps("name")}
         />
-        <Button type="submit" {...{ loading }}>
+        <Button type="submit" disabled={!isDirty()} {...{ loading }}>
           Save
         </Button>
       </Stack>
