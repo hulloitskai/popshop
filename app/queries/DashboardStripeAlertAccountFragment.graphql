@@ -1,3 +1,4 @@
 fragment DashboardStripeAlertAccountFragment on Account {
   isStripeConnected
+  stripeDashboardUrl
 }

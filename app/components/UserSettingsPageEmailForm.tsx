@@ -18,6 +18,7 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
 }) => {
   const { email, unconfirmedEmail } = viewer;
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const initialValues = useMemo<UserSettingsPageEmailFormValues>(
     () => ({ email: unconfirmedEmail || email }),
     [viewer],
@@ -31,6 +32,7 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
         router.put("/user", data, {
           errorBag: UserSettingsPageEmailForm.name,
           preserveScroll: true,
+          onBefore: () => setLoading(true),
           onSuccess: async page => {
             const previouslyUnconfirmedEmail = unconfirmedEmail;
             resolve(() => {
@@ -58,6 +60,7 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             setErrors(errors);
             showAlert({ message: "Failed to change email" });
           },
+          onFinish: () => setLoading(false),
         });
       })}
     >
@@ -90,7 +93,9 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             </Text>
           )}
         </Box>
-        <Button type="submit">Change Email</Button>
+        <Button type="submit" {...{ loading }}>
+          Change Email
+        </Button>
       </Stack>
     </form>
   );

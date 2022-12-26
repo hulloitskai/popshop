@@ -13,6 +13,7 @@ const UserSettingsPagePasswordForm: FC<
   UserSettingsPagePasswordFormProps
 > = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const initialValues: UserSettingsPagePasswordFormValues = useMemo(
     () => ({
       password: "",
@@ -37,6 +38,7 @@ const UserSettingsPagePasswordForm: FC<
           router.put("/account", data, {
             errorBag: UserSettingsPagePasswordForm.name,
             preserveScroll: true,
+            onBefore: () => setLoading(true),
             onSuccess: () => {
               reset();
               showNotice({ message: "Password changed successfully" });
@@ -46,6 +48,7 @@ const UserSettingsPagePasswordForm: FC<
               setErrors(errors);
               showAlert({ message: "Failed to change password" });
             },
+            onFinish: () => setLoading(false),
           });
         },
       )}
@@ -69,7 +72,9 @@ const UserSettingsPagePasswordForm: FC<
           required
           {...getInputProps("currentPassword")}
         />
-        <Button type="submit">Change Password</Button>
+        <Button type="submit" {...{ loading }}>
+          Change Password
+        </Button>
       </Stack>
     </form>
   );

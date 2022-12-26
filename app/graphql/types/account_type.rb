@@ -15,6 +15,7 @@ module Types
     field :orders, OrderType.connection_type, null: false
     field :owner, UserType, null: false
     field :products, [ProductType], null: false, authorized_scope: true
+    field :stripe_dashboard_url, String
 
     # == Resolvers
     sig { returns(GraphQL::Connections::Base) }

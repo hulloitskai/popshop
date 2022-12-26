@@ -1,5 +1,5 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
-export type AccountKeySpecifier = ('canDelete' | 'canEdit' | 'id' | 'isStripeConnected' | 'name' | 'orders' | 'owner' | 'products' | AccountKeySpecifier)[];
+export type AccountKeySpecifier = ('canDelete' | 'canEdit' | 'id' | 'isStripeConnected' | 'name' | 'orders' | 'owner' | 'products' | 'stripeDashboardUrl' | AccountKeySpecifier)[];
 export type AccountFieldPolicy = {
 	canDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -8,7 +8,8 @@ export type AccountFieldPolicy = {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	orders?: FieldPolicy<any> | FieldReadFunction<any>,
 	owner?: FieldPolicy<any> | FieldReadFunction<any>,
-	products?: FieldPolicy<any> | FieldReadFunction<any>
+	products?: FieldPolicy<any> | FieldReadFunction<any>,
+	stripeDashboardUrl?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type AccountOnboardToStripePayloadKeySpecifier = ('clientMutationId' | 'url' | AccountOnboardToStripePayloadKeySpecifier)[];
 export type AccountOnboardToStripePayloadFieldPolicy = {

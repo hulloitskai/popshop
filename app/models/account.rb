@@ -46,16 +46,15 @@ class Account < ApplicationRecord
     owner or raise ActiveRecord::RecordNotFound
   end
 
-  # == Callbacks
-  after_create :create_stripe_account
-  after_destroy :delete_stripe_account
+  # == Callbacks: Stripe
+  after_create_commit :create_stripe_account
+  after_update_commit :update_stripe_account, if: -> {
+    T.bind(self, Account)
+    name_previously_changed? || stripe_account_email_previously_changed?
+  }
+  after_destroy_commit :delete_stripe_account if Rails.env.development?
 
   # == Methods: Stripe
-  sig { returns(T::Boolean) }
-  def stripe_connected?
-    stripe_account![:requirements][:currently_due].empty?
-  end
-
   sig { returns(T.nilable(Stripe::Account)) }
   def stripe_account
     stripe_account_id.try! do |account_id|
@@ -66,6 +65,18 @@ class Account < ApplicationRecord
   sig { returns(Stripe::Account) }
   def stripe_account!
     stripe_account or create_stripe_account
+  end
+
+  sig { returns(T::Boolean) }
+  def stripe_connected?
+    stripe_account![:requirements][:currently_due].empty?
+  end
+
+  sig { returns(T.nilable(String)) }
+  def stripe_dashboard_url
+    stripe_account_id.try! do |account_id|
+      "https://dashboard.stripe.com/#{account_id}"
+    end
   end
 
   sig { returns(Stripe::AccountLink) }
@@ -82,15 +93,31 @@ class Account < ApplicationRecord
   def create_stripe_account
     Stripe::Account.create(
       type: "standard",
-      email: owner!.email,
+      email: stripe_account_email,
+      business_profile: {
+        name:,
+      },
       metadata: {
         account_id: id!,
       },
     ).tap do |account|
-      update_columns( # rubocop:disable Rails/SkipsModelValidations
-        stripe_account_id: account.id,
-        stripe_account_email: account.email,
+      update_column("stripe_account_id", account.id) # rubocop:disable Rails/SkipsModelValidations
+    end
+  end
+
+  sig { returns(Stripe::Account) }
+  def update_stripe_account
+    account_id = stripe_account_id
+    if account_id.present?
+      Stripe::Account.update(
+        account_id,
+        email: stripe_account_email,
+        business_profile: {
+          name:,
+        },
       )
+    else
+      create_stripe_account
     end
   end
 

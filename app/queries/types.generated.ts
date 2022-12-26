@@ -27,6 +27,7 @@ export type Account = Node & {
   orders: OrderConnection;
   owner: User;
   products: Array<Product>;
+  stripeDashboardUrl?: Maybe<Scalars['String']>;
 };
 
 

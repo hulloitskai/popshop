@@ -53,10 +53,12 @@ class User < ApplicationRecord
 
   sig { returns(Account) }
   def primary_account!
-    self.primary_account ||= accounts.first!.tap do |account|
-      account = T.let(account, Account)
-      update_column("primary_account_id", account.id) # rubocop:disable Rails/SkipsModelValidations
-    end
+    self.primary_account ||= accounts
+      .order(created_at: :desc)
+      .first!.tap do |account|
+        account = T.let(account, Account)
+        update_column("primary_account_id", account.id) # rubocop:disable Rails/SkipsModelValidations
+      end
   end
 
   # == Validations
@@ -72,16 +74,13 @@ class User < ApplicationRecord
             }
   validates :accounts, presence: true
 
-  # == Callbacks
-  before_save :set_primary_account, unless: :primary_account?
+  # == Callbacks: Accounts
+  after_update_commit :update_account_emails, if: :email_changed?
 
-  # == Initialization
-  after_initialize do
-    T.bind(self, User)
-    if accounts.empty?
-      accounts.build(name: name)
-    end
-  end
+  # == Callbacks: Primary Account
+  before_save :set_primary_account, unless: :primary_account?
+  before_create :build_primary_account, prepend: true
+  before_destroy :remove_primary_account, prepend: true
 
   # == Methods: Admin
   sig { returns(String) }
@@ -118,16 +117,35 @@ class User < ApplicationRecord
     { "uid" => id, "email" => email, "displayName" => name }
   end
 
-  # == Methods
+  # == Methods: Accounts
+  sig { void }
+  def update_account_emails
+    Account.where(owner: self).find_each do |account|
+      account = T.let(account, Account)
+      account.update!(stripe_account_email: email)
+    end
+  end
+
+  # == Methods: Primary Account
   sig { returns(T::Boolean) }
   def primary_account? = primary_account_id?
 
   private
 
-  # == Helpers
+  # == Helpers: Primary Account
+  sig { void }
+  def build_primary_account
+    accounts.build(name:, stripe_account_email: email)
+  end
+
   sig { void }
   def set_primary_account
     self.primary_account = accounts.first!
+  end
+
+  sig { void }
+  def remove_primary_account
+    update_column("primary_account_id", nil) # rubocop:disable Rails/SkipsModelValidations
   end
 end
 
@@ -151,6 +169,14 @@ class User
     confirmation_token
     invitation_token
   ]
+
+  protected
+
+  # == Confirmation
+  sig { override.void }
+  def after_confirmation
+    update_account_emails
+  end
 
   # rubocop:disable Layout/LineLength
   # == OmniAuth

@@ -3,6 +3,7 @@ import type { BoxProps } from "@mantine/core";
 
 import AlertIcon from "~icons/heroicons/exclamation-triangle-20-solid";
 import LinkIcon from "~icons/heroicons/link-20-solid";
+import ExternalLinkIcon from "~icons/heroicons/arrow-top-right-on-square-20-solid";
 
 import {
   AccountOnboardToStripeDocument,
@@ -14,7 +15,7 @@ export type DashboardStripeAlertProps = BoxProps & {
 };
 
 const DashboardStripeAlert: FC<DashboardStripeAlertProps> = ({
-  account: { isStripeConnected },
+  account: { isStripeConnected, stripeDashboardUrl },
   ...otherProps
 }) => {
   const onError = useApolloErrorCallback(
@@ -29,27 +30,49 @@ const DashboardStripeAlert: FC<DashboardStripeAlertProps> = ({
       onError,
     },
   );
-  if (isStripeConnected) {
-    return null;
-  }
   return (
-    <Alert variant="outline" color="red" icon={<AlertIcon />} {...otherProps}>
+    <Alert
+      variant="outline"
+      color={isStripeConnected ? "indigo" : "red"}
+      icon={isStripeConnected ? undefined : <AlertIcon />}
+      {...otherProps}
+    >
       <Stack align="start" spacing={8}>
-        Your Stripe account needs to be connected before you can receive orders.
-        <Button
-          variant="outline"
-          leftIcon={<LinkIcon />}
-          onClick={() => {
-            runMutation({
-              variables: {
-                input: {},
-              },
-            });
-          }}
-          {...{ loading }}
-        >
-          Connect Stripe Account
-        </Button>
+        {isStripeConnected ? (
+          <>Your Stripe account is connected, and ready to receive orders.</>
+        ) : (
+          <>
+            Your Stripe account needs to be connected before you can receive
+            orders.
+          </>
+        )}
+        {isStripeConnected ? (
+          <Button
+            component="a"
+            href={stripeDashboardUrl!}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            variant="outline"
+            leftIcon={<ExternalLinkIcon />}
+          >
+            Open Stripe Dashboard
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            leftIcon={<LinkIcon />}
+            onClick={() => {
+              runMutation({
+                variables: {
+                  input: {},
+                },
+              });
+            }}
+            {...{ loading }}
+          >
+            Connect Stripe Account
+          </Button>
+        )}
       </Stack>
     </Alert>
   );

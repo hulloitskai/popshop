@@ -86,8 +86,8 @@ class Order < ApplicationRecord
   validate :validate_product_account
 
   # == Callbacks
-  after_create :create_stripe_checkout_session
-  after_destroy :expire_stripe_checkout_session
+  after_create_commit :create_stripe_checkout_session
+  after_destroy_commit :expire_stripe_checkout_session
 
   # == Methods: Stripe
   sig { returns(T.nilable(String)) }

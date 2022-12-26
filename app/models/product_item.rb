@@ -130,9 +130,9 @@ class ProductItem < ApplicationRecord
   # == Callbacks
   before_validation :normalize_units
   before_validation :normalize_question_ids
-  after_create :create_stripe_product
-  after_destroy :deactivate_stripe_product
+  after_create_commit :create_stripe_product
   after_discard :deactivate_stripe_product
+  after_destroy_commit :deactivate_stripe_product
 
   # == Methods: Stripe
   sig { returns(T.nilable(String)) }
@@ -208,7 +208,7 @@ class ProductItem < ApplicationRecord
   end
 
   sig { returns(Stripe::Product) }
-  def save_stripe_product
+  def update_stripe_product
     deactivate_stripe_product
     create_stripe_product
   end
