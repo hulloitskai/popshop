@@ -98,9 +98,5 @@ module Popshop
 
     # == Active Support
     config.active_support.remove_deprecated_time_with_zone_name = true
-
-    # == Action Mailer
-    config.action_mailer.perform_deliveries =
-      ENV.fetch("RAILS_MAILER_PERFORM_DELIVERIES", true).truthy?
   end
 end
