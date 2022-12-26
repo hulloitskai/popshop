@@ -1,8 +1,13 @@
 fragment ProductItemFieldsItemFragment on ProductItem {
   name
+  description
   units {
     plural
   }
   orderScope
   price
+  questions {
+    id
+    ...ProductItemQuestionFieldsQuestionFragment
+  }
 }

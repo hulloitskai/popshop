@@ -23,6 +23,7 @@ declare global {
   const LoadingOverlay: typeof import('@mantine/core')['LoadingOverlay']
   const MediaQuery: typeof import('@mantine/core')['MediaQuery']
   const Menu: typeof import('@mantine/core')['Menu']
+  const MultiSelect: typeof import('@mantine/core')['MultiSelect']
   const NumberInput: typeof import('@mantine/core')['NumberInput']
   const PageHeader: typeof import('~/components')['PageHeader']
   const Select: typeof import('@mantine/core')['Select']

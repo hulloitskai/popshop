@@ -13,6 +13,7 @@ module Types
     field :order_scope, OrderScopeType, null: false
     field :price, String, null: false
     field :price_cents, Integer, null: false
+    field :questions, [ProductItemQuestionType], null: false
     field :units, UnitsType
   end
 end

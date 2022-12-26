@@ -11,6 +11,7 @@
 #  name              :string           not null
 #  order_scope       :string           not null
 #  price_cents       :integer          not null
+#  question_ids      :uuid             default([]), not null, is an Array
 #  units             :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
@@ -124,6 +125,7 @@ class ProductItem < ApplicationRecord
     T.bind(self, ProductItem)
     order_scope == :per_unit
   }
+  validate :validate_questions_count
 
   # == Callbacks
   before_validation :normalize_units
@@ -263,6 +265,13 @@ class ProductItem < ApplicationRecord
     end
   end
 
+  sig { void }
+  def validate_questions_count
+    if questions.size > 4
+      errors.add(:questions, "exceeded maximum number allowed")
+    end
+  end
+
   # == Callbacks
   sig { void }
   def normalize_units
@@ -272,7 +281,7 @@ class ProductItem < ApplicationRecord
   sig { void }
   def normalize_question_ids
     ids = questions.map(&:id!)
-    current_ids = T.let(self[:question_ids] || [], T::Array[String])
+    current_ids = T.let(self[:question_ids], T::Array[String])
     next_ids = current_ids + (ids - current_ids) - (current_ids - ids)
     self[:question_ids] = next_ids if next_ids != current_ids
   end

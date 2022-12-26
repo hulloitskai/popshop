@@ -34,5 +34,12 @@ export const theme: MantineThemeOverride = {
         variant: "default",
       },
     },
+    MultiSelect: {
+      styles: {
+        searchInput: {
+          lineHeight: `28px`,
+        },
+      },
+    },
   },
 };

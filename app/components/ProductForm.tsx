@@ -76,6 +76,7 @@ const ProductForm: FC<ProductFormProps> = ({
     removeListItem,
     onSubmit,
   } = form;
+  console.log({ items });
 
   // == Effects
   useDidUpdate(() => setErrors(errors), [errors]);
@@ -163,6 +164,7 @@ const ProductForm: FC<ProductFormProps> = ({
               variant="default"
               size="xs"
               leftIcon={<AddIcon />}
+              disabled={items.length >= 4}
               styles={{ leftIcon: { marginRight: 6 } }}
               onClick={() => {
                 const values = ProductItemFields.initialValues();

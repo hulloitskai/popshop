@@ -31,8 +31,9 @@ class ProductItemQuestion < ApplicationRecord
 
   # == Attributes
   enumerize :type,
-            in: %w[short_answer long_answer multiple_choice dropdown
-                   checkboxes]
+            in: %w[short_answer long_answer
+                   single_choice multiple_choice
+                   checkbox]
 
   # == Associations
   belongs_to :product_item, inverse_of: :questions
@@ -44,6 +45,6 @@ class ProductItemQuestion < ApplicationRecord
             presence: true,
             if: -> {
               T.bind(self, ProductItemQuestion)
-              type.in?(%w[multiple_choice dropdown checkboxes])
+              type.in?(%w[single_choice multiple_choice])
             }
 end

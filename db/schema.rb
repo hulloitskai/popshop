@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_21_235022) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_26_033023) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -202,6 +202,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_235022) do
     t.string "stripe_product_id"
     t.string "stripe_price_id"
     t.datetime "discarded_at", precision: nil
+    t.uuid "question_ids", default: [], null: false, array: true
     t.index ["product_id"], name: "index_product_items_on_product_id"
     t.index ["stripe_price_id"], name: "index_product_items_on_stripe_price_id", unique: true
     t.index ["stripe_product_id"], name: "index_product_items_on_stripe_product_id", unique: true

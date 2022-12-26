@@ -12,7 +12,7 @@ export const formErrors = (errors: InputFieldError[]): FormErrors => {
 export const useNestedForm = <Values>(
   form: UseFormReturnType<any>,
   path: LooseKeys<Values>,
-): UseFormReturnType<Values> => {
+) => {
   const getInputProps = useCallback(
     <Field extends LooseKeys<Values>>(nestedPath: Field): any =>
       form.getInputProps(`${String(path)}.${String(nestedPath)}`),
@@ -35,12 +35,27 @@ export const useNestedForm = <Values>(
     [form, path],
   );
   const values = useMemo<Values>(() => get(form.values, path), [form]);
+  const insertListItem = useCallback(
+    <Field extends LooseKeys<Values>>(
+      nestedPath: Field,
+      item: unknown,
+      index?: number,
+    ) =>
+      form.insertListItem(`${String(path)}.${String(nestedPath)}`, item, index),
+    [form, path],
+  );
+  const removeListItem = useCallback(
+    <Field extends LooseKeys<Values>>(nestedPath: Field, index: number) =>
+      form.removeListItem(`${String(path)}.${String(nestedPath)}`, index),
+    [form, path],
+  );
   return {
-    ...form,
     getInputProps,
     setFieldValue,
     isTouched,
     isDirty,
     values,
+    insertListItem,
+    removeListItem,
   };
 };

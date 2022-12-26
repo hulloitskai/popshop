@@ -5,12 +5,18 @@ import {
   orderScopeLabel,
 } from "~/helpers/types/OrderScope";
 
-import { Radio } from "@mantine/core";
+import { Input, Radio } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
 import type { LooseKeys } from "@mantine/form/lib/types";
 
 import CurrencyAmountField from "./CurrencyAmountField";
 import type { CurrencyAmountFieldProps } from "./CurrencyAmountField";
+
+import ProductItemQuestionFields from "./ProductItemQuestionFields";
+import type {
+  ProductItemQuestionValues,
+  ProductItemQuestionValuesForSubmission,
+} from "./ProductItemQuestionFields";
 
 import { OrderScope } from "~/queries";
 import type { ProductItemFieldsItemFragment } from "~/queries";
@@ -27,16 +33,19 @@ export type ProductItemFieldsProps<
 export type ProductItemValues = {
   readonly key: string;
   readonly name: string;
+  readonly description: string;
   readonly units: string;
   readonly orderScope: OrderScope;
   readonly price: string;
+  readonly questions: ProductItemQuestionValues[];
 };
 
 export type ProductItemValuesForSubmission = Omit<
   ProductItemValues,
-  "key" | "units"
+  "key" | "units" | "questions"
 > & {
   readonly units?: string;
+  readonly questions: ProductItemQuestionValuesForSubmission[];
 };
 
 const ProductItemFields = <
@@ -55,9 +64,11 @@ const ProductItemFields = <
 
   // == Form
   const {
-    values: { orderScope },
+    values: { orderScope, questions },
     getInputProps,
     setFieldValue,
+    insertListItem,
+    removeListItem,
   } = useNestedForm<ProductItemValues>(form, String(path));
 
   useEffect(() => {
@@ -70,7 +81,16 @@ const ProductItemFields = <
   return (
     <Stack spacing={4}>
       {name === undefined && (
-        <TextInput label="Name" required {...getInputProps("name")} />
+        <>
+          <TextInput label="Name" required {...getInputProps("name")} />
+          <Textarea
+            label="Description"
+            {...getInputProps("description")}
+            autosize
+            minRows={1}
+            maxRows={2}
+          />
+        </>
       )}
       <Radio.Group
         label="Priced In Terms Of:"
@@ -107,6 +127,53 @@ const ProductItemFields = <
           {...getInputProps("units")}
         />
       )}
+      {!isEmpty(questions) && (
+        <>
+          <Divider mt={12} mb={4} />
+          {questions.map(({ key }, index) => (
+            <Input.Wrapper
+              key={key}
+              labelElement="div"
+              label={
+                <>
+                  Question {index + 1}{" "}
+                  <Anchor
+                    component="button"
+                    type="button"
+                    color="red"
+                    onClick={() => {
+                      removeListItem("questions", index);
+                    }}
+                  >
+                    (remove)
+                  </Anchor>
+                </>
+              }
+            >
+              <Card withBorder p="xs" pt={4} bg="gray.0">
+                <ProductItemQuestionFields
+                  path={`${String(path)}.questions.${index}`}
+                  {...{ form }}
+                />
+              </Card>
+            </Input.Wrapper>
+          ))}
+        </>
+      )}
+      <Box>
+        <Anchor
+          component="button"
+          color="indigo.5"
+          size="sm"
+          disabled={questions.length >= 4}
+          onClick={() => {
+            const values = ProductItemQuestionFields.initialValues();
+            insertListItem("questions", values);
+          }}
+        >
+          Add Order Question
+        </Anchor>
+      </Box>
     </Stack>
   );
 };
@@ -114,24 +181,28 @@ const ProductItemFields = <
 ProductItemFields.initialValues = (
   item?: ProductItemFieldsItemFragment,
 ): ProductItemValues => {
-  const { name, units, orderScope, price } = item ?? {};
+  const { name, description, units, orderScope, price, questions } = item ?? {};
   return {
     key: randomId(),
     name: name || "",
+    description: description || "",
     units: orderScope === OrderScope.PerUnit ? units?.plural || "" : "",
     orderScope: orderScope || OrderScope.PerUnit,
     price: price || "",
+    questions: (questions || []).map(ProductItemQuestionFields.initialValues),
   };
 };
 
 ProductItemFields.transformValues = ({
   units,
+  questions,
   ...values
 }: ProductItemValues): ProductItemValuesForSubmission => {
   const { orderScope } = values;
   return {
     ...omit(values, "key"),
     units: orderScope === OrderScope.PerUnit ? units : units,
+    questions: questions.map(ProductItemQuestionFields.transformValues),
   };
 };
 

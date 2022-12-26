@@ -63,11 +63,20 @@ class Product < ApplicationRecord
   validates :currency_code, presence: true, inclusion: { in: Currencies.codes }
 
   validates :items, presence: true
+  validate :validate_items_count
   validates_associated :items
 
   # == Methods: Currency
   sig { returns(Money::Currency) }
   def currency
     Money::Currency.find(currency_code)
+  end
+
+  private
+
+  # == Validations
+  sig { void }
+  def validate_items_count
+    errors.add(:items, "exceeded maximum number allowed") if items.kept.size > 4
   end
 end

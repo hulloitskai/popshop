@@ -13,6 +13,7 @@
       "OrderItem",
       "Product",
       "ProductItem",
+      "ProductItemQuestion",
       "User"
     ]
   }

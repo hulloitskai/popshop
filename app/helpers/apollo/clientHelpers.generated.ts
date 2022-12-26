@@ -113,7 +113,7 @@ export type ProductCreatePayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductItemKeySpecifier = ('currency' | 'description' | 'id' | 'name' | 'orderScope' | 'price' | 'priceCents' | 'units' | ProductItemKeySpecifier)[];
+export type ProductItemKeySpecifier = ('currency' | 'description' | 'id' | 'name' | 'orderScope' | 'price' | 'priceCents' | 'questions' | 'units' | ProductItemKeySpecifier)[];
 export type ProductItemFieldPolicy = {
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -122,7 +122,15 @@ export type ProductItemFieldPolicy = {
 	orderScope?: FieldPolicy<any> | FieldReadFunction<any>,
 	price?: FieldPolicy<any> | FieldReadFunction<any>,
 	priceCents?: FieldPolicy<any> | FieldReadFunction<any>,
+	questions?: FieldPolicy<any> | FieldReadFunction<any>,
 	units?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductItemQuestionKeySpecifier = ('choices' | 'id' | 'prompt' | 'type' | ProductItemQuestionKeySpecifier)[];
+export type ProductItemQuestionFieldPolicy = {
+	choices?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	prompt?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ProductUpdatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'product' | ProductUpdatePayloadKeySpecifier)[];
 export type ProductUpdatePayloadFieldPolicy = {
@@ -237,6 +245,10 @@ export type StrictTypedTypePolicies = {
 	ProductItem?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductItemKeySpecifier | (() => undefined | ProductItemKeySpecifier),
 		fields?: ProductItemFieldPolicy,
+	},
+	ProductItemQuestion?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ProductItemQuestionKeySpecifier | (() => undefined | ProductItemQuestionKeySpecifier),
+		fields?: ProductItemQuestionFieldPolicy,
 	},
 	ProductUpdatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductUpdatePayloadKeySpecifier | (() => undefined | ProductUpdatePayloadKeySpecifier),

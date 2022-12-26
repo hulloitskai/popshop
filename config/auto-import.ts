@@ -31,6 +31,7 @@ export const imports: Array<ImportsMap | PresetName> = [
       "LoadingOverlay",
       "Menu",
       "MediaQuery",
+      "MultiSelect",
       "NumberInput",
       "Select",
       "Skeleton",
