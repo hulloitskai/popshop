@@ -9,7 +9,7 @@ module Types
     # == Fields
     field :currency, CurrencyType, null: false
     field :product_item, ProductItemType, null: false
-    field :quantity, Integer, null: false
+    field :question_responses, [OrderQuestionResponseType], null: false
     field :subtotal, String, null: false
     field :subtotal_cents, Integer, null: false
 

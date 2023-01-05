@@ -10,6 +10,7 @@
 #  code                        :string           not null
 #  status                      :string           not null
 #  stripe_checkout_session_url :string
+#  subtotal_cents              :integer          not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  account_id                  :uuid             not null
@@ -45,6 +46,11 @@ class Order < ApplicationRecord
   # == Attributes
   attribute :code, default: -> { generate_code }
   enumerize :status, in: %w[pending paid cancelled], default: "pending"
+  monetize :subtotal_cents,
+           with_model_currency: :currency_code,
+           numericality: {
+             greater_than_or_equal_to: 0,
+           }
 
   sig { returns(String) }
   def stripe_checkout_session_id!
@@ -62,7 +68,10 @@ class Order < ApplicationRecord
 
   belongs_to :customer, autosave: true
   has_many :items, class_name: "OrderItem", dependent: :destroy, autosave: true
+  has_many :question_responses, through: :items
+
   has_many :product_items, through: :items
+  has_many :questions, through: :product_items
 
   sig { returns(Account) }
   def account!
@@ -83,11 +92,19 @@ class Order < ApplicationRecord
   validates :status, presence: true
   validates :items, presence: true
   validates_associated :items
+
+  # == Validations: Product
   validate :validate_product_account
 
-  # == Callbacks
+  # == Callbacks: Stripe
   after_create_commit :create_stripe_checkout_session
   after_destroy_commit :expire_stripe_checkout_session
+
+  # == Methods: Items
+  sig { returns(T::Hash[ProductItem, T::Array[OrderItem]]) }
+  def items_by_product_item
+    items.group_by(&:product_item!)
+  end
 
   # == Methods: Stripe
   sig { returns(T.nilable(String)) }
@@ -128,7 +145,13 @@ class Order < ApplicationRecord
 
   sig { returns(T::Array[T::Hash[Symbol, T.untyped]]) }
   def stripe_checkout_session_line_items
-    items.map(&:stripe_checkout_session_line_items)
+    product_item_quantities = T.let(
+      items.group(:product_item).count,
+      T::Hash[ProductItem, Integer],
+    )
+    product_item_quantities.map do |product_item, quantity|
+      { price: product_item.stripe_price_id!, quantity: }
+    end
   end
 
   sig { returns(T.nilable(Stripe::PaymentIntent)) }
@@ -178,23 +201,32 @@ class Order < ApplicationRecord
 
   sig { returns(T.nilable(Stripe::Checkout::Session)) }
   def expire_stripe_checkout_session
-    stripe_checkout_session_id.try! do |session_id|
-      Stripe::Checkout::Session.expire(
-        session_id,
-        {},
-        { stripe_account: stripe_account_id! },
-      )
+    stripe_checkout_session.try! do |session|
+      if session.status == "open"
+        Stripe::Checkout::Session.expire(
+          session.id,
+          {},
+          { stripe_account: stripe_account_id! },
+        )
+      end
     end
   end
 
   private
 
-  # == Validations
+  # == Validations: Product
   sig { void }
   def validate_product_account
     if product!.account != account!
       errors.add(:product, :invalid, message: "must belong to account")
     end
+  end
+
+  # == Callbacks: Subtotal
+  sig { void }
+  def set_subtotal_cents
+    item_cents = T.let(items.pluck(:subtotal_cents), T::Array[Integer])
+    self.subtotal_cents = item_cents.sum
   end
 end
 

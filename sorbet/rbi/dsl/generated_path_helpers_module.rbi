@@ -45,6 +45,9 @@ module GeneratedPathHelpersModule
   def graphql_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def mailcatcher_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_product_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -20,6 +20,9 @@ class Types::ProductItemInputType
   sig { returns(T.nilable(::Integer)) }
   def price_cents; end
 
+  sig { returns(T.nilable(T::Array[::Types::OrderQuestionInputType])) }
+  def questions; end
+
   sig { returns(T.nilable(::String)) }
   def units; end
 end

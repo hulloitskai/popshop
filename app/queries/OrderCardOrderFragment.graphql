@@ -1,7 +1,7 @@
 fragment OrderCardOrderFragment on Order {
   createdAt
   code
-  stripePaymentIntentUrl
+  url
   customer {
     id
     firstName
@@ -12,13 +12,15 @@ fragment OrderCardOrderFragment on Order {
     id
     name
     url
+    items {
+      id
+      name
+    }
   }
   items {
     id
     productItem {
       id
-      name
     }
-    quantity
   }
 }

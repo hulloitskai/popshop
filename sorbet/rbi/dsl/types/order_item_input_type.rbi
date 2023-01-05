@@ -5,9 +5,9 @@
 # Please instead update this file by running `bin/tapioca dsl Types::OrderItemInputType`.
 
 class Types::OrderItemInputType
-  sig { returns(::String) }
+  sig { returns(T.untyped) }
   def product_item; end
 
-  sig { returns(::Integer) }
-  def quantity; end
+  sig { returns(T.nilable(T::Array[::Types::OrderQuestionResponseInputType])) }
+  def question_responses; end
 end

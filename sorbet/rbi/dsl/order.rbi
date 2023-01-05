@@ -257,6 +257,34 @@ class Order
     sig { params(value: T::Enumerable[::ProductItem]).void }
     def product_items=(value); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def question_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def question_ids=(ids); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def question_response_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def question_response_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Order` class because it declared `has_many :question_responses, through: :items`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::OrderQuestionResponse::PrivateCollectionProxy) }
+    def question_responses; end
+
+    sig { params(value: T::Enumerable[::OrderQuestionResponse]).void }
+    def question_responses=(value); end
+
+    # This method is created by ActiveRecord on the `Order` class because it declared `has_many :questions, through: :product_items`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::OrderQuestion::PrivateCollectionProxy) }
+    def questions; end
+
+    sig { params(value: T::Enumerable[::OrderQuestion]).void }
+    def questions=(value); end
+
     sig { returns(T.nilable(::Account)) }
     def reload_account; end
 
@@ -752,6 +780,9 @@ class Order
     def restore_stripe_checkout_session_url!; end
 
     sig { void }
+    def restore_subtotal_cents!; end
+
+    sig { void }
     def restore_updated_at!; end
 
     sig { returns(T.nilable([::String, ::String])) }
@@ -807,6 +838,12 @@ class Order
 
     sig { returns(T::Boolean) }
     def saved_change_to_stripe_checkout_session_url?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_subtotal_cents; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_subtotal_cents?; end
 
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
     def saved_change_to_updated_at; end
@@ -949,6 +986,51 @@ class Order
     sig { void }
     def stripe_checkout_session_url_will_change!; end
 
+    sig { returns(::Integer) }
+    def subtotal_cents; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def subtotal_cents=(value); end
+
+    sig { returns(T::Boolean) }
+    def subtotal_cents?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def subtotal_cents_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def subtotal_cents_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def subtotal_cents_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def subtotal_cents_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def subtotal_cents_change_to_be_saved; end
+
+    sig { returns(T::Boolean) }
+    def subtotal_cents_changed?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def subtotal_cents_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def subtotal_cents_previous_change; end
+
+    sig { returns(T::Boolean) }
+    def subtotal_cents_previously_changed?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def subtotal_cents_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def subtotal_cents_was; end
+
+    sig { void }
+    def subtotal_cents_will_change!; end
+
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
     def updated_at; end
 
@@ -1020,6 +1102,9 @@ class Order
 
     sig { returns(T::Boolean) }
     def will_save_change_to_stripe_checkout_session_url?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_subtotal_cents?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_updated_at?; end

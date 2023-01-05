@@ -13,6 +13,7 @@ module Types
 
     field :currencies, resolver: Queries::Currencies
     field :currency, resolver: Queries::Currency
+    field :order, resolver: Queries::Order
     field :product, resolver: Queries::Product
     field :viewer, resolver: Queries::Viewer
   end

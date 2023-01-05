@@ -6,10 +6,4 @@ export { formatApolloError, useApolloErrorCallback } from "./apollo";
 export { useDateTime } from "./luxon";
 export { useMounted } from "./react";
 export { showAlert, showNotice } from "./notifications";
-export {
-  buildLayout,
-  usePageErrors,
-  usePageProps,
-  usePageData,
-  useRouter,
-} from "./inertia";
+export { buildLayout, usePageErrors, usePageProps, useRouter } from "./inertia";

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module Types
-  class QuestionTypeType < Types::BaseEnum
+  class OrderQuestionTypeType < Types::BaseEnum
     value "SHORT_ANSWER", value: "short_answer"
     value "LONG_ANSWER", value: "long_answer"
     value "SINGLE_CHOICE", value: "single_choice"

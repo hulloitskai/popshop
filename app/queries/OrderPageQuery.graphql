@@ -1,0 +1,47 @@
+query OrderPageQuery($orderId: ID!) {
+  viewer {
+    id
+    ...AppViewerFragment
+  }
+  order(id: $orderId) {
+    id
+    createdAt
+    code
+    stripePaymentIntentUrl
+    subtotal
+    customer {
+      id
+      firstName
+      lastName
+      email
+    }
+    product {
+      id
+      url
+      name
+      currency {
+        code
+        exponent
+      }
+      items {
+        id
+        name
+        price
+      }
+    }
+    items {
+      id
+      productItem {
+        id
+      }
+      questionResponses {
+        id
+        question {
+          id
+          ...OrderQuestionResponseFieldQuestionFragment
+        }
+        answer
+      }
+    }
+  }
+}

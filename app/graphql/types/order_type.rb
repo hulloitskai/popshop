@@ -11,7 +11,7 @@ module Types
     field :created_at, DateTimeType, null: false
 
     # == Fields: URLs
-    # field :url, String, null: false
+    field :url, String, null: false
 
     # == Fields
     field :account, AccountType, null: false
@@ -24,12 +24,14 @@ module Types
           null: false,
           method: :stripe_checkout_session_url!
     field :stripe_payment_intent_url, String
+    field :subtotal, String, null: false
+    field :subtotal_cents, Integer, null: false
 
     # == Resolvers: URLs
-    # sig { returns(String) }
-    # def url
-    #   url_helpers.order_url(object)
-    # end
+    sig { returns(String) }
+    def url
+      order_url(object)
+    end
 
     # == Resolvers
     sig { returns(Account) }
@@ -44,6 +46,13 @@ module Types
       context.dataloader
         .with(Sources::RecordById, Customer)
         .load(object.customer_id)
+    end
+
+    sig { returns(T::Array[OrderItem]) }
+    def items
+      context.dataloader
+        .with(Sources::OrderItemsByOrderId)
+        .load(object.id)
     end
 
     sig { returns(Product) }

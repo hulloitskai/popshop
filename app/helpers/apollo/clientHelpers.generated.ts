@@ -50,7 +50,7 @@ export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type OrderKeySpecifier = ('account' | 'code' | 'createdAt' | 'customer' | 'id' | 'items' | 'product' | 'stripeCheckoutSessionUrl' | 'stripePaymentIntentUrl' | OrderKeySpecifier)[];
+export type OrderKeySpecifier = ('account' | 'code' | 'createdAt' | 'customer' | 'id' | 'items' | 'product' | 'stripeCheckoutSessionUrl' | 'stripePaymentIntentUrl' | 'subtotal' | 'subtotalCents' | 'url' | OrderKeySpecifier)[];
 export type OrderFieldPolicy = {
 	account?: FieldPolicy<any> | FieldReadFunction<any>,
 	code?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -60,7 +60,10 @@ export type OrderFieldPolicy = {
 	items?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>,
 	stripeCheckoutSessionUrl?: FieldPolicy<any> | FieldReadFunction<any>,
-	stripePaymentIntentUrl?: FieldPolicy<any> | FieldReadFunction<any>
+	stripePaymentIntentUrl?: FieldPolicy<any> | FieldReadFunction<any>,
+	subtotal?: FieldPolicy<any> | FieldReadFunction<any>,
+	subtotalCents?: FieldPolicy<any> | FieldReadFunction<any>,
+	url?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type OrderConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | OrderConnectionKeySpecifier)[];
 export type OrderConnectionFieldPolicy = {
@@ -80,14 +83,27 @@ export type OrderEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type OrderItemKeySpecifier = ('currency' | 'id' | 'productItem' | 'quantity' | 'subtotal' | 'subtotalCents' | OrderItemKeySpecifier)[];
+export type OrderItemKeySpecifier = ('currency' | 'id' | 'productItem' | 'questionResponses' | 'subtotal' | 'subtotalCents' | OrderItemKeySpecifier)[];
 export type OrderItemFieldPolicy = {
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	productItem?: FieldPolicy<any> | FieldReadFunction<any>,
-	quantity?: FieldPolicy<any> | FieldReadFunction<any>,
+	questionResponses?: FieldPolicy<any> | FieldReadFunction<any>,
 	subtotal?: FieldPolicy<any> | FieldReadFunction<any>,
 	subtotalCents?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type OrderQuestionKeySpecifier = ('choices' | 'id' | 'prompt' | 'type' | OrderQuestionKeySpecifier)[];
+export type OrderQuestionFieldPolicy = {
+	choices?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	prompt?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type OrderQuestionResponseKeySpecifier = ('answer' | 'id' | 'question' | OrderQuestionResponseKeySpecifier)[];
+export type OrderQuestionResponseFieldPolicy = {
+	answer?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	question?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type PageInfoKeySpecifier = ('endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | PageInfoKeySpecifier)[];
 export type PageInfoFieldPolicy = {
@@ -127,23 +143,17 @@ export type ProductItemFieldPolicy = {
 	questions?: FieldPolicy<any> | FieldReadFunction<any>,
 	units?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductItemQuestionKeySpecifier = ('choices' | 'id' | 'prompt' | 'type' | ProductItemQuestionKeySpecifier)[];
-export type ProductItemQuestionFieldPolicy = {
-	choices?: FieldPolicy<any> | FieldReadFunction<any>,
-	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	prompt?: FieldPolicy<any> | FieldReadFunction<any>,
-	type?: FieldPolicy<any> | FieldReadFunction<any>
-};
 export type ProductUpdatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'product' | ProductUpdatePayloadKeySpecifier)[];
 export type ProductUpdatePayloadFieldPolicy = {
 	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('currencies' | 'currency' | 'product' | 'testEcho' | 'viewer' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('currencies' | 'currency' | 'order' | 'product' | 'testEcho' | 'viewer' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	currencies?: FieldPolicy<any> | FieldReadFunction<any>,
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
+	order?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>,
 	testEcho?: FieldPolicy<any> | FieldReadFunction<any>,
 	viewer?: FieldPolicy<any> | FieldReadFunction<any>
@@ -238,6 +248,14 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | OrderItemKeySpecifier | (() => undefined | OrderItemKeySpecifier),
 		fields?: OrderItemFieldPolicy,
 	},
+	OrderQuestion?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | OrderQuestionKeySpecifier | (() => undefined | OrderQuestionKeySpecifier),
+		fields?: OrderQuestionFieldPolicy,
+	},
+	OrderQuestionResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | OrderQuestionResponseKeySpecifier | (() => undefined | OrderQuestionResponseKeySpecifier),
+		fields?: OrderQuestionResponseFieldPolicy,
+	},
 	PageInfo?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier),
 		fields?: PageInfoFieldPolicy,
@@ -253,10 +271,6 @@ export type StrictTypedTypePolicies = {
 	ProductItem?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductItemKeySpecifier | (() => undefined | ProductItemKeySpecifier),
 		fields?: ProductItemFieldPolicy,
-	},
-	ProductItemQuestion?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | ProductItemQuestionKeySpecifier | (() => undefined | ProductItemQuestionKeySpecifier),
-		fields?: ProductItemQuestionFieldPolicy,
 	},
 	ProductUpdatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductUpdatePayloadKeySpecifier | (() => undefined | ProductUpdatePayloadKeySpecifier),

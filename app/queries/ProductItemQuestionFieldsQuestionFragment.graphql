@@ -1,5 +1,0 @@
-fragment ProductItemQuestionFieldsQuestionFragment on ProductItemQuestion {
-  prompt
-  type
-  choices
-}

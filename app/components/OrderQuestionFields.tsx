@@ -1,10 +1,10 @@
 import type { ReactElement } from "react";
 import { uniq } from "lodash-es";
 import {
-  questionTypeOrdering,
-  questionTypeLabel,
-  questionTypeHasChoices,
-} from "~/helpers/types/QuestionType";
+  orderQuestionTypeOrdering,
+  orderQuestionTypeLabel,
+  orderQuestionTypeHasChoices,
+} from "~/helpers/types/OrderQuestionType";
 
 import { Text } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
@@ -12,10 +12,10 @@ import type { LooseKeys } from "@mantine/form/lib/types";
 
 import AddIcon from "~icons/heroicons/plus-20-solid";
 
-import { QuestionType } from "~/queries";
-import type { ProductItemQuestionFieldsQuestionFragment } from "~/queries";
+import { OrderQuestionType } from "~/queries";
+import type { OrderQuestionFieldsQuestionFragment } from "~/queries";
 
-export type ProductItemQuestionFieldsProps<
+export type OrderQuestionFieldsProps<
   Values,
   TransformValues extends (values: Values) => unknown,
 > = {
@@ -23,30 +23,30 @@ export type ProductItemQuestionFieldsProps<
   readonly path: LooseKeys<Values>;
 };
 
-export type ProductItemQuestionValues = {
+export type OrderQuestionValues = {
   readonly key: string;
-  readonly type: QuestionType;
+  readonly type: OrderQuestionType;
   readonly prompt: string;
   readonly choices: string[];
 };
 
-export type ProductItemQuestionValuesForSubmission = Omit<
-  ProductItemQuestionValues,
+export type OrderQuestionValuesForSubmission = Omit<
+  OrderQuestionValues,
   "key" | "choices"
 > & {
   readonly choices?: string[];
 };
 
-const ProductItemFields = <
+const OrderQuestionFields = <
   Values,
   TransformValues extends (values: Values) => unknown,
 >({
   form,
   path,
-}: ProductItemQuestionFieldsProps<Values, TransformValues>): ReactElement => {
+}: OrderQuestionFieldsProps<Values, TransformValues>): ReactElement => {
   const types = useMemo(() => {
-    const types = Object.values(QuestionType);
-    return sortBy(types, questionTypeOrdering);
+    const types = Object.values(OrderQuestionType);
+    return sortBy(types, orderQuestionTypeOrdering);
   }, []);
   const [choiceInputValue, setChoiceInputValue] = useState("");
 
@@ -55,7 +55,7 @@ const ProductItemFields = <
     values: { type, choices },
     getInputProps,
     setFieldValue,
-  } = useNestedForm<ProductItemQuestionValues>(form, String(path));
+  } = useNestedForm<OrderQuestionValues>(form, String(path));
 
   // == Markup
   return (
@@ -65,13 +65,13 @@ const ProductItemFields = <
         label="Response Type"
         data={types.map(type => ({
           value: type,
-          label: questionTypeLabel(type),
+          label: orderQuestionTypeLabel(type),
         }))}
         required
         withinPortal
         {...getInputProps("type")}
       />
-      {questionTypeHasChoices(type) && (
+      {orderQuestionTypeHasChoices(type) && (
         <MultiSelect
           label="Choices"
           data={choices.map(choice => ({ value: choice, label: choice }))}
@@ -118,27 +118,27 @@ const ProductItemFields = <
   );
 };
 
-ProductItemFields.initialValues = (
-  question?: ProductItemQuestionFieldsQuestionFragment,
-): ProductItemQuestionValues => {
+OrderQuestionFields.initialValues = (
+  question?: OrderQuestionFieldsQuestionFragment,
+): OrderQuestionValues => {
   const { prompt, type, choices } = question ?? {};
   return {
     key: randomId(),
     prompt: prompt || "",
-    type: type || QuestionType.ShortAnswer,
+    type: type || OrderQuestionType.ShortAnswer,
     choices: choices || [],
   };
 };
 
-ProductItemFields.transformValues = ({
+OrderQuestionFields.transformValues = ({
   choices,
   ...values
-}: ProductItemQuestionValues): ProductItemQuestionValuesForSubmission => {
+}: OrderQuestionValues): OrderQuestionValuesForSubmission => {
   const { type } = values;
   return {
     ...omit(values, "key"),
-    choices: questionTypeHasChoices(type) ? choices : undefined,
+    choices: orderQuestionTypeHasChoices(type) ? choices : undefined,
   };
 };
 
-export default ProductItemFields;
+export default OrderQuestionFields;

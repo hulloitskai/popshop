@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_26_033023) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_05_175836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -153,12 +153,31 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_033023) do
   create_table "order_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "order_id", null: false
     t.uuid "product_item_id", null: false
-    t.integer "quantity", null: false
-    t.integer "subtotal_cents", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "subtotal_cents", null: false
     t.index ["order_id"], name: "index_order_items_on_order_id"
     t.index ["product_item_id"], name: "index_order_items_on_product_item_id"
+  end
+
+  create_table "order_question_responses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "question_id", null: false
+    t.uuid "order_item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "answer", null: false
+    t.index ["order_item_id"], name: "index_order_question_responses_on_order_item_id"
+    t.index ["question_id"], name: "index_order_question_responses_on_question_id"
+  end
+
+  create_table "order_questions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "prompt", null: false
+    t.uuid "product_item_id", null: false
+    t.string "type", null: false
+    t.string "choices", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_item_id"], name: "index_order_questions_on_product_item_id"
   end
 
   create_table "orders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -171,6 +190,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_033023) do
     t.string "stripe_checkout_session_id"
     t.string "stripe_checkout_session_url"
     t.uuid "account_id", null: false
+    t.integer "subtotal_cents", null: false
     t.index ["account_id"], name: "index_orders_on_account_id"
     t.index ["code"], name: "index_orders_on_code", unique: true
     t.index ["customer_id"], name: "index_orders_on_customer_id"
@@ -178,16 +198,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_033023) do
     t.index ["status"], name: "index_orders_on_status"
     t.index ["stripe_checkout_session_id"], name: "index_orders_on_stripe_checkout_session_id", unique: true
     t.index ["stripe_checkout_session_url"], name: "index_orders_on_stripe_checkout_session_url", unique: true
-  end
-
-  create_table "product_item_questions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "prompt", null: false
-    t.uuid "product_item_id", null: false
-    t.string "type", null: false
-    t.string "choices", default: [], null: false, array: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["product_item_id"], name: "index_product_item_questions_on_product_item_id"
   end
 
   create_table "product_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -254,10 +264,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_033023) do
   add_foreign_key "obsidian_relations", "obsidian_notes", column: "from_id"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "product_items"
+  add_foreign_key "order_question_responses", "order_items"
+  add_foreign_key "order_question_responses", "order_questions", column: "question_id"
+  add_foreign_key "order_questions", "product_items"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "products"
-  add_foreign_key "product_item_questions", "product_items"
   add_foreign_key "product_items", "products"
   add_foreign_key "products", "accounts"
   add_foreign_key "users", "accounts", column: "primary_account_id"

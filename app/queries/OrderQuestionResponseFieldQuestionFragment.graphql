@@ -1,0 +1,5 @@
+fragment OrderQuestionResponseFieldQuestionFragment on OrderQuestion {
+  prompt
+  type
+  choices
+}

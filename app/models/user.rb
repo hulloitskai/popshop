@@ -60,12 +60,7 @@ class User < ApplicationRecord
 
   sig { returns(Account) }
   def primary_account!
-    self.primary_account ||= accounts
-      .order(created_at: :desc)
-      .first!.tap do |account|
-        account = T.let(account, Account)
-        update_column("primary_account_id", account.id) # rubocop:disable Rails/SkipsModelValidations
-      end
+    primary_account or raise ActiveRecord::RecordNotFound
   end
 
   # == Validations
@@ -82,14 +77,15 @@ class User < ApplicationRecord
   validates :password,
             password_strength: { use_dictionary: true },
             allow_nil: true
-  validates :accounts, presence: true
+
+  # == Validations: Accounts
+  validates :accounts, presence: true, unless: :new_record?
+  validates :primary_account, presence: true, unless: :new_record?
 
   # == Callbacks: Accounts
+  before_create :build_primary_account
+  after_create :update_primary_account
   after_update_commit :update_account_emails, if: :email_changed?
-
-  # == Callbacks: Primary Account
-  before_save :set_primary_account, unless: :primary_account?
-  before_create :build_primary_account, prepend: true
   before_destroy :remove_primary_account, prepend: true
 
   # == Methods: Admin
@@ -136,21 +132,18 @@ class User < ApplicationRecord
     end
   end
 
-  # == Methods: Primary Account
-  sig { returns(T::Boolean) }
-  def primary_account? = primary_account_id?
-
   private
 
-  # == Helpers: Primary Account
+  # == Callbacks: Accounts
   sig { void }
   def build_primary_account
     accounts.build(name:, stripe_account_email: email)
   end
 
   sig { void }
-  def set_primary_account
-    self.primary_account = accounts.first!
+  def update_primary_account
+    primary_account_id = T.let(account_ids.first, String)
+    update_column("primary_account_id", primary_account_id) # rubocop:disable Rails/SkipsModelValidations
   end
 
   sig { void }

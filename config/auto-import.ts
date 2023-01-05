@@ -56,6 +56,7 @@ export const imports: Array<ImportsMap | PresetName> = [
     "lodash-es": [
       "first",
       "get",
+      "groupBy",
       "isEmpty",
       "keyBy",
       "mapKeys",
@@ -80,7 +81,6 @@ export const imports: Array<ImportsMap | PresetName> = [
       "useNestedForm",
       "usePageErrors",
       "usePageProps",
-      "usePageData",
       "useRouter",
       "formErrors",
       "showNotice",

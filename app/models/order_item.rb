@@ -6,7 +6,6 @@
 # Table name: order_items
 #
 #  id              :uuid             not null, primary key
-#  quantity        :integer          not null
 #  subtotal_cents  :integer          not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
@@ -30,13 +29,18 @@ class OrderItem < ApplicationRecord
            with_model_currency: :currency_code,
            numericality: {
              greater_than_or_equal_to: 0,
-           },
-           allow_nil: true
+           }
 
   # == Associations
   belongs_to :order
+
   belongs_to :product_item
   has_one :product, through: :product_item
+  has_many :questions, through: :product_item
+
+  has_many :question_responses,
+           class_name: "OrderQuestionResponse",
+           dependent: :destroy
 
   sig { returns(Order) }
   def order!
@@ -62,15 +66,12 @@ class OrderItem < ApplicationRecord
               },
               message: "does not bleong to the ordered product",
             }
-  validates :quantity,
-            presence: true,
-            numericality: {
-              only_integer: true,
-              greater_than: 0,
-            }
 
-  # == Callbacks
-  before_save :set_subtotal_cents
+  # == Validations: Question Responses
+  validate :validate_question_responses_count
+
+  # == Callbacks: Subtotal
+  before_create :set_subtotal_cents
 
   # == Methods: Currency
   sig { returns(T.nilable(String)) }
@@ -100,16 +101,38 @@ class OrderItem < ApplicationRecord
     product_item!.stripe_price_id!
   end
 
-  sig { returns(T::Hash[Symbol, T.untyped]) }
-  def stripe_checkout_session_line_items
-    { price: stripe_price_id!, quantity: }
+  # == Methods: Questions
+  sig { returns(T::Array[String]) }
+  def question_ids = product_item!.question_ids
+
+  sig { returns(T::Array[OrderQuestion]) }
+  def questions_ordered = product_item!.questions_ordered
+
+  # == Methods: Question Responses
+  sig { returns(T::Array[OrderQuestionResponse]) }
+  def question_responses_ordered
+    responses = question_responses.to_a
+    responses.index_by(&:question_id).values_at(*T.unsafe(question_ids))
   end
 
   private
 
-  # == Helpers
+  # == Validations: Question Responses
+  sig { void }
+  def validate_question_responses_count
+    if question_responses.size != questions.size
+      errors.add(
+        :question_responses,
+        :wrong_lenth,
+        message: "expected #{questions.size} responses, received \
+          #{question_responses.size}",
+      )
+    end
+  end
+
+  # == Callbacks: Subtotal
   sig { void }
   def set_subtotal_cents
-    self.subtotal_cents = quantity * price_cents!
+    self.subtotal_cents = price_cents!
   end
 end

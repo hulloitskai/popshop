@@ -16,25 +16,23 @@ export type HomePageProps = {
   readonly data: HomePageQuery;
 };
 
-const HomePage: PageComponent<HomePageProps> = ({ data: { viewer } }) => {
-  return (
-    <Stack spacing="xl" align="center">
-      <MediaQuery largerThan="xs" styles={{ height: 36 }}>
-        <Space h="sm" />
-      </MediaQuery>
-      <Stack spacing="sm" align="center">
-        <Image src={logoPath} width={100} height={100} />
-        <Stack spacing={4} align="center">
-          <Title size={32}>Welcome to Popshop!</Title>
-          <Text color="dark.3" sx={{ alignSelf: "center" }}>
-            Popshop is a really simple online store.
-          </Text>
-        </Stack>
+const HomePage: PageComponent<HomePageProps> = ({ data: { viewer } }) => (
+  <Stack spacing="xl" align="center">
+    <MediaQuery largerThan="xs" styles={{ height: 36 }}>
+      <Space h="sm" />
+    </MediaQuery>
+    <Stack spacing="sm" align="center">
+      <Image src={logoPath} width={100} height={100} />
+      <Stack spacing={4} align="center">
+        <Title size={32}>Welcome to Popshop!</Title>
+        <Text color="dark.3" sx={{ alignSelf: "center" }}>
+          Popshop is a really simple online store.
+        </Text>
       </Stack>
-      {viewer ? <ReturningUserCard {...{ viewer }} /> : <NewUserCard />}
     </Stack>
-  );
-};
+    {viewer ? <ReturningUserCard {...{ viewer }} /> : <NewUserCard />}
+  </Stack>
+);
 
 HomePage.layout = buildLayout<HomePageProps>((page, { data: { viewer } }) => (
   <AppLayout withContainer {...{ viewer }}>

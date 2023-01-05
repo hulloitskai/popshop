@@ -12,11 +12,11 @@ import type { LooseKeys } from "@mantine/form/lib/types";
 import CurrencyAmountField from "./CurrencyAmountField";
 import type { CurrencyAmountFieldProps } from "./CurrencyAmountField";
 
-import ProductItemQuestionFields from "./ProductItemQuestionFields";
+import OrderQuestionFields from "./OrderQuestionFields";
 import type {
-  ProductItemQuestionValues,
-  ProductItemQuestionValuesForSubmission,
-} from "./ProductItemQuestionFields";
+  OrderQuestionValues,
+  OrderQuestionValuesForSubmission,
+} from "./OrderQuestionFields";
 
 import { OrderScope } from "~/queries";
 import type { ProductItemFieldsItemFragment } from "~/queries";
@@ -37,7 +37,7 @@ export type ProductItemValues = {
   readonly units: string;
   readonly orderScope: OrderScope;
   readonly price: string;
-  readonly questions: ProductItemQuestionValues[];
+  readonly questions: OrderQuestionValues[];
 };
 
 export type ProductItemValuesForSubmission = Omit<
@@ -45,7 +45,7 @@ export type ProductItemValuesForSubmission = Omit<
   "key" | "units" | "questions"
 > & {
   readonly units?: string;
-  readonly questions: ProductItemQuestionValuesForSubmission[];
+  readonly questions: OrderQuestionValuesForSubmission[];
 };
 
 const ProductItemFields = <
@@ -151,7 +151,7 @@ const ProductItemFields = <
               }
             >
               <Card withBorder p="xs" pt={4} bg="gray.0">
-                <ProductItemQuestionFields
+                <OrderQuestionFields
                   path={`${String(path)}.questions.${index}`}
                   {...{ form }}
                 />
@@ -167,7 +167,7 @@ const ProductItemFields = <
           size="sm"
           disabled={questions.length >= 4}
           onClick={() => {
-            const values = ProductItemQuestionFields.initialValues();
+            const values = OrderQuestionFields.initialValues();
             insertListItem("questions", values);
           }}
         >
@@ -189,7 +189,7 @@ ProductItemFields.initialValues = (
     units: orderScope === OrderScope.PerUnit ? units?.plural || "" : "",
     orderScope: orderScope || OrderScope.PerUnit,
     price: price || "",
-    questions: (questions || []).map(ProductItemQuestionFields.initialValues),
+    questions: (questions || []).map(OrderQuestionFields.initialValues),
   };
 };
 
@@ -202,7 +202,7 @@ ProductItemFields.transformValues = ({
   return {
     ...omit(values, "key"),
     units: orderScope === OrderScope.PerUnit ? units : units,
-    questions: questions.map(ProductItemQuestionFields.transformValues),
+    questions: questions.map(OrderQuestionFields.transformValues),
   };
 };
 

@@ -1,29 +1,33 @@
 import type { FC } from "react";
 import { sum } from "lodash-es";
 import { useFormattedCurrencyAmount } from "~/helpers/currency";
-import { orderScopeOrdering } from "~/helpers/types/OrderScope";
 
-import { BoxProps, Text } from "@mantine/core";
-import type { UseFormReturnType } from "@mantine/form";
+import { Text } from "@mantine/core";
 
-import { OrderCreateMutationDocument, OrderScope } from "~/queries";
-import type {
-  OrderFormProductItemFragment,
-  OrderFormProductFragment,
-} from "~/queries";
+import OrderFormQuantityField from "./OrderFormQuantityField";
+import OrderFormCustomerFields from "./OrderFormCustomerFields";
+import OrderQuestionResponseField from "./OrderQuestionResponseField";
+
+import { OrderCreateMutationDocument } from "~/queries";
+import type { OrderFormProductFragment } from "~/queries";
 
 export type OrderFormProps = {
   readonly product: OrderFormProductFragment;
 };
 
 export type OrderValues = {
-  readonly items: OrderItemValues[];
+  readonly itemsByProductItemId: Record<string, OrderItemValues[]>;
   readonly customer: OrderCustomerValues;
 };
 
 export type OrderItemValues = {
   readonly productItemId: string;
-  readonly quantity: number;
+  readonly questionResponses: OrderItemQuestionResponseValues[];
+};
+
+export type OrderItemQuestionResponseValues = {
+  readonly questionId: string;
+  readonly answer: any;
 };
 
 export type OrderCustomerValues = {
@@ -32,37 +36,48 @@ export type OrderCustomerValues = {
   readonly email: string;
 };
 
+export type OrderTransformValues = (
+  values: OrderValues,
+) => OrderValuesForSubmission;
+
+export type OrderValuesForSubmission = Omit<
+  OrderValues,
+  "itemsByProductItemId"
+> & {
+  readonly items: OrderItemValues[];
+};
+
 const OrderForm: FC<OrderFormProps> = ({ product }) => {
-  const { id: productId } = product;
+  const { id: productId, currency } = product;
   const productItemsById = useMemo(() => keyBy(product.items, "id"), [product]);
 
   // == Form
-  const initialValues = useMemo<OrderValues>(() => {
-    const items: OrderItemValues[] = product.items.map(({ id }) => ({
-      productItemId: id,
-      quantity: 0,
-    }));
-    return {
-      items: sortBy(items, ({ productItemId: productItemId }) => {
-        const { orderScope } = productItemsById[productItemId]!;
-        return orderScopeOrdering(orderScope);
-      }),
+  const initialValues = useMemo<OrderValues>(
+    () => ({
+      itemsByProductItemId: Object.fromEntries(
+        product.items.map(({ id }) => [id, []]),
+      ),
       customer: {
         firstName: "",
         lastName: "",
         email: "",
       },
-    };
-  }, [product]);
-  const form = useForm<OrderValues>({
+    }),
+    [product],
+  );
+  const form = useForm<OrderValues, OrderTransformValues>({
     initialValues,
-    transformValues: ({ items, ...values }) => ({
+    transformValues: ({ itemsByProductItemId, ...values }) => ({
       ...values,
-      items: items.filter(({ quantity }) => quantity > 0),
+      items: Object.values(itemsByProductItemId).flat(),
     }),
   });
-  const { values, onSubmit, setErrors } = form;
-  const { items } = values;
+  const { values, onSubmit, setErrors, getInputProps } = form;
+  const { itemsByProductItemId } = values;
+
+  useEffect(() => {
+    console.log(itemsByProductItemId);
+  }, [itemsByProductItemId]);
 
   // == Mutation
   const onError = useApolloErrorCallback("Failed to submit order");
@@ -80,6 +95,19 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
     onError,
   });
 
+  // == Total
+  const total = useMemo(() => {
+    const amounts = Object.entries(itemsByProductItemId).map(
+      ([productItemId, items]) => {
+        const { price } = productItemsById[productItemId]!;
+        return items.length * parseFloat(price);
+      },
+    );
+    return sum(amounts);
+  }, [itemsByProductItemId]);
+  const formattedTotal = useFormattedCurrencyAmount(total, currency);
+
+  // == Markup
   return (
     <form
       onSubmit={onSubmit(values => {
@@ -94,160 +122,74 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
       })}
     >
       <Stack spacing={8}>
-        {items.map((values, index) => {
-          const { productItemId: ProductItemId } = values;
-          const item = productItemsById[ProductItemId]!;
+        {Object.entries(itemsByProductItemId).map(([productItemId, items]) => {
+          const productItem = productItemsById[productItemId]!;
           return (
-            <OrderItemField
-              key={ProductItemId}
-              {...{ form, product, item, values, index }}
+            <OrderFormQuantityField
+              key={productItemId}
+              quantity={items.length}
+              {...{
+                form,
+                product,
+                productItem,
+                values,
+              }}
             />
           );
         })}
-        <OrderCustomerFields
-          {...{ form, product, productItemsById, loading }}
-        />
+        {total > 0 && (
+          <>
+            <Divider />
+            <Group position="apart">
+              <Text weight={600}>Total</Text>
+              <Badge size="lg" variant="filled">
+                {formattedTotal}
+              </Badge>
+            </Group>
+            <Space />
+            {Object.values(itemsByProductItemId)
+              .flat()
+              .map(({ productItemId }, itemIndex) => {
+                const { name, questions } = productItemsById[productItemId]!;
+                return !isEmpty(questions) ? (
+                  <Card
+                    key={[productItemId, itemIndex].join(":")}
+                    withBorder
+                    bg="gray.0"
+                    p="sm"
+                  >
+                    <Text size="lg" weight={700}>
+                      {name} {itemIndex + 1}
+                    </Text>
+                    <Stack spacing={8}>
+                      {questions.map((question, index) => (
+                        <OrderQuestionResponseField
+                          key={index}
+                          required
+                          {...{ question }}
+                          {...getInputProps(
+                            `itemsByProductItemId.${productItemId}.${itemIndex}.questionResponses.${index}.answer`,
+                          )}
+                        />
+                      ))}
+                    </Stack>
+                  </Card>
+                ) : null;
+              })}
+            <Card withBorder bg="gray.0" p="sm">
+              <Text size="lg" weight={700}>
+                Your Contact Information
+              </Text>
+              <OrderFormCustomerFields {...{ form }} />
+            </Card>
+            <Button type="submit" {...{ loading }}>
+              Continue
+            </Button>
+          </>
+        )}
       </Stack>
     </form>
   );
 };
 
 export default OrderForm;
-
-export type OrderQuantityFieldProps = BoxProps & {
-  readonly form: UseFormReturnType<OrderValues>;
-  readonly product: OrderFormProductFragment;
-  readonly item: OrderFormProductItemFragment;
-  readonly index: number;
-};
-
-const OrderItemField: FC<OrderQuantityFieldProps> = ({
-  form: { values, getInputProps },
-  product: { currency, items },
-  item: { name, units, orderScope, price },
-  index,
-  ...otherProps
-}) => {
-  const { quantity } = values.items[index]!;
-  const unitsLabel = useMemo(
-    () => (quantity == 1 ? units?.singular : units?.plural),
-    [quantity],
-  );
-  const unitAmount = useMemo(() => parseFloat(price), [price]);
-  const totalAmount = useMemo(
-    () => unitAmount * quantity,
-    [unitAmount, quantity],
-  );
-  const formattedUnitAmount = useFormattedCurrencyAmount(unitAmount, currency);
-  const formattedTotalAmount = useFormattedCurrencyAmount(
-    totalAmount,
-    currency,
-  );
-  return (
-    <Box {...otherProps}>
-      {items.length > 1 && <Text weight={600}>{name}</Text>}
-      <Group spacing={6}>
-        <NumberInput
-          min={0}
-          max={orderScope === OrderScope.PerOrder ? 1 : undefined}
-          styles={{
-            root: {
-              flex: 1,
-            },
-            wrapper: {
-              width: 80,
-            },
-          }}
-          inputContainer={children => (
-            <Group spacing={6}>
-              {children}
-              {!!unitsLabel && <Text color="gray.7">{unitsLabel}</Text>}
-              <Text color="gray.7">×</Text>
-              <Text color="gray.7" weight={500}>
-                {formattedUnitAmount}
-              </Text>
-            </Group>
-          )}
-          {...getInputProps(`items.${index}.quantity`)}
-        />
-        {!!totalAmount && (
-          <Badge variant="outline" color="indigo" size="lg">
-            {formattedTotalAmount}
-          </Badge>
-        )}
-      </Group>
-    </Box>
-  );
-};
-
-type OrderCustomerFieldsProps = {
-  readonly form: UseFormReturnType<OrderValues>;
-  readonly product: OrderFormProductFragment;
-  readonly productItemsById: Record<string, OrderFormProductItemFragment>;
-  readonly loading: boolean;
-};
-
-const OrderCustomerFields: FC<OrderCustomerFieldsProps> = ({
-  form: { values, getInputProps },
-  product: { currency },
-  productItemsById,
-  loading,
-}) => {
-  const amount = useMemo(() => {
-    const { items } = values;
-    const amounts = items.map(({ productItemId: itemId, quantity }) => {
-      const { price } = productItemsById[itemId]!;
-      return quantity * parseFloat(price);
-    });
-    return sum(amounts);
-  }, [values]);
-  const formattedAmount = useFormattedCurrencyAmount(amount, currency);
-  if (amount > 0) {
-    return (
-      <>
-        <Divider />
-        <Group position="apart">
-          <Text weight={600}>Total</Text>
-          <Badge size="lg" variant="filled">
-            {formattedAmount}
-          </Badge>
-        </Group>
-        <Box />
-        <Card withBorder bg="gray.0" p="sm">
-          <Text size="lg" weight={700}>
-            Contact Information
-          </Text>
-          <Stack spacing={8}>
-            <TextInput
-              label="First Name"
-              required
-              {...getInputProps("customer.firstName")}
-            />
-            <TextInput
-              label="Last Name"
-              required
-              {...getInputProps("customer.lastName")}
-            />
-            <TextInput
-              inputContainer={children => (
-                <Box>
-                  {children}
-                  <Text size="xs" color="gray.6" mt={2}>
-                    By proceeding, you agree to receive emails about your order.
-                  </Text>
-                </Box>
-              )}
-              label="Email"
-              required
-              {...getInputProps("customer.email")}
-            />
-          </Stack>
-        </Card>
-        <Button type="submit" {...{ loading }}>
-          Continue
-        </Button>
-      </>
-    );
-  }
-  return null;
-};

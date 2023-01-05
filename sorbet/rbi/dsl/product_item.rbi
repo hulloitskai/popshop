@@ -281,10 +281,10 @@ class ProductItem
 
     # This method is created by ActiveRecord on the `ProductItem` class because it declared `has_many :questions`.
     # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::ProductItemQuestion::PrivateCollectionProxy) }
+    sig { returns(::OrderQuestion::PrivateCollectionProxy) }
     def questions; end
 
-    sig { params(value: T::Enumerable[::ProductItemQuestion]).void }
+    sig { params(value: T::Enumerable[::OrderQuestion]).void }
     def questions=(value); end
 
     sig { returns(T.nilable(::Account)) }
@@ -853,6 +853,51 @@ class ProductItem
     sig { void }
     def product_id_will_change!; end
 
+    sig { returns(T.untyped) }
+    def question_ids; end
+
+    sig { params(value: T.untyped).returns(T.untyped) }
+    def question_ids=(value); end
+
+    sig { returns(T::Boolean) }
+    def question_ids?; end
+
+    sig { returns(T.untyped) }
+    def question_ids_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def question_ids_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def question_ids_came_from_user?; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def question_ids_change; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def question_ids_change_to_be_saved; end
+
+    sig { returns(T::Boolean) }
+    def question_ids_changed?; end
+
+    sig { returns(T.untyped) }
+    def question_ids_in_database; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def question_ids_previous_change; end
+
+    sig { returns(T::Boolean) }
+    def question_ids_previously_changed?; end
+
+    sig { returns(T.untyped) }
+    def question_ids_previously_was; end
+
+    sig { returns(T.untyped) }
+    def question_ids_was; end
+
+    sig { void }
+    def question_ids_will_change!; end
+
     sig { void }
     def restore_created_at!; end
 
@@ -876,6 +921,9 @@ class ProductItem
 
     sig { void }
     def restore_product_id!; end
+
+    sig { void }
+    def restore_question_ids!; end
 
     sig { void }
     def restore_stripe_price_id!; end
@@ -936,6 +984,12 @@ class ProductItem
 
     sig { returns(T::Boolean) }
     def saved_change_to_product_id?; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def saved_change_to_question_ids; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_question_ids?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_stripe_price_id; end
@@ -1164,6 +1218,9 @@ class ProductItem
 
     sig { returns(T::Boolean) }
     def will_save_change_to_product_id?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_question_ids?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_stripe_price_id?; end

@@ -45,6 +45,9 @@ module GeneratedUrlHelpersModule
   def graphql_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def mailcatcher_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_product_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

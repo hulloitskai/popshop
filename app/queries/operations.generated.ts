@@ -79,19 +79,23 @@ export type DashboardPageQuery = (
           { __typename?: 'OrderEdge' }
           & { node: (
             { __typename?: 'Order' }
-            & Pick<Types.Order, 'id' | 'createdAt' | 'code' | 'stripePaymentIntentUrl'>
+            & Pick<Types.Order, 'id' | 'createdAt' | 'code' | 'url'>
             & { customer: (
               { __typename?: 'Customer' }
               & Pick<Types.Customer, 'id' | 'firstName' | 'lastName' | 'email'>
             ), product: (
               { __typename?: 'Product' }
               & Pick<Types.Product, 'id' | 'name' | 'url'>
-            ), items: Array<(
-              { __typename?: 'OrderItem' }
-              & Pick<Types.OrderItem, 'id' | 'quantity'>
-              & { productItem: (
+              & { items: Array<(
                 { __typename?: 'ProductItem' }
                 & Pick<Types.ProductItem, 'id' | 'name'>
+              )> }
+            ), items: Array<(
+              { __typename?: 'OrderItem' }
+              & Pick<Types.OrderItem, 'id'>
+              & { productItem: (
+                { __typename?: 'ProductItem' }
+                & Pick<Types.ProductItem, 'id'>
               ) }
             )> }
           ) }
@@ -133,19 +137,23 @@ export type HomePageQuery = (
 
 export type OrderCardOrderFragment = (
   { __typename?: 'Order' }
-  & Pick<Types.Order, 'createdAt' | 'code' | 'stripePaymentIntentUrl'>
+  & Pick<Types.Order, 'createdAt' | 'code' | 'url'>
   & { customer: (
     { __typename?: 'Customer' }
     & Pick<Types.Customer, 'id' | 'firstName' | 'lastName' | 'email'>
   ), product: (
     { __typename?: 'Product' }
     & Pick<Types.Product, 'id' | 'name' | 'url'>
-  ), items: Array<(
-    { __typename?: 'OrderItem' }
-    & Pick<Types.OrderItem, 'id' | 'quantity'>
-    & { productItem: (
+    & { items: Array<(
       { __typename?: 'ProductItem' }
       & Pick<Types.ProductItem, 'id' | 'name'>
+    )> }
+  ), items: Array<(
+    { __typename?: 'OrderItem' }
+    & Pick<Types.OrderItem, 'id'>
+    & { productItem: (
+      { __typename?: 'ProductItem' }
+      & Pick<Types.ProductItem, 'id'>
     ) }
   )> }
 );
@@ -181,17 +189,77 @@ export type OrderFormProductFragment = (
     & { units: Types.Maybe<(
       { __typename?: 'Units' }
       & Pick<Types.Units, 'singular' | 'plural'>
+    )>, questions: Array<(
+      { __typename?: 'OrderQuestion' }
+      & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
     )> }
   )> }
 );
 
 export type OrderFormProductItemFragment = (
   { __typename?: 'ProductItem' }
-  & Pick<Types.ProductItem, 'name' | 'orderScope' | 'price'>
+  & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price'>
   & { units: Types.Maybe<(
     { __typename?: 'Units' }
     & Pick<Types.Units, 'singular' | 'plural'>
+  )>, questions: Array<(
+    { __typename?: 'OrderQuestion' }
+    & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
   )> }
+);
+
+export type OrderPageQueryVariables = Types.Exact<{
+  orderId: Types.Scalars['ID'];
+}>;
+
+
+export type OrderPageQuery = (
+  { __typename?: 'Query' }
+  & { viewer: Types.Maybe<(
+    { __typename?: 'User' }
+    & Pick<Types.User, 'id' | 'name'>
+  )>, order: (
+    { __typename?: 'Order' }
+    & Pick<Types.Order, 'id' | 'createdAt' | 'code' | 'stripePaymentIntentUrl' | 'subtotal'>
+    & { customer: (
+      { __typename?: 'Customer' }
+      & Pick<Types.Customer, 'id' | 'firstName' | 'lastName' | 'email'>
+    ), product: (
+      { __typename?: 'Product' }
+      & Pick<Types.Product, 'id' | 'url' | 'name'>
+      & { currency: (
+        { __typename?: 'Currency' }
+        & Pick<Types.Currency, 'code' | 'exponent'>
+      ), items: Array<(
+        { __typename?: 'ProductItem' }
+        & Pick<Types.ProductItem, 'id' | 'name' | 'price'>
+      )> }
+    ), items: Array<(
+      { __typename?: 'OrderItem' }
+      & Pick<Types.OrderItem, 'id'>
+      & { productItem: (
+        { __typename?: 'ProductItem' }
+        & Pick<Types.ProductItem, 'id'>
+      ), questionResponses: Array<(
+        { __typename?: 'OrderQuestionResponse' }
+        & Pick<Types.OrderQuestionResponse, 'id' | 'answer'>
+        & { question: (
+          { __typename?: 'OrderQuestion' }
+          & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
+        ) }
+      )> }
+    )> }
+  ) }
+);
+
+export type OrderQuestionFieldsQuestionFragment = (
+  { __typename?: 'OrderQuestion' }
+  & Pick<Types.OrderQuestion, 'prompt' | 'type' | 'choices'>
+);
+
+export type OrderQuestionResponseFieldQuestionFragment = (
+  { __typename?: 'OrderQuestion' }
+  & Pick<Types.OrderQuestion, 'prompt' | 'type' | 'choices'>
 );
 
 export type ProductCardProductFragment = (
@@ -252,8 +320,8 @@ export type ProductEditPageQuery = (
         { __typename?: 'Units' }
         & Pick<Types.Units, 'plural'>
       )>, questions: Array<(
-        { __typename?: 'ProductItemQuestion' }
-        & Pick<Types.ProductItemQuestion, 'id' | 'prompt' | 'type' | 'choices'>
+        { __typename?: 'OrderQuestion' }
+        & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
       )> }
     )> }
   ) }
@@ -272,8 +340,8 @@ export type ProductFormProductFragment = (
       { __typename?: 'Units' }
       & Pick<Types.Units, 'plural'>
     )>, questions: Array<(
-      { __typename?: 'ProductItemQuestion' }
-      & Pick<Types.ProductItemQuestion, 'id' | 'prompt' | 'type' | 'choices'>
+      { __typename?: 'OrderQuestion' }
+      & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
     )> }
   )> }
 );
@@ -285,14 +353,9 @@ export type ProductItemFieldsItemFragment = (
     { __typename?: 'Units' }
     & Pick<Types.Units, 'plural'>
   )>, questions: Array<(
-    { __typename?: 'ProductItemQuestion' }
-    & Pick<Types.ProductItemQuestion, 'id' | 'prompt' | 'type' | 'choices'>
+    { __typename?: 'OrderQuestion' }
+    & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
   )> }
-);
-
-export type ProductItemQuestionFieldsQuestionFragment = (
-  { __typename?: 'ProductItemQuestion' }
-  & Pick<Types.ProductItemQuestion, 'prompt' | 'type' | 'choices'>
 );
 
 export type ProductPageProductFragment = (
@@ -307,6 +370,9 @@ export type ProductPageProductFragment = (
     & { units: Types.Maybe<(
       { __typename?: 'Units' }
       & Pick<Types.Units, 'singular' | 'plural'>
+    )>, questions: Array<(
+      { __typename?: 'OrderQuestion' }
+      & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
     )> }
   )> }
 );
@@ -333,6 +399,9 @@ export type ProductPageQuery = (
       & { units: Types.Maybe<(
         { __typename?: 'Units' }
         & Pick<Types.Units, 'singular' | 'plural'>
+      )>, questions: Array<(
+        { __typename?: 'OrderQuestion' }
+        & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
       )> }
     )> }
   ) }
@@ -502,11 +571,12 @@ export const CurrencyCodeFieldCurrencyFragment = {"kind":"Document","definitions
 export const ProductCardProductFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductCardProductFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]} as unknown as DocumentNode<ProductCardProductFragment, unknown>;
 export const DashboardPageProductFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"DashboardPageProductFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductCardProductFragment"}}]}},...ProductCardProductFragment.definitions]} as unknown as DocumentNode<DashboardPageProductFragment, unknown>;
 export const DashboardStripeAlertAccountFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"DashboardStripeAlertAccountFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Account"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isStripeConnected"}},{"kind":"Field","name":{"kind":"Name","value":"stripeDashboardUrl"}}]}}]} as unknown as DocumentNode<DashboardStripeAlertAccountFragment, unknown>;
-export const OrderCardOrderFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderCardOrderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Order"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"stripePaymentIntentUrl"}},{"kind":"Field","name":{"kind":"Name","value":"customer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"productItem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}}]} as unknown as DocumentNode<OrderCardOrderFragment, unknown>;
-export const ProductItemQuestionFieldsQuestionFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductItemQuestionFieldsQuestionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItemQuestion"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"prompt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"choices"}}]}}]} as unknown as DocumentNode<ProductItemQuestionFieldsQuestionFragment, unknown>;
-export const ProductItemFieldsItemFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductItemFieldsItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductItemQuestionFieldsQuestionFragment"}}]}}]}},...ProductItemQuestionFieldsQuestionFragment.definitions]} as unknown as DocumentNode<ProductItemFieldsItemFragment, unknown>;
+export const OrderCardOrderFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderCardOrderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Order"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"customer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"productItem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<OrderCardOrderFragment, unknown>;
+export const OrderQuestionFieldsQuestionFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderQuestionFieldsQuestionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"OrderQuestion"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"prompt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"choices"}}]}}]} as unknown as DocumentNode<OrderQuestionFieldsQuestionFragment, unknown>;
+export const ProductItemFieldsItemFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductItemFieldsItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderQuestionFieldsQuestionFragment"}}]}}]}},...OrderQuestionFieldsQuestionFragment.definitions]} as unknown as DocumentNode<ProductItemFieldsItemFragment, unknown>;
 export const ProductFormProductFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductFormProductFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"currency"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductItemFieldsItemFragment"}}]}}]}},...ProductItemFieldsItemFragment.definitions]} as unknown as DocumentNode<ProductFormProductFragment, unknown>;
-export const OrderFormProductItemFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderFormProductItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"singular"}},{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}}]}}]} as unknown as DocumentNode<OrderFormProductItemFragment, unknown>;
+export const OrderQuestionResponseFieldQuestionFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderQuestionResponseFieldQuestionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"OrderQuestion"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"prompt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"choices"}}]}}]} as unknown as DocumentNode<OrderQuestionResponseFieldQuestionFragment, unknown>;
+export const OrderFormProductItemFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderFormProductItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"singular"}},{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderQuestionResponseFieldQuestionFragment"}}]}}]}},...OrderQuestionResponseFieldQuestionFragment.definitions]} as unknown as DocumentNode<OrderFormProductItemFragment, unknown>;
 export const OrderFormProductFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderFormProductFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"currency"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"exponent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderFormProductItemFragment"}}]}}]}},...OrderFormProductItemFragment.definitions]} as unknown as DocumentNode<OrderFormProductFragment, unknown>;
 export const ProductPageProductFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductPageProductFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"canEdit"}},{"kind":"Field","name":{"kind":"Name","value":"editUrl"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderFormProductFragment"}}]}},...OrderFormProductFragment.definitions]} as unknown as DocumentNode<ProductPageProductFragment, unknown>;
 export const UserSettingsPageViewerFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserSettingsPageViewerFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"unconfirmedEmail"}}]}}]} as unknown as DocumentNode<UserSettingsPageViewerFragment, unknown>;
@@ -517,6 +587,7 @@ export const DashboardPageQueryDocument = {"kind":"Document","definitions":[{"ki
 export const ErrorPageQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ErrorPageQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AppViewerFragment"}}]}}]}},...AppViewerFragment.definitions]} as unknown as DocumentNode<ErrorPageQuery, ErrorPageQueryVariables>;
 export const HomePageQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"HomePageQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AppViewerFragment"}}]}}]}},...AppViewerFragment.definitions]} as unknown as DocumentNode<HomePageQuery, HomePageQueryVariables>;
 export const OrderCreateMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"OrderCreateMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"OrderCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"payload"},"name":{"kind":"Name","value":"orderCreate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"order"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"stripeCheckoutSessionUrl"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<OrderCreateMutation, OrderCreateMutationVariables>;
+export const OrderPageQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OrderPageQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AppViewerFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"order"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"stripePaymentIntentUrl"}},{"kind":"Field","name":{"kind":"Name","value":"subtotal"}},{"kind":"Field","name":{"kind":"Name","value":"customer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"currency"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"exponent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"price"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"productItem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"questionResponses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"question"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderQuestionResponseFieldQuestionFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"answer"}}]}}]}}]}}]}},...AppViewerFragment.definitions,...OrderQuestionResponseFieldQuestionFragment.definitions]} as unknown as DocumentNode<OrderPageQuery, OrderPageQueryVariables>;
 export const ProductCreateMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ProductCreateMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ProductCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"payload"},"name":{"kind":"Name","value":"productCreate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<ProductCreateMutation, ProductCreateMutationVariables>;
 export const ProductCreatePageQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductCreatePageQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AppViewerFragment"}}]}}]}},...AppViewerFragment.definitions]} as unknown as DocumentNode<ProductCreatePageQuery, ProductCreatePageQueryVariables>;
 export const ProductEditPageQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductEditPageQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"productId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AppViewerFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"productId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductFormProductFragment"}}]}}]}},...AppViewerFragment.definitions,...ProductFormProductFragment.definitions]} as unknown as DocumentNode<ProductEditPageQuery, ProductEditPageQueryVariables>;

@@ -4,7 +4,9 @@
 module Types
   class OrderItemInputType < BaseInputObject
     argument :product_item_id, ID, loads: Types::ProductItemType
-    argument :quantity, Integer
+    argument :question_responses,
+             [OrderQuestionResponseInputType],
+             required: false
 
     sig { returns(OrderItem) }
     def prepare

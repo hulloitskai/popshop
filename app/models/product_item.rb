@@ -80,7 +80,7 @@ class ProductItem < ApplicationRecord
   belongs_to :product
   has_one :account, through: :product
   has_many :questions,
-           class_name: "ProductItemQuestion",
+           class_name: "OrderQuestion",
            dependent: :destroy,
            autosave: true
   has_many :order_items, dependent: :destroy
@@ -95,18 +95,7 @@ class ProductItem < ApplicationRecord
     account or raise ActiveRecord::RecordNotFound
   end
 
-  sig { returns(T::Array[ProductItemQuestion]) }
-  def questions_ordered
-    questions.find(self[:question_ids])
-  end
-
-  sig { returns(Integer) }
-  def questions_count
-    ids = T.let(self[:question_ids], T::Array[Integer])
-    ids.length
-  end
-
-  sig { override.params(values: T::Enumerable[ProductItemQuestion]).void }
+  sig { override.params(values: T::Enumerable[OrderQuestion]).void }
   def questions=(values)
     super(values).tap do
       ids = values.map(&:id!)
@@ -119,12 +108,12 @@ class ProductItem < ApplicationRecord
   end
 
   # == Validations
-  validate :validate_name_uniqueness
   validates :order_scope, presence: true
   validates :units, presence: true, if: -> {
     T.bind(self, ProductItem)
     order_scope == :per_unit
   }
+  validate :validate_name_uniqueness
   validate :validate_questions_count
 
   # == Callbacks
@@ -254,6 +243,12 @@ class ProductItem < ApplicationRecord
     end
   end
 
+  # == Methods: Questions
+  sig { returns(T::Array[OrderQuestion]) }
+  def questions_ordered
+    OrderQuestion.find(self[:question_ids])
+  end
+
   private
 
   # == Validations
@@ -268,7 +263,11 @@ class ProductItem < ApplicationRecord
   sig { void }
   def validate_questions_count
     if questions.size > 4
-      errors.add(:questions, "exceeded maximum number allowed")
+      errors.add(
+        :questions,
+        :too_long,
+        message: "exceeded maximum number allowed",
+      )
     end
   end
 

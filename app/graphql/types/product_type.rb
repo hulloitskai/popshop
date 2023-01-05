@@ -17,7 +17,7 @@ module Types
     field :account, AccountType, null: false
     field :currency, CurrencyType, null: false
     field :description, String
-    field :items, [ProductItemType], null: false, authorized_scope: true
+    field :items, [ProductItemType], null: false
     field :name, String, null: false
 
     # == Resolvers: URLs

@@ -2,8 +2,7 @@
 
 class ProductItem
   sig {returns(Money)}
-  def price
-  end
+  def price; end
 
   module CommonRelationMethods
     include Discard::Model::ClassMethods

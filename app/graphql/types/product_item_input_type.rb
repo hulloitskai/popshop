@@ -9,7 +9,7 @@ module Types
     argument :order_scope, OrderScopeType
     argument :price, String, required: false
     argument :price_cents, Integer, required: false
-    argument :questions, [ProductItemQuestionInputType], required: false
+    argument :questions, [OrderQuestionInputType], required: false
     argument :units, String, required: false
 
     # == Preparation

@@ -2,6 +2,5 @@
 
 class ProductItem
   sig {returns(Money)}
-  def subtotal
-  end
+  def subtotal; end
 end

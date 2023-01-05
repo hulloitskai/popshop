@@ -266,6 +266,34 @@ class OrderItem
     sig { params(value: T.nilable(::ProductItem)).void }
     def product_item=(value); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def question_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def question_ids=(ids); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def question_response_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def question_response_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `OrderItem` class because it declared `has_many :question_responses`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::OrderQuestionResponse::PrivateCollectionProxy) }
+    def question_responses; end
+
+    sig { params(value: T::Enumerable[::OrderQuestionResponse]).void }
+    def question_responses=(value); end
+
+    # This method is created by ActiveRecord on the `OrderItem` class because it declared `has_many :questions, through: :product_item`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::OrderQuestion::PrivateCollectionProxy) }
+    def questions; end
+
+    sig { params(value: T::Enumerable[::OrderQuestion]).void }
+    def questions=(value); end
+
     sig { returns(T.nilable(::Order)) }
     def reload_order; end
 
@@ -643,51 +671,6 @@ class OrderItem
     sig { void }
     def product_item_id_will_change!; end
 
-    sig { returns(::Integer) }
-    def quantity; end
-
-    sig { params(value: ::Integer).returns(::Integer) }
-    def quantity=(value); end
-
-    sig { returns(T::Boolean) }
-    def quantity?; end
-
-    sig { returns(T.nilable(::Integer)) }
-    def quantity_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def quantity_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def quantity_came_from_user?; end
-
-    sig { returns(T.nilable([::Integer, ::Integer])) }
-    def quantity_change; end
-
-    sig { returns(T.nilable([::Integer, ::Integer])) }
-    def quantity_change_to_be_saved; end
-
-    sig { returns(T::Boolean) }
-    def quantity_changed?; end
-
-    sig { returns(T.nilable(::Integer)) }
-    def quantity_in_database; end
-
-    sig { returns(T.nilable([::Integer, ::Integer])) }
-    def quantity_previous_change; end
-
-    sig { returns(T::Boolean) }
-    def quantity_previously_changed?; end
-
-    sig { returns(T.nilable(::Integer)) }
-    def quantity_previously_was; end
-
-    sig { returns(T.nilable(::Integer)) }
-    def quantity_was; end
-
-    sig { void }
-    def quantity_will_change!; end
-
     sig { void }
     def restore_created_at!; end
 
@@ -699,9 +682,6 @@ class OrderItem
 
     sig { void }
     def restore_product_item_id!; end
-
-    sig { void }
-    def restore_quantity!; end
 
     sig { void }
     def restore_subtotal_cents!; end
@@ -732,12 +712,6 @@ class OrderItem
 
     sig { returns(T::Boolean) }
     def saved_change_to_product_item_id?; end
-
-    sig { returns(T.nilable([::Integer, ::Integer])) }
-    def saved_change_to_quantity; end
-
-    sig { returns(T::Boolean) }
-    def saved_change_to_quantity?; end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_subtotal_cents; end
@@ -852,9 +826,6 @@ class OrderItem
 
     sig { returns(T::Boolean) }
     def will_save_change_to_product_item_id?; end
-
-    sig { returns(T::Boolean) }
-    def will_save_change_to_quantity?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_subtotal_cents?; end

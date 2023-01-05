@@ -1,4 +1,5 @@
 fragment OrderFormProductItemFragment on ProductItem {
+  id
   name
   units {
     singular
@@ -6,4 +7,8 @@ fragment OrderFormProductItemFragment on ProductItem {
   }
   orderScope
   price
+  questions {
+    id
+    ...OrderQuestionResponseFieldQuestionFragment
+  }
 }

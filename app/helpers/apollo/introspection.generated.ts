@@ -11,9 +11,10 @@
       "Customer",
       "Order",
       "OrderItem",
+      "OrderQuestion",
+      "OrderQuestionResponse",
       "Product",
       "ProductItem",
-      "ProductItemQuestion",
       "User"
     ]
   }
