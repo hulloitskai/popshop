@@ -30,7 +30,7 @@ const ProductEditPage: PageComponent<ProductEditPageProps> = ({
             },
           });
         } else {
-          invariant(errors);
+          invariant(errors, "Missing input errors");
           setErrors(formErrors(errors));
           showAlert({ message: "Failed to update product." });
         }

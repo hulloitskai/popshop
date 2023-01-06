@@ -23,7 +23,7 @@ const ProductCreatePage: PageComponent<ProductCreatePageProps> = () => {
           const { url } = product;
           router.visit(url);
         } else {
-          invariant(errors);
+          invariant(errors, "Missing input errors");
           setErrors(formErrors(errors));
           showAlert({ message: "Failed to create product." });
         }

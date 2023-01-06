@@ -34,7 +34,7 @@ const OrderQuestionResponseField: FC<OrderQuestionResponseFieldProps> = ({
       );
 
     case OrderQuestionType.SingleChoice:
-      invariant(choices, "missing choices for single-choice question");
+      invariant(choices, "Missing choices for single-choice question");
       return (
         <Select
           label={prompt}
@@ -46,7 +46,7 @@ const OrderQuestionResponseField: FC<OrderQuestionResponseFieldProps> = ({
       );
 
     case OrderQuestionType.MultipleChoice:
-      invariant(choices, "missing choices for multiple-choice question");
+      invariant(choices, "Missing choices for multiple-choice question");
       return (
         <MultiSelect
           label={prompt}

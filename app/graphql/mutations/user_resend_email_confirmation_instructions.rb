@@ -4,20 +4,33 @@
 module Mutations
   class UserResendEmailConfirmationInstructions < BaseMutation
     class Payload < T::Struct
-      const :user, User
+      const :success, T::Boolean
     end
 
-    field :user, Types::UserType
+    # == Fields
+    field :success, Boolean, null: false
 
-    sig { override.params(attributes: T.untyped).returns(Payload) }
-    def resolve(**attributes)
-      user = current_user!
-      if user.pending_reconfirmation?
-        user.resend_confirmation_instructions
-      else
-        raise GraphQL::ExecutionError, "Email is already confirmed."
+    # == Arguments
+    argument :email, String
+
+    # == Resolver
+    sig do
+      override(
+        allow_incompatible: true,
+      ).params(
+        email: String,
+      ).returns(Payload)
+    end
+    def resolve(email:)
+      user = User.find_by(email: email)
+      if user.present?
+        if user.pending_reconfirmation?
+          user.resend_confirmation_instructions
+        else
+          raise GraphQL::ExecutionError, "Email already confirmed."
+        end
       end
-      Payload.new(user:)
+      Payload.new(success: true)
     end
   end
 end

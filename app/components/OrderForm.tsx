@@ -87,9 +87,9 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
         const { stripeCheckoutSessionUrl } = order;
         window.location.href = stripeCheckoutSessionUrl;
       } else {
-        invariant(errors);
+        invariant(errors, "Missing errors");
         setErrors(formErrors(errors));
-        showAlert({ message: "Failed to create order." });
+        showAlert({ message: "Failed to create order" });
       }
     },
     onError,

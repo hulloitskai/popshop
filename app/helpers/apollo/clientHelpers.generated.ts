@@ -195,10 +195,10 @@ export type UserChangeEmailPayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	user?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type UserResendEmailConfirmationInstructionsPayloadKeySpecifier = ('clientMutationId' | 'user' | UserResendEmailConfirmationInstructionsPayloadKeySpecifier)[];
+export type UserResendEmailConfirmationInstructionsPayloadKeySpecifier = ('clientMutationId' | 'success' | UserResendEmailConfirmationInstructionsPayloadKeySpecifier)[];
 export type UserResendEmailConfirmationInstructionsPayloadFieldPolicy = {
 	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
-	user?: FieldPolicy<any> | FieldReadFunction<any>
+	success?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type UserUpdatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'user' | UserUpdatePayloadKeySpecifier)[];
 export type UserUpdatePayloadFieldPolicy = {

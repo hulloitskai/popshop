@@ -97,7 +97,7 @@ const OrderQuestionFields = <
           onKeyDown={({ code, target }) => {
             invariant(
               target instanceof HTMLInputElement,
-              "target must be an input",
+              "Target must be an input",
             );
             const value = target.value.trim();
             if (code === "Enter" && value) {

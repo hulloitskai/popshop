@@ -73,7 +73,7 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             },
           });
         } else {
-          invariant(errors);
+          invariant(errors, "Missing input errors");
           setErrors(formErrors(errors));
           showAlert({ message: "Failed to change email" });
         }
@@ -149,7 +149,7 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             Change Email
           </Button>
           {unconfirmedEmail && (
-            <ResendConfirmationEmailButton variant="outline" />
+            <ResendConfirmationEmailButton variant="outline" {...{ viewer }} />
           )}
         </Stack>
       </Stack>
@@ -159,9 +159,15 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
 
 export default UserSettingsPageEmailForm;
 
-export type ResendConfirmationEmailButtonProps = Omit<ButtonProps, "children">;
+export type ResendConfirmationEmailButtonProps = Omit<
+  ButtonProps,
+  "children"
+> & {
+  readonly viewer: UserSettingsPageViewerFragment;
+};
 
 const ResendConfirmationEmailButton: FC<ResendConfirmationEmailButtonProps> = ({
+  viewer: { email },
   ...otherProps
 }) => {
   const onError = useApolloErrorCallback(
@@ -186,7 +192,9 @@ const ResendConfirmationEmailButton: FC<ResendConfirmationEmailButtonProps> = ({
       onClick={() => {
         runMutation({
           variables: {
-            input: {},
+            input: {
+              email,
+            },
           },
         });
       }}

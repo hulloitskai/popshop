@@ -2,9 +2,6 @@ mutation UserResendEmailConfirmationInstructionsMutation(
   $input: UserResendEmailConfirmationInstructionsInput!
 ) {
   payload: userResendEmailConfirmationInstructions(input: $input) {
-    user {
-      id
-      unconfirmedEmail
-    }
+    success
   }
 }

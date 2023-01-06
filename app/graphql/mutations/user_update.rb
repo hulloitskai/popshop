@@ -8,11 +8,14 @@ module Mutations
       const :errors, T.nilable(InputFieldErrors)
     end
 
+    # == Fields
     field :errors, [Types::InputFieldErrorType]
     field :user, Types::UserType
 
+    # == Arguments
     argument :name, String
 
+    # == Resolver
     sig { override.params(attributes: T.untyped).returns(Payload) }
     def resolve(**attributes)
       user = current_user!

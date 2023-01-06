@@ -8,14 +8,17 @@ module Mutations
       const :errors, T.nilable(InputFieldErrors)
     end
 
+    # == Fields
     field :errors, [Types::InputFieldErrorType]
     field :product, Types::ProductType
 
+    # == Arguments
     argument :description, String, required: false
     argument :items, [Types::ProductItemInputType]
     argument :name, String
     argument :product_id, ID, loads: Types::ProductType
 
+    # == Resolver
     sig do
       override(
         allow_incompatible: true,
