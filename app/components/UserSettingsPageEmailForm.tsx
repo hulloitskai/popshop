@@ -27,10 +27,17 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
     }),
     [viewer],
   );
-  const { getInputProps, onSubmit, setValues, setErrors, isDirty, resetDirty } =
-    useForm<UserSettingsPageEmailFormValues>({
-      initialValues: initialValues,
-    });
+  const {
+    errors,
+    getInputProps,
+    onSubmit,
+    setValues,
+    setErrors,
+    isDirty,
+    resetDirty,
+  } = useForm<UserSettingsPageEmailFormValues>({
+    initialValues: initialValues,
+  });
   useDidUpdate(() => {
     setValues(initialValues);
     resetDirty(initialValues);
@@ -113,7 +120,10 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             </Text>
           )}
         </Box>
-        <Transition transition="fade" mounted={isDirty("email")}>
+        <Transition
+          transition="fade"
+          mounted={!isEmpty(errors) || isDirty("email")}
+        >
           {style => (
             <PasswordInput
               label="Current Password"

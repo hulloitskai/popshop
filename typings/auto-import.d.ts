@@ -70,6 +70,7 @@ declare global {
   const useCallback: typeof import('react')['useCallback']
   const useContext: typeof import('react')['useContext']
   const useDateTime: typeof import('~/helpers')['useDateTime']
+  const useDebouncedValue: typeof import('@mantine/hooks')['useDebouncedValue']
   const useDebugValue: typeof import('react')['useDebugValue']
   const useDeferredValue: typeof import('react')['useDeferredValue']
   const useDidUpdate: typeof import('@mantine/hooks')['useDidUpdate']

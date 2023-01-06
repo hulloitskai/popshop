@@ -330,6 +330,7 @@ type Query {
   currencies: [Currency!]!
   currency(code: String!): Currency
   order(id: ID!): Order!
+  passwordStrength(password: String!): Float!
   product(id: ID!): Product!
   testEcho(text: String): String!
 

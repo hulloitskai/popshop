@@ -347,6 +347,7 @@ export type Query = {
   currencies: Array<Currency>;
   currency?: Maybe<Currency>;
   order: Order;
+  passwordStrength: Scalars['Float'];
   product: Product;
   testEcho: Scalars['String'];
   /** The currently authenticated user. */
@@ -361,6 +362,11 @@ export type QueryCurrencyArgs = {
 
 export type QueryOrderArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryPasswordStrengthArgs = {
+  password: Scalars['String'];
 };
 
 

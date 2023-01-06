@@ -14,6 +14,7 @@ module Types
     field :currencies, resolver: Queries::Currencies
     field :currency, resolver: Queries::Currency
     field :order, resolver: Queries::Order
+    field :password_strength, resolver: Queries::PasswordStrength
     field :product, resolver: Queries::Product
     field :viewer, resolver: Queries::Viewer
   end

@@ -149,11 +149,12 @@ export type ProductUpdatePayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('currencies' | 'currency' | 'order' | 'product' | 'testEcho' | 'viewer' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('currencies' | 'currency' | 'order' | 'passwordStrength' | 'product' | 'testEcho' | 'viewer' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	currencies?: FieldPolicy<any> | FieldReadFunction<any>,
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
 	order?: FieldPolicy<any> | FieldReadFunction<any>,
+	passwordStrength?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>,
 	testEcho?: FieldPolicy<any> | FieldReadFunction<any>,
 	viewer?: FieldPolicy<any> | FieldReadFunction<any>

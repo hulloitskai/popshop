@@ -1,27 +1,46 @@
 import type { FC } from "react";
 import { PasswordInput } from "@mantine/core";
 
-export type UserSignUpPageFormValues = {
+import PasswordWithStrengthCheckField from "./PasswordWithStrengthCheckField";
+
+export type UserRegisterPageFormValues = {
   readonly name: string;
   readonly email: string;
   readonly password: string;
   readonly passwordConfirmation: string;
 };
 
-export type UserSignUpPageFormProps = {};
+export type UserRegisterPageFormProps = {};
 
-const UserSignUpPageForm: FC<UserSignUpPageFormProps> = () => {
+const UserRegisterPageForm: FC<UserRegisterPageFormProps> = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { getInputProps, onSubmit, setFieldValue, setErrors } =
-    useForm<UserSignUpPageFormValues>({
-      initialValues: {
-        name: "",
-        email: "",
-        password: "",
-        passwordConfirmation: "",
+  const [passwordStrength, setPasswordStrength] = useState(0.0);
+
+  // == Form
+  const form = useForm<UserRegisterPageFormValues>({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+    },
+    validate: {
+      password: () => {
+        if (passwordStrength < 1.0) {
+          return "Too weak.";
+        }
       },
-    });
+      passwordConfirmation: (value, { password }) => {
+        if (password != value) {
+          return "Does not match password.";
+        }
+      },
+    },
+  });
+  const { getInputProps, onSubmit, setFieldValue, setErrors } = form;
+
+  // == Markup
   return (
     <form
       onSubmit={onSubmit(({ name, email, password, passwordConfirmation }) => {
@@ -34,7 +53,7 @@ const UserSignUpPageForm: FC<UserSignUpPageFormProps> = () => {
           },
         };
         router.post("/user", data, {
-          errorBag: UserSignUpPageForm.name,
+          errorBag: UserRegisterPageForm.name,
           onBefore: () => setLoading(true),
           onError: errors => {
             setFieldValue("password", "");
@@ -59,10 +78,11 @@ const UserSignUpPageForm: FC<UserSignUpPageFormProps> = () => {
           required
           {...getInputProps("email")}
         />
-        <PasswordInput
+        <PasswordWithStrengthCheckField
           label="Password"
           placeholder="password"
           required
+          onStrengthCheck={setPasswordStrength}
           {...getInputProps("password")}
         />
         <PasswordInput
@@ -79,4 +99,4 @@ const UserSignUpPageForm: FC<UserSignUpPageFormProps> = () => {
   );
 };
 
-export default UserSignUpPageForm;
+export default UserRegisterPageForm;

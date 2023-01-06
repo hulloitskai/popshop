@@ -4,8 +4,8 @@ import { Image, Text } from "@mantine/core";
 
 import type { AppViewerFragment, HomePageQuery } from "~/queries";
 
-import SignInIcon from "~icons/heroicons/arrow-right-on-rectangle-20-solid";
-import SignUpIcon from "~icons/heroicons/identification-20-solid";
+import LoginIcon from "~icons/heroicons/arrow-right-on-rectangle-20-solid";
+import RegisterIcon from "~icons/heroicons/identification-20-solid";
 import DashboardIcon from "~icons/heroicons/rectangle-stack-20-solid";
 
 import logoPath from "~/assets/images/logo.png";
@@ -59,7 +59,7 @@ const NewUserCard: FC = () => {
           <Button
             component={Link}
             href="/user/register"
-            leftIcon={<SignUpIcon />}
+            leftIcon={<RegisterIcon />}
             w={buttonWidth}
           >
             Sign Up
@@ -71,7 +71,7 @@ const NewUserCard: FC = () => {
             component={Link}
             href="/user/login"
             variant="outline"
-            leftIcon={<SignInIcon />}
+            leftIcon={<LoginIcon />}
             w={buttonWidth}
           >
             Sign In
