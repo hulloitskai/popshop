@@ -1,7 +1,12 @@
 import type { FC } from "react";
-import { PasswordInput, Text } from "@mantine/core";
 
-import { UserChangeEmailMutationDocument } from "~/queries";
+import { PasswordInput, Text } from "@mantine/core";
+import type { ButtonProps } from "@mantine/core";
+
+import {
+  UserChangeEmailMutationDocument,
+  UserResendEmailConfirmationInstructionsMutationDocument,
+} from "~/queries";
 import type { UserSettingsPageViewerFragment } from "~/queries";
 
 export type UserSettingsPageEmailFormValues = {
@@ -55,7 +60,7 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             onSuccess: () => {
               if (unconfirmedEmail) {
                 showNotice({
-                  title: "Confirm New Email",
+                  title: "Confirm new email",
                   message:
                     "Please check your email and follow the confirmation " +
                     "link to confirm your new email address.",
@@ -135,16 +140,60 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             />
           )}
         </Transition>
-        <Button
-          type="submit"
-          disabled={!(isDirty("email") && isDirty("currentPassword"))}
-          {...{ loading }}
-        >
-          Change Email
-        </Button>
+        <Stack spacing={6}>
+          <Button
+            type="submit"
+            disabled={!(isDirty("email") && isDirty("currentPassword"))}
+            {...{ loading }}
+          >
+            Change Email
+          </Button>
+          {unconfirmedEmail && (
+            <ResendConfirmationEmailButton variant="outline" />
+          )}
+        </Stack>
       </Stack>
     </form>
   );
 };
 
 export default UserSettingsPageEmailForm;
+
+export type ResendConfirmationEmailButtonProps = Omit<ButtonProps, "children">;
+
+const ResendConfirmationEmailButton: FC<ResendConfirmationEmailButtonProps> = ({
+  ...otherProps
+}) => {
+  const onError = useApolloErrorCallback(
+    "Failed to resend email confirmation instructions",
+  );
+  const [runMutation, { loading }] = useMutation(
+    UserResendEmailConfirmationInstructionsMutationDocument,
+    {
+      onCompleted: () => {
+        showNotice({
+          title: "Confirmation email resent",
+          message:
+            "Please check your email and follow the confirmation " +
+            "link to confirm your new email address.",
+        });
+      },
+      onError,
+    },
+  );
+  return (
+    <Button
+      onClick={() => {
+        runMutation({
+          variables: {
+            input: {},
+          },
+        });
+      }}
+      {...{ loading }}
+      {...otherProps}
+    >
+      Resend Confirmation Email
+    </Button>
+  );
+};

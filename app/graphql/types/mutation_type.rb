@@ -10,6 +10,8 @@ module Types
           mutation: Mutations::AccountOnboardToStripe
 
     field :user_change_email, mutation: Mutations::UserChangeEmail
+    field :user_resend_email_confirmation_instructions,
+          mutation: Mutations::UserResendEmailConfirmationInstructions
     field :user_update, mutation: Mutations::UserUpdate
 
     field :product_create, mutation: Mutations::ProductCreate

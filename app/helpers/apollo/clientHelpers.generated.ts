@@ -36,7 +36,7 @@ export type InputFieldErrorFieldPolicy = {
 	field?: FieldPolicy<any> | FieldReadFunction<any>,
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productUpdate' | 'testMutation' | 'userChangeEmail' | 'userUpdate' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productUpdate' | 'testMutation' | 'userChangeEmail' | 'userResendEmailConfirmationInstructions' | 'userUpdate' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	accountOnboardToStripe?: FieldPolicy<any> | FieldReadFunction<any>,
 	orderCreate?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -44,6 +44,7 @@ export type MutationFieldPolicy = {
 	productUpdate?: FieldPolicy<any> | FieldReadFunction<any>,
 	testMutation?: FieldPolicy<any> | FieldReadFunction<any>,
 	userChangeEmail?: FieldPolicy<any> | FieldReadFunction<any>,
+	userResendEmailConfirmationInstructions?: FieldPolicy<any> | FieldReadFunction<any>,
 	userUpdate?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
@@ -194,6 +195,11 @@ export type UserChangeEmailPayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	user?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type UserResendEmailConfirmationInstructionsPayloadKeySpecifier = ('clientMutationId' | 'user' | UserResendEmailConfirmationInstructionsPayloadKeySpecifier)[];
+export type UserResendEmailConfirmationInstructionsPayloadFieldPolicy = {
+	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
+	user?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type UserUpdatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'user' | UserUpdatePayloadKeySpecifier)[];
 export type UserUpdatePayloadFieldPolicy = {
 	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -304,6 +310,10 @@ export type StrictTypedTypePolicies = {
 	UserChangeEmailPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UserChangeEmailPayloadKeySpecifier | (() => undefined | UserChangeEmailPayloadKeySpecifier),
 		fields?: UserChangeEmailPayloadFieldPolicy,
+	},
+	UserResendEmailConfirmationInstructionsPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | UserResendEmailConfirmationInstructionsPayloadKeySpecifier | (() => undefined | UserResendEmailConfirmationInstructionsPayloadKeySpecifier),
+		fields?: UserResendEmailConfirmationInstructionsPayloadFieldPolicy,
 	},
 	UserUpdatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UserUpdatePayloadKeySpecifier | (() => undefined | UserUpdatePayloadKeySpecifier),

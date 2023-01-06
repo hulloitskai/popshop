@@ -37,7 +37,7 @@ const DashboardStripeAlert: FC<DashboardStripeAlertProps> = ({
       icon={isStripeConnected ? undefined : <AlertIcon />}
       {...otherProps}
     >
-      <Stack align="start" spacing={8}>
+      <Stack spacing={8}>
         {isStripeConnected ? (
           <>Your Stripe account is connected, and ready to receive orders.</>
         ) : (
