@@ -5,6 +5,74 @@ module ActiveSupport::Dependencies
   def self.interlock; end
 end
 
+class ActiveSupport::Duration
+  sig { returns(Float) }
+  def in_days; end
+
+  sig { returns(Float) }
+  def in_hours; end
+
+  sig { returns(Float) }
+  def in_minutes; end
+
+  sig { returns(Float) }
+  def in_months; end
+
+  sig { returns(Float) }
+  def in_seconds; end
+
+  sig { returns(Float) }
+  def in_weeks; end
+
+  sig { returns(Float) }
+  def in_years; end
+end
+
+class ActiveSupport::ErrorReporter
+  sig do
+    type_parameters(:U).
+      params(
+        error_class: Class,
+        severity: Symbol,
+        context: T::Hash[Symbol, T.untyped],
+        fallback: T.nilable(T.proc.returns(T.type_parameter(:U))),
+        block: T.proc.returns(T.type_parameter(:U)),
+      ).returns(T.nilable(T.type_parameter(:U)))
+  end
+  def handle(
+    error_class = StandardError,
+    severity: :warning,
+    context: {},
+    fallback: nil,
+    &block
+  ); end
+
+  sig do
+    type_parameters(:T).
+      params(
+        error_class: Class,
+        severity: Symbol,
+        context: T::Hash[Symbol, T.untyped],
+        block: T.proc.returns(T.type_parameter(:T)),
+      ).returns(T.type_parameter(:T))
+  end
+  def record(
+    error_class = StandardError,
+    severity: :error,
+    context: {},
+    &block
+  ); end
+end
+
+class ActiveSupport::TimeWithZone
+  sig { params(format: String).returns(String) }
+  def strftime(format); end
+
+  sig {returns(Time)}
+  def to_time
+  end
+end
+
 module ActiveSupport::Tryable
   sig do
     type_parameters(:U)
@@ -13,14 +81,64 @@ module ActiveSupport::Tryable
         kwargs: T.untyped,
         block: T.proc.params(object: T.self_type).returns(T.type_parameter(:U)),
       )
-      .returns(T.type_parameter(:U))
+      .returns(T.nilable(T.type_parameter(:U)))
   end
   def try!(*args, **kwargs, &block); end
+end
+
+module Kernel
+  sig do
+    type_parameters(:U)
+      .params(
+        exception_classes: Class,
+        block: T.proc.returns(T.type_parameter(:U)),
+      )
+      .returns(T.nilable(T.type_parameter(:U)))
+  end
+  def suppress(*exception_classes, &block); end
 end
 
 class Object
   sig { returns(T::Boolean) }
   def present?; end
+end
+
+class Numeric
+  sig { returns(ActiveSupport::Duration) }
+  def day; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def days; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def fortnight; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def fortnights; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def hour; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def hours; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def minute; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def minutes; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def second; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def seconds; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def week; end
+
+  sig { returns(ActiveSupport::Duration) }
+  def weeks; end
 end
 
 class String
