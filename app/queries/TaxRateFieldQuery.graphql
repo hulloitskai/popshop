@@ -1,0 +1,12 @@
+query TaxRateFieldQuery {
+  viewer {
+    id
+    primaryAccount {
+      id
+      taxRates {
+        id
+        ...TaxRateFieldTaxRateFragment
+      }
+    }
+  }
+}

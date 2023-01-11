@@ -1,0 +1,17 @@
+mutation TaxRateCreateMutation($input: TaxRateCreateInput!) {
+  payload: taxRateCreate(input: $input) {
+    taxRate {
+      id
+      account {
+        id
+        taxRates {
+          id
+        }
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

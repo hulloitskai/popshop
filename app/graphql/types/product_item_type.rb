@@ -14,6 +14,8 @@ module Types
     field :price, String, null: false
     field :price_cents, Integer, null: false
     field :questions, [OrderQuestionType], null: false
+    field :tax_rate, TaxRateType
+    field :tax_rate_percentage, Float # rubocop:disable GraphQL/ExtractType
     field :units, UnitsType
   end
 end

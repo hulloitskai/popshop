@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   extend T::Sig
 
   # == Filters
-  around_action :around_set_error_context
+  around_action :set_error_context_around
 
   # == Modules
   include GraphQL::Querying
@@ -46,8 +46,8 @@ class ApplicationController < ActionController::Base
   # end
 
   sig { params(block: T.proc.returns(T.untyped)).void }
-  def around_set_error_context(&block)
-    Rails.error.set_context(error_context)
+  def set_error_context_around(&block)
+    Rails.error.set_context(**error_context)
     yield
   end
 end

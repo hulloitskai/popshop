@@ -1,5 +1,5 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
-export type AccountKeySpecifier = ('canDelete' | 'canEdit' | 'id' | 'isStripeConnected' | 'name' | 'orders' | 'owner' | 'products' | 'stripeDashboardUrl' | AccountKeySpecifier)[];
+export type AccountKeySpecifier = ('canDelete' | 'canEdit' | 'id' | 'isStripeConnected' | 'name' | 'orders' | 'owner' | 'products' | 'stripeDashboardUrl' | 'taxRates' | AccountKeySpecifier)[];
 export type AccountFieldPolicy = {
 	canDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -9,7 +9,8 @@ export type AccountFieldPolicy = {
 	orders?: FieldPolicy<any> | FieldReadFunction<any>,
 	owner?: FieldPolicy<any> | FieldReadFunction<any>,
 	products?: FieldPolicy<any> | FieldReadFunction<any>,
-	stripeDashboardUrl?: FieldPolicy<any> | FieldReadFunction<any>
+	stripeDashboardUrl?: FieldPolicy<any> | FieldReadFunction<any>,
+	taxRates?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type AccountOnboardToStripePayloadKeySpecifier = ('clientMutationId' | 'url' | AccountOnboardToStripePayloadKeySpecifier)[];
 export type AccountOnboardToStripePayloadFieldPolicy = {
@@ -36,12 +37,14 @@ export type InputFieldErrorFieldPolicy = {
 	field?: FieldPolicy<any> | FieldReadFunction<any>,
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productUpdate' | 'testMutation' | 'userChangeEmail' | 'userResendEmailConfirmationInstructions' | 'userUpdate' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productUpdate' | 'taxRateCreate' | 'taxRateDelete' | 'testMutation' | 'userChangeEmail' | 'userResendEmailConfirmationInstructions' | 'userUpdate' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	accountOnboardToStripe?: FieldPolicy<any> | FieldReadFunction<any>,
 	orderCreate?: FieldPolicy<any> | FieldReadFunction<any>,
 	productCreate?: FieldPolicy<any> | FieldReadFunction<any>,
 	productUpdate?: FieldPolicy<any> | FieldReadFunction<any>,
+	taxRateCreate?: FieldPolicy<any> | FieldReadFunction<any>,
+	taxRateDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	testMutation?: FieldPolicy<any> | FieldReadFunction<any>,
 	userChangeEmail?: FieldPolicy<any> | FieldReadFunction<any>,
 	userResendEmailConfirmationInstructions?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -84,14 +87,12 @@ export type OrderEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type OrderItemKeySpecifier = ('currency' | 'id' | 'productItem' | 'questionResponses' | 'subtotal' | 'subtotalCents' | OrderItemKeySpecifier)[];
+export type OrderItemKeySpecifier = ('currency' | 'id' | 'productItem' | 'questionResponses' | OrderItemKeySpecifier)[];
 export type OrderItemFieldPolicy = {
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	productItem?: FieldPolicy<any> | FieldReadFunction<any>,
-	questionResponses?: FieldPolicy<any> | FieldReadFunction<any>,
-	subtotal?: FieldPolicy<any> | FieldReadFunction<any>,
-	subtotalCents?: FieldPolicy<any> | FieldReadFunction<any>
+	questionResponses?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type OrderQuestionKeySpecifier = ('choices' | 'id' | 'prompt' | 'type' | OrderQuestionKeySpecifier)[];
 export type OrderQuestionFieldPolicy = {
@@ -132,7 +133,7 @@ export type ProductCreatePayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductItemKeySpecifier = ('currency' | 'description' | 'id' | 'name' | 'orderScope' | 'price' | 'priceCents' | 'questions' | 'units' | ProductItemKeySpecifier)[];
+export type ProductItemKeySpecifier = ('currency' | 'description' | 'id' | 'name' | 'orderScope' | 'price' | 'priceCents' | 'questions' | 'tax' | 'taxCents' | 'taxRate' | 'taxRatePercentage' | 'units' | ProductItemKeySpecifier)[];
 export type ProductItemFieldPolicy = {
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -142,6 +143,10 @@ export type ProductItemFieldPolicy = {
 	price?: FieldPolicy<any> | FieldReadFunction<any>,
 	priceCents?: FieldPolicy<any> | FieldReadFunction<any>,
 	questions?: FieldPolicy<any> | FieldReadFunction<any>,
+	tax?: FieldPolicy<any> | FieldReadFunction<any>,
+	taxCents?: FieldPolicy<any> | FieldReadFunction<any>,
+	taxRate?: FieldPolicy<any> | FieldReadFunction<any>,
+	taxRatePercentage?: FieldPolicy<any> | FieldReadFunction<any>,
 	units?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ProductUpdatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'product' | ProductUpdatePayloadKeySpecifier)[];
@@ -163,6 +168,27 @@ export type QueryFieldPolicy = {
 export type SubscriptionKeySpecifier = ('testSubscription' | SubscriptionKeySpecifier)[];
 export type SubscriptionFieldPolicy = {
 	testSubscription?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type TaxRateKeySpecifier = ('account' | 'canDelete' | 'canEdit' | 'id' | 'name' | 'percentage' | TaxRateKeySpecifier)[];
+export type TaxRateFieldPolicy = {
+	account?: FieldPolicy<any> | FieldReadFunction<any>,
+	canDelete?: FieldPolicy<any> | FieldReadFunction<any>,
+	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	percentage?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type TaxRateCreatePayloadKeySpecifier = ('clientMutationId' | 'errors' | 'taxRate' | TaxRateCreatePayloadKeySpecifier)[];
+export type TaxRateCreatePayloadFieldPolicy = {
+	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
+	errors?: FieldPolicy<any> | FieldReadFunction<any>,
+	taxRate?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type TaxRateDeletePayloadKeySpecifier = ('account' | 'clientMutationId' | 'success' | TaxRateDeletePayloadKeySpecifier)[];
+export type TaxRateDeletePayloadFieldPolicy = {
+	account?: FieldPolicy<any> | FieldReadFunction<any>,
+	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
+	success?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type TestModelKeySpecifier = ('birthday' | 'id' | 'name' | TestModelKeySpecifier)[];
 export type TestModelFieldPolicy = {
@@ -290,6 +316,18 @@ export type StrictTypedTypePolicies = {
 	Subscription?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier),
 		fields?: SubscriptionFieldPolicy,
+	},
+	TaxRate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | TaxRateKeySpecifier | (() => undefined | TaxRateKeySpecifier),
+		fields?: TaxRateFieldPolicy,
+	},
+	TaxRateCreatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | TaxRateCreatePayloadKeySpecifier | (() => undefined | TaxRateCreatePayloadKeySpecifier),
+		fields?: TaxRateCreatePayloadFieldPolicy,
+	},
+	TaxRateDeletePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | TaxRateDeletePayloadKeySpecifier | (() => undefined | TaxRateDeletePayloadKeySpecifier),
+		fields?: TaxRateDeletePayloadFieldPolicy,
 	},
 	TestModel?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | TestModelKeySpecifier | (() => undefined | TestModelKeySpecifier),

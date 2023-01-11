@@ -7,6 +7,7 @@ fragment OrderFormProductItemFragment on ProductItem {
   }
   orderScope
   price
+  taxRatePercentage
   questions {
     id
     ...OrderQuestionResponseFieldQuestionFragment

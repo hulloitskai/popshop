@@ -40,6 +40,7 @@ class Account < ApplicationRecord
 
   has_many :products, dependent: :destroy
   has_many :orders, -> { reverse_chronological }, through: :products
+  has_many :tax_rates, dependent: :destroy
 
   sig { returns(User) }
   def owner!

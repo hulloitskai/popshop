@@ -6,7 +6,6 @@
 # Table name: order_items
 #
 #  id              :uuid             not null, primary key
-#  subtotal_cents  :integer          not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  order_id        :uuid             not null
@@ -24,18 +23,12 @@
 #
 
 class OrderItem < ApplicationRecord
-  # == Attributes
-  monetize :subtotal_cents,
-           with_model_currency: :currency_code,
-           numericality: {
-             greater_than_or_equal_to: 0,
-           }
-
   # == Associations
   belongs_to :order
 
   belongs_to :product_item
   has_one :product, through: :product_item
+  has_one :tax_rate, through: :product_item
   has_many :questions, through: :product_item
 
   has_many :question_responses,
@@ -64,42 +57,11 @@ class OrderItem < ApplicationRecord
                 item = T.let(item, OrderItem)
                 item.order!.product!.items
               },
-              message: "does not bleong to the ordered product",
+              message: "does not belong to the ordered product",
             }
 
   # == Validations: Question Responses
   validate :validate_question_responses_count
-
-  # == Callbacks: Subtotal
-  before_create :set_subtotal_cents
-
-  # == Methods: Currency
-  sig { returns(T.nilable(String)) }
-  def currency_code = product&.currency_code
-
-  sig { returns(T.nilable(Money::Currency)) }
-  def currency = product&.currency
-
-  # == Methods: Price
-  sig { returns(T.nilable(Integer)) }
-  def price_cents = product_item&.price_cents
-
-  sig { returns(Integer) }
-  def price_cents! = T.must(price_cents)
-
-  sig { returns(T.nilable(Money)) }
-  def price = product_item&.price
-
-  # == Methods: Stripe
-  sig { returns(T.nilable(String)) }
-  def stripe_price_id
-    product_item&.stripe_price_id
-  end
-
-  sig { returns(String) }
-  def stripe_price_id!
-    product_item!.stripe_price_id!
-  end
 
   # == Methods: Questions
   sig { returns(T::Array[String]) }
@@ -128,11 +90,5 @@ class OrderItem < ApplicationRecord
           #{question_responses.size}",
       )
     end
-  end
-
-  # == Callbacks: Subtotal
-  sig { void }
-  def set_subtotal_cents
-    self.subtotal_cents = price_cents!
   end
 end

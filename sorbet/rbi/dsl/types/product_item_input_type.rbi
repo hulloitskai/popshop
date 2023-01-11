@@ -23,6 +23,9 @@ class Types::ProductItemInputType
   sig { returns(T.nilable(T::Array[::Types::OrderQuestionInputType])) }
   def questions; end
 
+  sig { returns(T.untyped) }
+  def tax_rate; end
+
   sig { returns(T.nilable(::String)) }
   def units; end
 end

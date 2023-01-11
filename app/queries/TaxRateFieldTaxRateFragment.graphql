@@ -1,0 +1,5 @@
+fragment TaxRateFieldTaxRateFragment on TaxRate {
+  id
+  name
+  percentage
+}

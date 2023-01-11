@@ -783,6 +783,9 @@ class Order
     def restore_subtotal_cents!; end
 
     sig { void }
+    def restore_total_cents!; end
+
+    sig { void }
     def restore_updated_at!; end
 
     sig { returns(T.nilable([::String, ::String])) }
@@ -844,6 +847,12 @@ class Order
 
     sig { returns(T::Boolean) }
     def saved_change_to_subtotal_cents?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_total_cents; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_total_cents?; end
 
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
     def saved_change_to_updated_at; end
@@ -1031,6 +1040,51 @@ class Order
     sig { void }
     def subtotal_cents_will_change!; end
 
+    sig { returns(::Integer) }
+    def total_cents; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def total_cents=(value); end
+
+    sig { returns(T::Boolean) }
+    def total_cents?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def total_cents_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def total_cents_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def total_cents_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def total_cents_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def total_cents_change_to_be_saved; end
+
+    sig { returns(T::Boolean) }
+    def total_cents_changed?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def total_cents_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def total_cents_previous_change; end
+
+    sig { returns(T::Boolean) }
+    def total_cents_previously_changed?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def total_cents_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def total_cents_was; end
+
+    sig { void }
+    def total_cents_will_change!; end
+
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
     def updated_at; end
 
@@ -1105,6 +1159,9 @@ class Order
 
     sig { returns(T::Boolean) }
     def will_save_change_to_subtotal_cents?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_total_cents?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_updated_at?; end

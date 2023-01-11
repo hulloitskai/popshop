@@ -1,0 +1,10 @@
+mutation TaxRateDeleteMutation($input: TaxRateDeleteInput!) {
+  payload: taxRateDelete(input: $input) {
+    account {
+      id
+      taxRates {
+        id
+      }
+    }
+  }
+}

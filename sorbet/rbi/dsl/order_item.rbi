@@ -230,6 +230,9 @@ class OrderItem
     sig { params(args: T.untyped, blk: T.untyped).returns(::ProductItem) }
     def build_product_item(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::TaxRate) }
+    def build_tax_rate(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Order) }
     def create_order(*args, &blk); end
 
@@ -247,6 +250,12 @@ class OrderItem
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::ProductItem) }
     def create_product_item!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::TaxRate) }
+    def create_tax_rate(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::TaxRate) }
+    def create_tax_rate!(*args, &blk); end
 
     sig { returns(T.nilable(::Order)) }
     def order; end
@@ -302,6 +311,15 @@ class OrderItem
 
     sig { returns(T.nilable(::ProductItem)) }
     def reload_product_item; end
+
+    sig { returns(T.nilable(::TaxRate)) }
+    def reload_tax_rate; end
+
+    sig { returns(T.nilable(::TaxRate)) }
+    def tax_rate; end
+
+    sig { params(value: T.nilable(::TaxRate)).void }
+    def tax_rate=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -684,9 +702,6 @@ class OrderItem
     def restore_product_item_id!; end
 
     sig { void }
-    def restore_subtotal_cents!; end
-
-    sig { void }
     def restore_updated_at!; end
 
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
@@ -713,62 +728,11 @@ class OrderItem
     sig { returns(T::Boolean) }
     def saved_change_to_product_item_id?; end
 
-    sig { returns(T.nilable([::Integer, ::Integer])) }
-    def saved_change_to_subtotal_cents; end
-
-    sig { returns(T::Boolean) }
-    def saved_change_to_subtotal_cents?; end
-
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
     def saved_change_to_updated_at; end
 
     sig { returns(T::Boolean) }
     def saved_change_to_updated_at?; end
-
-    sig { returns(::Integer) }
-    def subtotal_cents; end
-
-    sig { params(value: ::Integer).returns(::Integer) }
-    def subtotal_cents=(value); end
-
-    sig { returns(T::Boolean) }
-    def subtotal_cents?; end
-
-    sig { returns(T.nilable(::Integer)) }
-    def subtotal_cents_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def subtotal_cents_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def subtotal_cents_came_from_user?; end
-
-    sig { returns(T.nilable([::Integer, ::Integer])) }
-    def subtotal_cents_change; end
-
-    sig { returns(T.nilable([::Integer, ::Integer])) }
-    def subtotal_cents_change_to_be_saved; end
-
-    sig { returns(T::Boolean) }
-    def subtotal_cents_changed?; end
-
-    sig { returns(T.nilable(::Integer)) }
-    def subtotal_cents_in_database; end
-
-    sig { returns(T.nilable([::Integer, ::Integer])) }
-    def subtotal_cents_previous_change; end
-
-    sig { returns(T::Boolean) }
-    def subtotal_cents_previously_changed?; end
-
-    sig { returns(T.nilable(::Integer)) }
-    def subtotal_cents_previously_was; end
-
-    sig { returns(T.nilable(::Integer)) }
-    def subtotal_cents_was; end
-
-    sig { void }
-    def subtotal_cents_will_change!; end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
     def updated_at; end
@@ -826,9 +790,6 @@ class OrderItem
 
     sig { returns(T::Boolean) }
     def will_save_change_to_product_item_id?; end
-
-    sig { returns(T::Boolean) }
-    def will_save_change_to_subtotal_cents?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_updated_at?; end

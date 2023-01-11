@@ -10,6 +10,9 @@ export const typePolicies: StrictTypedTypePolicies = {
   Account: {
     fields: {
       orders: relayStylePagination(),
+      taxRates: {
+        merge: false,
+      },
     },
   },
 };

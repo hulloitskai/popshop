@@ -6,7 +6,7 @@ class OrderPolicy < ApplicationPolicy
   sig { returns(T::Boolean) }
   def show?
     user = authenticate!
-    user.orders.include?(record!)
+    user.accounts.include?(record!.account)
   end
 
   alias_rule :edit?, to: :show?

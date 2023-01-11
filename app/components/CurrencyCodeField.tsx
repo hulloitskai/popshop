@@ -26,7 +26,7 @@ const CurrencyCodeField: FC<CurrencyCodeFieldProps> = props => {
   return (
     <Select
       data={selectData}
-      itemComponent={Item}
+      itemComponent={CurrencyCodeSelectItem}
       searchable
       nothingFound="No matching currency"
       placeholder={loading ? "Loading..." : undefined}
@@ -38,18 +38,19 @@ const CurrencyCodeField: FC<CurrencyCodeFieldProps> = props => {
 
 export default CurrencyCodeField;
 
-type ItemProps = ComponentPropsWithoutRef<"div"> &
+type CurrencyCodeSelectItemProps = ComponentPropsWithoutRef<"div"> &
   Omit<CurrencyCodeFieldCurrencyFragment, "__typename">;
 
-const Item = forwardRef<HTMLDivElement, ItemProps>(
-  ({ name, code, symbol, ...otherProps }, ref) => (
-    <Box {...{ ref }} {...otherProps}>
-      <Text>
-        {code} ({symbol})
-      </Text>
-      <Text color="gray.6" mt={-4}>
-        {name}
-      </Text>
-    </Box>
-  ),
-);
+const CurrencyCodeSelectItem = forwardRef<
+  HTMLDivElement,
+  CurrencyCodeSelectItemProps
+>(({ name, code, symbol, ...otherProps }, ref) => (
+  <Box {...{ ref }} {...otherProps}>
+    <Text>
+      {code} ({symbol})
+    </Text>
+    <Text color="gray.6" mt={-4}>
+      {name}
+    </Text>
+  </Box>
+));

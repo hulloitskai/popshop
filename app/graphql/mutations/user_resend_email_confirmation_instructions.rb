@@ -4,7 +4,7 @@
 module Mutations
   class UserResendEmailConfirmationInstructions < BaseMutation
     class Payload < T::Struct
-      const :success, T::Boolean
+      const :success, TrueClass, default: true
     end
 
     # == Fields
@@ -30,7 +30,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Email already confirmed."
         end
       end
-      Payload.new(success: true)
+      Payload.new
     end
   end
 end

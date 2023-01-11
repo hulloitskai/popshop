@@ -1,21 +1,18 @@
 # typed: strict
 # frozen_string_literal: true
 
-class ProductItemPolicy < ApplicationPolicy
+class TaxRatePolicy < ApplicationPolicy
   # == Rules
   sig { returns(T::Boolean) }
   def edit?
     user = authenticate!
-    user.accounts.include?(record!.account!)
+    user.accounts.include?(record!.account)
   end
-
-  # == Scopes
-  relation_scope(&:kept)
 
   private
 
   # == Helpers ==
-  sig { returns(ProductItem) }
+  sig { returns(TaxRate) }
   def record!
     T.must(record)
   end

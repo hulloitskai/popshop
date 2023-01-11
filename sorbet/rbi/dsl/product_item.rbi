@@ -241,6 +241,9 @@ class ProductItem
     sig { params(args: T.untyped, blk: T.untyped).returns(::Product) }
     def build_product(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::TaxRate) }
+    def build_tax_rate(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Account) }
     def create_account(*args, &blk); end
 
@@ -252,6 +255,12 @@ class ProductItem
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Product) }
     def create_product!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::TaxRate) }
+    def create_tax_rate(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::TaxRate) }
+    def create_tax_rate!(*args, &blk); end
 
     sig { returns(T::Array[T.untyped]) }
     def order_item_ids; end
@@ -292,6 +301,15 @@ class ProductItem
 
     sig { returns(T.nilable(::Product)) }
     def reload_product; end
+
+    sig { returns(T.nilable(::TaxRate)) }
+    def reload_tax_rate; end
+
+    sig { returns(T.nilable(::TaxRate)) }
+    def tax_rate; end
+
+    sig { params(value: T.nilable(::TaxRate)).void }
+    def tax_rate=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -932,6 +950,9 @@ class ProductItem
     def restore_stripe_product_id!; end
 
     sig { void }
+    def restore_tax_rate_id!; end
+
+    sig { void }
     def restore_units!; end
 
     sig { void }
@@ -1002,6 +1023,12 @@ class ProductItem
 
     sig { returns(T::Boolean) }
     def saved_change_to_stripe_product_id?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_tax_rate_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_tax_rate_id?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_units; end
@@ -1104,6 +1131,51 @@ class ProductItem
 
     sig { void }
     def stripe_product_id_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def tax_rate_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def tax_rate_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def tax_rate_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def tax_rate_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def tax_rate_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def tax_rate_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def tax_rate_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def tax_rate_id_change_to_be_saved; end
+
+    sig { returns(T::Boolean) }
+    def tax_rate_id_changed?; end
+
+    sig { returns(T.nilable(::String)) }
+    def tax_rate_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def tax_rate_id_previous_change; end
+
+    sig { returns(T::Boolean) }
+    def tax_rate_id_previously_changed?; end
+
+    sig { returns(T.nilable(::String)) }
+    def tax_rate_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def tax_rate_id_was; end
+
+    sig { void }
+    def tax_rate_id_will_change!; end
 
     sig { returns(T.nilable(::String)) }
     def units; end
@@ -1227,6 +1299,9 @@ class ProductItem
 
     sig { returns(T::Boolean) }
     def will_save_change_to_stripe_product_id?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_tax_rate_id?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_units?; end

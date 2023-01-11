@@ -11,6 +11,7 @@
 #  status                      :string           not null
 #  stripe_checkout_session_url :string
 #  subtotal_cents              :integer          not null
+#  total_cents                 :integer          not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  account_id                  :uuid             not null
@@ -34,6 +35,7 @@
 #  fk_rails_...  (customer_id => customers.id)
 #  fk_rails_...  (product_id => products.id)
 #
+# rubocop:enable Layout/LineLength
 
 class Order < ApplicationRecord
   # == Concerns
@@ -46,7 +48,13 @@ class Order < ApplicationRecord
   # == Attributes
   attribute :code, default: -> { generate_code }
   enumerize :status, in: %w[pending paid cancelled], default: "pending"
+
   monetize :subtotal_cents,
+           with_model_currency: :currency_code,
+           numericality: {
+             greater_than_or_equal_to: 0,
+           }
+  monetize :total_cents,
            with_model_currency: :currency_code,
            numericality: {
              greater_than_or_equal_to: 0,
@@ -95,6 +103,10 @@ class Order < ApplicationRecord
 
   # == Validations: Product
   validate :validate_product_account
+
+  # == Callbacks
+  before_validation :set_subtotal_cents
+  before_validation :set_total_cents
 
   # == Callbacks: Stripe
   after_create_commit :create_stripe_checkout_session
@@ -150,7 +162,11 @@ class Order < ApplicationRecord
       T::Hash[ProductItem, Integer],
     )
     product_item_quantities.map do |product_item, quantity|
-      { price: product_item.stripe_price_id!, quantity: }
+      {
+        price: product_item.stripe_price_id!,
+        tax_rates: [product_item.stripe_tax_rate_id].compact.presence,
+        quantity:,
+      }
     end
   end
 
@@ -222,11 +238,27 @@ class Order < ApplicationRecord
     end
   end
 
-  # == Callbacks: Subtotal
+  # == Callbacks
   sig { void }
   def set_subtotal_cents
-    item_cents = T.let(items.pluck(:subtotal_cents), T::Array[Integer])
-    self.subtotal_cents = item_cents.sum
+    items_by_product_item = items.group_by(&:product_item!)
+    item_price_cents = items_by_product_item.sum do |product_item, items|
+      product_item.price_cents * items.length
+    end
+    self.subtotal_cents = item_price_cents
+  end
+
+  sig { void }
+  def set_total_cents
+    return if subtotal_cents.blank?
+    items_by_product_item = items.group_by(&:product_item!)
+    tax_cents = items_by_product_item.sum do |product_item, items|
+      product_item.tax_rate_percentage.try! do |percentage|
+        percentage = T.let(percentage, Float)
+        product_item.price_cents * items.length * percentage / 100
+      end || 0
+    end.to_i
+    self.total_cents = subtotal_cents + tax_cents
   end
 end
 

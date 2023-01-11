@@ -15,6 +15,7 @@
       "OrderQuestionResponse",
       "Product",
       "ProductItem",
+      "TaxRate",
       "User"
     ]
   }

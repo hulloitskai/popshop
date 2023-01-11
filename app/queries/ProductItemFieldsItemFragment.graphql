@@ -6,6 +6,9 @@ fragment ProductItemFieldsItemFragment on ProductItem {
   }
   orderScope
   price
+  taxRate {
+    id
+  }
   questions {
     id
     ...OrderQuestionFieldsQuestionFragment

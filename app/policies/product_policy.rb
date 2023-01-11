@@ -6,7 +6,7 @@ class ProductPolicy < ApplicationPolicy
   sig { returns(T::Boolean) }
   def edit?
     user = authenticate!
-    user.products.include?(record!)
+    user.accounts.include?(record!.account)
   end
 
   sig { returns(T::Boolean) }

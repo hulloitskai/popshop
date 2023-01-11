@@ -20,6 +20,7 @@ import type {
 
 import { OrderScope } from "~/queries";
 import type { ProductItemFieldsItemFragment } from "~/queries";
+import TaxRateField from "./TaxRateField";
 
 export type ProductItemFieldsProps<
   Values,
@@ -37,14 +38,16 @@ export type ProductItemValues = {
   readonly units: string;
   readonly orderScope: OrderScope;
   readonly price: string;
+  readonly taxRateId: string;
   readonly questions: OrderQuestionValues[];
 };
 
 export type ProductItemValuesForSubmission = Omit<
   ProductItemValues,
-  "key" | "units" | "questions"
+  "key" | "units" | "questions" | "taxRateId"
 > & {
   readonly units?: string;
+  readonly taxRateId?: string;
   readonly questions: OrderQuestionValuesForSubmission[];
 };
 
@@ -118,6 +121,11 @@ const ProductItemFields = <
         {...{ currencyCode }}
         {...getInputProps("price")}
       />
+      <TaxRateField
+        label="Tax Rate"
+        clearable
+        {...getInputProps("taxRateId")}
+      />
       {orderScope === OrderScope.PerUnit && (
         <TextInput
           label="Units"
@@ -181,7 +189,8 @@ const ProductItemFields = <
 ProductItemFields.initialValues = (
   item?: ProductItemFieldsItemFragment,
 ): ProductItemValues => {
-  const { name, description, units, orderScope, price, questions } = item ?? {};
+  const { name, description, units, orderScope, price, taxRate, questions } =
+    item ?? {};
   return {
     key: randomId(),
     name: name || "",
@@ -189,6 +198,7 @@ ProductItemFields.initialValues = (
     units: orderScope === OrderScope.PerUnit ? units?.plural || "" : "",
     orderScope: orderScope || OrderScope.PerUnit,
     price: price || "",
+    taxRateId: taxRate?.id || "",
     questions: (questions || []).map(OrderQuestionFields.initialValues),
   };
 };
@@ -196,12 +206,14 @@ ProductItemFields.initialValues = (
 ProductItemFields.transformValues = ({
   units,
   questions,
+  taxRateId,
   ...values
 }: ProductItemValues): ProductItemValuesForSubmission => {
   const { orderScope } = values;
   return {
     ...omit(values, "key"),
     units: orderScope === OrderScope.PerUnit ? units : units,
+    taxRateId: taxRateId || undefined,
     questions: questions.map(OrderQuestionFields.transformValues),
   };
 };

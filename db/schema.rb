@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_05_175836) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_11_215102) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -155,7 +155,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_05_175836) do
     t.uuid "product_item_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "subtotal_cents", null: false
     t.index ["order_id"], name: "index_order_items_on_order_id"
     t.index ["product_item_id"], name: "index_order_items_on_product_item_id"
   end
@@ -191,6 +190,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_05_175836) do
     t.string "stripe_checkout_session_url"
     t.uuid "account_id", null: false
     t.integer "subtotal_cents", null: false
+    t.integer "total_cents", null: false
     t.index ["account_id"], name: "index_orders_on_account_id"
     t.index ["code"], name: "index_orders_on_code", unique: true
     t.index ["customer_id"], name: "index_orders_on_customer_id"
@@ -213,9 +213,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_05_175836) do
     t.string "stripe_price_id"
     t.datetime "discarded_at", precision: nil
     t.uuid "question_ids", default: [], null: false, array: true
+    t.uuid "tax_rate_id"
     t.index ["product_id"], name: "index_product_items_on_product_id"
     t.index ["stripe_price_id"], name: "index_product_items_on_stripe_price_id", unique: true
     t.index ["stripe_product_id"], name: "index_product_items_on_stripe_product_id", unique: true
+    t.index ["tax_rate_id"], name: "index_product_items_on_tax_rate_id"
   end
 
   create_table "products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -231,6 +233,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_05_175836) do
     t.index ["account_id", "name"], name: "index_products_on_account_id_and_name", unique: true
     t.index ["account_id", "slug"], name: "index_products_on_account_id_and_slug", unique: true
     t.index ["account_id"], name: "index_products_on_account_id"
+  end
+
+  create_table "tax_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.string "name", null: false
+    t.float "percentage", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "stripe_tax_rate_id"
+    t.index ["account_id", "name"], name: "index_tax_rates_uniqueness", unique: true
+    t.index ["account_id"], name: "index_tax_rates_on_account_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -271,6 +284,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_05_175836) do
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "products"
   add_foreign_key "product_items", "products"
+  add_foreign_key "product_items", "tax_rates"
   add_foreign_key "products", "accounts"
+  add_foreign_key "tax_rates", "accounts"
   add_foreign_key "users", "accounts", column: "primary_account_id"
 end

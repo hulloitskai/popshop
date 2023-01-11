@@ -16,6 +16,7 @@ module Types
     field :owner, UserType, null: false
     field :products, [ProductType], null: false, authorized_scope: true
     field :stripe_dashboard_url, String
+    field :tax_rates, [TaxRateType], null: false
 
     # == Resolvers
     sig { returns(GraphQL::Connections::Base) }

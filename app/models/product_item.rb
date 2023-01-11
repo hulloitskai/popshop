@@ -18,16 +18,19 @@
 #  product_id        :uuid             not null
 #  stripe_price_id   :string
 #  stripe_product_id :string
+#  tax_rate_id       :uuid
 #
 # Indexes
 #
 #  index_product_items_on_product_id         (product_id)
 #  index_product_items_on_stripe_price_id    (stripe_price_id) UNIQUE
 #  index_product_items_on_stripe_product_id  (stripe_product_id) UNIQUE
+#  index_product_items_on_tax_rate_id        (tax_rate_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (product_id => products.id)
+#  fk_rails_...  (tax_rate_id => tax_rates.id)
 #
 
 class ProductItem < ApplicationRecord
@@ -78,6 +81,7 @@ class ProductItem < ApplicationRecord
 
   # == Associations
   belongs_to :product
+  belongs_to :tax_rate, optional: true
   has_one :account, through: :product
   has_many :questions,
            class_name: "OrderQuestion",
@@ -116,12 +120,21 @@ class ProductItem < ApplicationRecord
   validate :validate_name_uniqueness
   validate :validate_questions_count
 
+  # == Validations: Tax Rate
+  validate :validate_tax_rate_account
+
   # == Callbacks
   before_validation :normalize_units
   before_validation :normalize_question_ids
+
+  # == Callbacks: Stripe
   after_create_commit :create_stripe_product
   after_discard :deactivate_stripe_product
   after_destroy_commit :deactivate_stripe_product
+
+  # == Methods: Tax Rate
+  sig { returns(T.nilable(Float)) }
+  def tax_rate_percentage = tax_rate&.percentage
 
   # == Methods: Stripe
   sig { returns(T.nilable(String)) }
@@ -169,6 +182,16 @@ class ProductItem < ApplicationRecord
         { stripe_account: stripe_account_id! },
       )
     end
+  end
+
+  sig { returns(T.nilable(String)) }
+  def stripe_tax_rate_id
+    tax_rate&.stripe_tax_rate_id
+  end
+
+  sig { returns(T.nilable(Stripe::TaxRate)) }
+  def stripe_tax_rate
+    tax_rate&.stripe_tax_rate
   end
 
   sig { returns(Stripe::Product) }
@@ -250,6 +273,17 @@ class ProductItem < ApplicationRecord
   end
 
   private
+
+  # == Validations: Tax Rate
+  sig { void }
+  def validate_tax_rate_account
+    tax_rate.try! do |tax_rate|
+      tax_rate = T.let(tax_rate, TaxRate)
+      if tax_rate.account != account!
+        errors.add(:tax_rate, :invalid, message: "must belong to account")
+      end
+    end
+  end
 
   # == Validations
   sig { void }

@@ -18,5 +18,8 @@ module Types
     field :product_update, mutation: Mutations::ProductUpdate
 
     field :order_create, mutation: Mutations::OrderCreate
+
+    field :tax_rate_create, mutation: Mutations::TaxRateCreate
+    field :tax_rate_delete, mutation: Mutations::TaxRateDelete
   end
 end

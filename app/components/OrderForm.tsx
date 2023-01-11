@@ -75,10 +75,6 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
   const { values, onSubmit, setErrors, getInputProps } = form;
   const { itemsByProductItemId } = values;
 
-  useEffect(() => {
-    console.log(itemsByProductItemId);
-  }, [itemsByProductItemId]);
-
   // == Mutation
   const onError = useApolloErrorCallback("Failed to submit order");
   const [runMutation, { loading }] = useMutation(OrderCreateMutationDocument, {
@@ -95,16 +91,30 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
     onError,
   });
 
-  // == Total
-  const total = useMemo(() => {
-    const amounts = Object.entries(itemsByProductItemId).map(
+  // == Subtotal
+  const subtotal = useMemo(() => {
+    const prices = Object.entries(itemsByProductItemId).map(
       ([productItemId, items]) => {
         const { price } = productItemsById[productItemId]!;
         return items.length * parseFloat(price);
       },
     );
-    return sum(amounts);
+    return sum(prices);
   }, [itemsByProductItemId]);
+  const formattedSubtotal = useFormattedCurrencyAmount(subtotal, currency);
+
+  // == Total
+  const total = useMemo(() => {
+    const taxes = Object.entries(itemsByProductItemId).map(
+      ([productItemId, items]) => {
+        const { taxRatePercentage, price } = productItemsById[productItemId]!;
+        return taxRatePercentage
+          ? (items.length * parseFloat(price) * taxRatePercentage) / 100
+          : 0;
+      },
+    );
+    return subtotal + sum(taxes);
+  }, [subtotal, itemsByProductItemId]);
   const formattedTotal = useFormattedCurrencyAmount(total, currency);
 
   // == Markup
@@ -137,15 +147,33 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
             />
           );
         })}
-        {total > 0 && (
+        {subtotal > 0 && (
           <>
             <Divider />
-            <Group position="apart">
-              <Text weight={600}>Total</Text>
-              <Badge size="lg" variant="filled">
-                {formattedTotal}
-              </Badge>
-            </Group>
+            <Box>
+              <Group position="apart">
+                <Box>
+                  <Text weight={600}>Subtotal</Text>
+                  <Text size="xs" color="dimmed" mt={-6}>
+                    (before taxes)
+                  </Text>
+                </Box>
+                <Badge size="lg" variant="outline">
+                  {formattedSubtotal}
+                </Badge>
+              </Group>
+              <Group position="apart">
+                <Box>
+                  <Text weight={600}>Total</Text>
+                  <Text size="xs" color="dimmed" mt={-6}>
+                    (after taxes)
+                  </Text>
+                </Box>
+                <Badge size="lg" variant="filled">
+                  {formattedTotal}
+                </Badge>
+              </Group>
+            </Box>
             <Space />
             {Object.values(itemsByProductItemId)
               .flat()

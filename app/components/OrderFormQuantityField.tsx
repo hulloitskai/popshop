@@ -1,6 +1,9 @@
 import type { FC } from "react";
 import { fill } from "lodash-es";
-import { useFormattedCurrencyAmount } from "~/helpers/currency";
+import {
+  formatCurrencyAmount,
+  useFormattedCurrencyAmount,
+} from "~/helpers/currency";
 
 import { Text } from "@mantine/core";
 import type { BoxProps } from "@mantine/core";
@@ -28,7 +31,15 @@ export type OrderFormQuantityFieldProps = BoxProps & {
 const OrderFormQuantityField: FC<OrderFormQuantityFieldProps> = ({
   form: { setFieldValue },
   product: { currency, items },
-  productItem: { id: productItemId, name, units, orderScope, price, questions },
+  productItem: {
+    id: productItemId,
+    name,
+    units,
+    orderScope,
+    price,
+    taxRatePercentage,
+    questions,
+  },
   quantity,
   ...otherProps
 }) => {
@@ -36,20 +47,40 @@ const OrderFormQuantityField: FC<OrderFormQuantityFieldProps> = ({
     () => (quantity == 1 ? units?.singular : units?.plural),
     [quantity],
   );
+
   const unitAmount = useMemo(() => parseFloat(price), [price]);
-  const totalAmount = useMemo(
+  const taxAmount = useMemo(() => {
+    if (taxRatePercentage) {
+      return (quantity * unitAmount * taxRatePercentage) / 100;
+    }
+  }, [quantity, unitAmount, taxRatePercentage]);
+  const formattedUnitAmount = useFormattedCurrencyAmount(unitAmount, currency);
+
+  // == Subtotal
+  const subtotalAmount = useMemo(
     () => unitAmount * quantity,
     [unitAmount, quantity],
   );
-  const formattedUnitAmount = useFormattedCurrencyAmount(unitAmount, currency);
-  const formattedTotalAmount = useFormattedCurrencyAmount(
-    totalAmount,
+  const formattedSubtotalAmount = useFormattedCurrencyAmount(
+    subtotalAmount,
     currency,
   );
 
+  // == Total
+  const totalAmount = useMemo(() => {
+    if (taxAmount) {
+      return subtotalAmount + taxAmount * quantity;
+    }
+  }, [subtotalAmount, taxAmount, quantity]);
+  const formattedTotalAmount = useMemo(() => {
+    if (totalAmount) {
+      return formatCurrencyAmount(totalAmount, currency);
+    }
+  }, [totalAmount, currency]);
+
   // == Markup
   return (
-    <Box {...otherProps}>
+    <Box mb={taxRatePercentage ? 10 : 0} {...otherProps}>
       {items.length > 1 && <Text weight={600}>{name}</Text>}
       <Group spacing={6}>
         <NumberInput
@@ -69,9 +100,16 @@ const OrderFormQuantityField: FC<OrderFormQuantityFieldProps> = ({
               {children}
               {!!unitsLabel && <Text color="gray.7">{unitsLabel}</Text>}
               <Text color="gray.7">×</Text>
-              <Text color="gray.7" weight={500}>
-                {formattedUnitAmount}
-              </Text>
+              <Stack spacing={0} pos="relative" top={taxRatePercentage ? 8 : 0}>
+                <Text color="gray.7" weight={500}>
+                  {formattedUnitAmount}
+                </Text>
+                {!!taxRatePercentage && (
+                  <Text size="xs" color="gray.6" mt={-5}>
+                    (with {taxRatePercentage}% tax)
+                  </Text>
+                )}
+              </Stack>
             </Group>
           )}
           onChange={quantity => {
@@ -102,10 +140,22 @@ const OrderFormQuantityField: FC<OrderFormQuantityFieldProps> = ({
             }
           }}
         />
-        {!!totalAmount && (
-          <Badge variant="outline" color="indigo" size="lg">
-            {formattedTotalAmount}
-          </Badge>
+        {!!subtotalAmount && (
+          <Stack
+            align="end"
+            spacing={2}
+            pos="relative"
+            top={totalAmount ? 11 : 0}
+          >
+            <Badge variant="outline" color="indigo" size="lg">
+              {formattedSubtotalAmount}
+            </Badge>
+            {!!totalAmount && (
+              <Text size="xs" color="gray.6">
+                ({formattedTotalAmount} after tax)
+              </Text>
+            )}
+          </Stack>
         )}
       </Group>
     </Box>

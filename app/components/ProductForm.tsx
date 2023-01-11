@@ -76,7 +76,6 @@ const ProductForm: FC<ProductFormProps> = ({
     removeListItem,
     onSubmit,
   } = form;
-  console.log({ items });
 
   // == Effects
   useDidUpdate(() => setErrors(errors), [errors]);

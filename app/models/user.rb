@@ -58,9 +58,6 @@ class User < ApplicationRecord
            dependent: :destroy
   belongs_to :primary_account, class_name: "Account", optional: true
 
-  has_many :products, through: :accounts
-  has_many :orders, through: :accounts
-
   sig { returns(Account) }
   def primary_account!
     primary_account or raise ActiveRecord::RecordNotFound

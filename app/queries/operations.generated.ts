@@ -185,7 +185,7 @@ export type OrderFormProductFragment = (
     & Pick<Types.Currency, 'code' | 'exponent'>
   ), items: Array<(
     { __typename?: 'ProductItem' }
-    & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price'>
+    & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price' | 'taxRatePercentage'>
     & { units: Types.Maybe<(
       { __typename?: 'Units' }
       & Pick<Types.Units, 'singular' | 'plural'>
@@ -198,7 +198,7 @@ export type OrderFormProductFragment = (
 
 export type OrderFormProductItemFragment = (
   { __typename?: 'ProductItem' }
-  & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price'>
+  & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price' | 'taxRatePercentage'>
   & { units: Types.Maybe<(
     { __typename?: 'Units' }
     & Pick<Types.Units, 'singular' | 'plural'>
@@ -329,6 +329,9 @@ export type ProductEditPageQuery = (
       & { units: Types.Maybe<(
         { __typename?: 'Units' }
         & Pick<Types.Units, 'plural'>
+      )>, taxRate: Types.Maybe<(
+        { __typename?: 'TaxRate' }
+        & Pick<Types.TaxRate, 'id'>
       )>, questions: Array<(
         { __typename?: 'OrderQuestion' }
         & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
@@ -349,6 +352,9 @@ export type ProductFormProductFragment = (
     & { units: Types.Maybe<(
       { __typename?: 'Units' }
       & Pick<Types.Units, 'plural'>
+    )>, taxRate: Types.Maybe<(
+      { __typename?: 'TaxRate' }
+      & Pick<Types.TaxRate, 'id'>
     )>, questions: Array<(
       { __typename?: 'OrderQuestion' }
       & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
@@ -362,6 +368,9 @@ export type ProductItemFieldsItemFragment = (
   & { units: Types.Maybe<(
     { __typename?: 'Units' }
     & Pick<Types.Units, 'plural'>
+  )>, taxRate: Types.Maybe<(
+    { __typename?: 'TaxRate' }
+    & Pick<Types.TaxRate, 'id'>
   )>, questions: Array<(
     { __typename?: 'OrderQuestion' }
     & Pick<Types.OrderQuestion, 'id' | 'prompt' | 'type' | 'choices'>
@@ -376,7 +385,7 @@ export type ProductPageProductFragment = (
     & Pick<Types.Currency, 'code' | 'exponent'>
   ), items: Array<(
     { __typename?: 'ProductItem' }
-    & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price'>
+    & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price' | 'taxRatePercentage'>
     & { units: Types.Maybe<(
       { __typename?: 'Units' }
       & Pick<Types.Units, 'singular' | 'plural'>
@@ -405,7 +414,7 @@ export type ProductPageQuery = (
       & Pick<Types.Currency, 'code' | 'exponent'>
     ), items: Array<(
       { __typename?: 'ProductItem' }
-      & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price'>
+      & Pick<Types.ProductItem, 'id' | 'name' | 'orderScope' | 'price' | 'taxRatePercentage'>
       & { units: Types.Maybe<(
         { __typename?: 'Units' }
         & Pick<Types.Units, 'singular' | 'plural'>
@@ -434,6 +443,77 @@ export type ProductUpdateMutation = (
       & Pick<Types.InputFieldError, 'field' | 'message'>
     )>> }
   ) }
+);
+
+export type TaxRateCreateMutationVariables = Types.Exact<{
+  input: Types.TaxRateCreateInput;
+}>;
+
+
+export type TaxRateCreateMutation = (
+  { __typename?: 'Mutation' }
+  & { payload: (
+    { __typename?: 'TaxRateCreatePayload' }
+    & { taxRate: Types.Maybe<(
+      { __typename?: 'TaxRate' }
+      & Pick<Types.TaxRate, 'id'>
+      & { account: (
+        { __typename?: 'Account' }
+        & Pick<Types.Account, 'id'>
+        & { taxRates: Array<(
+          { __typename?: 'TaxRate' }
+          & Pick<Types.TaxRate, 'id'>
+        )> }
+      ) }
+    )>, errors: Types.Maybe<Array<(
+      { __typename?: 'InputFieldError' }
+      & Pick<Types.InputFieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type TaxRateDeleteMutationVariables = Types.Exact<{
+  input: Types.TaxRateDeleteInput;
+}>;
+
+
+export type TaxRateDeleteMutation = (
+  { __typename?: 'Mutation' }
+  & { payload: (
+    { __typename?: 'TaxRateDeletePayload' }
+    & { account: Types.Maybe<(
+      { __typename?: 'Account' }
+      & Pick<Types.Account, 'id'>
+      & { taxRates: Array<(
+        { __typename?: 'TaxRate' }
+        & Pick<Types.TaxRate, 'id'>
+      )> }
+    )> }
+  ) }
+);
+
+export type TaxRateFieldQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type TaxRateFieldQuery = (
+  { __typename?: 'Query' }
+  & { viewer: Types.Maybe<(
+    { __typename?: 'User' }
+    & Pick<Types.User, 'id'>
+    & { primaryAccount: (
+      { __typename?: 'Account' }
+      & Pick<Types.Account, 'id'>
+      & { taxRates: Array<(
+        { __typename?: 'TaxRate' }
+        & Pick<Types.TaxRate, 'id' | 'name' | 'percentage'>
+      )> }
+    ) }
+  )> }
+);
+
+export type TaxRateFieldTaxRateFragment = (
+  { __typename?: 'TaxRate' }
+  & Pick<Types.TaxRate, 'id' | 'name' | 'percentage'>
 );
 
 export type TestFeedSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
@@ -596,12 +676,13 @@ export const DashboardPageProductFragment = {"kind":"Document","definitions":[{"
 export const DashboardStripeAlertAccountFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"DashboardStripeAlertAccountFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Account"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isStripeConnected"}},{"kind":"Field","name":{"kind":"Name","value":"stripeDashboardUrl"}}]}}]} as unknown as DocumentNode<DashboardStripeAlertAccountFragment, unknown>;
 export const OrderCardOrderFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderCardOrderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Order"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"customer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"productItem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<OrderCardOrderFragment, unknown>;
 export const OrderQuestionFieldsQuestionFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderQuestionFieldsQuestionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"OrderQuestion"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"prompt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"choices"}}]}}]} as unknown as DocumentNode<OrderQuestionFieldsQuestionFragment, unknown>;
-export const ProductItemFieldsItemFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductItemFieldsItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderQuestionFieldsQuestionFragment"}}]}}]}},...OrderQuestionFieldsQuestionFragment.definitions]} as unknown as DocumentNode<ProductItemFieldsItemFragment, unknown>;
+export const ProductItemFieldsItemFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductItemFieldsItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"taxRate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderQuestionFieldsQuestionFragment"}}]}}]}},...OrderQuestionFieldsQuestionFragment.definitions]} as unknown as DocumentNode<ProductItemFieldsItemFragment, unknown>;
 export const ProductFormProductFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductFormProductFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"currency"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductItemFieldsItemFragment"}}]}}]}},...ProductItemFieldsItemFragment.definitions]} as unknown as DocumentNode<ProductFormProductFragment, unknown>;
 export const OrderQuestionResponseFieldQuestionFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderQuestionResponseFieldQuestionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"OrderQuestion"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"prompt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"choices"}}]}}]} as unknown as DocumentNode<OrderQuestionResponseFieldQuestionFragment, unknown>;
-export const OrderFormProductItemFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderFormProductItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"singular"}},{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderQuestionResponseFieldQuestionFragment"}}]}}]}},...OrderQuestionResponseFieldQuestionFragment.definitions]} as unknown as DocumentNode<OrderFormProductItemFragment, unknown>;
+export const OrderFormProductItemFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderFormProductItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"singular"}},{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"taxRatePercentage"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderQuestionResponseFieldQuestionFragment"}}]}}]}},...OrderQuestionResponseFieldQuestionFragment.definitions]} as unknown as DocumentNode<OrderFormProductItemFragment, unknown>;
 export const OrderFormProductFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"OrderFormProductFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"currency"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"exponent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderFormProductItemFragment"}}]}}]}},...OrderFormProductItemFragment.definitions]} as unknown as DocumentNode<OrderFormProductFragment, unknown>;
 export const ProductPageProductFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductPageProductFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"canEdit"}},{"kind":"Field","name":{"kind":"Name","value":"editUrl"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"OrderFormProductFragment"}}]}},...OrderFormProductFragment.definitions]} as unknown as DocumentNode<ProductPageProductFragment, unknown>;
+export const TaxRateFieldTaxRateFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TaxRateFieldTaxRateFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TaxRate"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"percentage"}}]}}]} as unknown as DocumentNode<TaxRateFieldTaxRateFragment, unknown>;
 export const UserSettingsPageViewerFragment = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserSettingsPageViewerFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"unconfirmedEmail"}}]}}]} as unknown as DocumentNode<UserSettingsPageViewerFragment, unknown>;
 export const AccountOnboardToStripeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AccountOnboardToStripe"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AccountOnboardToStripeInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"payload"},"name":{"kind":"Name","value":"accountOnboardToStripe"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<AccountOnboardToStripe, AccountOnboardToStripeVariables>;
 export const CurrencyAmountFieldQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrencyAmountFieldQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"currencyCode"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"currencyCode"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CurrencyAmountFieldCurrencyFragment"}}]}}]}},...CurrencyAmountFieldCurrencyFragment.definitions]} as unknown as DocumentNode<CurrencyAmountFieldQuery, CurrencyAmountFieldQueryVariables>;
@@ -617,6 +698,9 @@ export const ProductCreatePageQueryDocument = {"kind":"Document","definitions":[
 export const ProductEditPageQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductEditPageQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"productId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AppViewerFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"productId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductFormProductFragment"}}]}}]}},...AppViewerFragment.definitions,...ProductFormProductFragment.definitions]} as unknown as DocumentNode<ProductEditPageQuery, ProductEditPageQueryVariables>;
 export const ProductPageQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductPageQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"productId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AppViewerFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"productId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"currency"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"singular"}},{"kind":"Field","name":{"kind":"Name","value":"plural"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orderScope"}},{"kind":"Field","name":{"kind":"Name","value":"price"}}]}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductPageProductFragment"}}]}}]}},...AppViewerFragment.definitions,...ProductPageProductFragment.definitions]} as unknown as DocumentNode<ProductPageQuery, ProductPageQueryVariables>;
 export const ProductUpdateMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ProductUpdateMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ProductUpdateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"payload"},"name":{"kind":"Name","value":"productUpdate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<ProductUpdateMutation, ProductUpdateMutationVariables>;
+export const TaxRateCreateMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TaxRateCreateMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TaxRateCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"payload"},"name":{"kind":"Name","value":"taxRateCreate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"taxRate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"taxRates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<TaxRateCreateMutation, TaxRateCreateMutationVariables>;
+export const TaxRateDeleteMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TaxRateDeleteMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TaxRateDeleteInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"payload"},"name":{"kind":"Name","value":"taxRateDelete"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"taxRates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<TaxRateDeleteMutation, TaxRateDeleteMutationVariables>;
+export const TaxRateFieldQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TaxRateFieldQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"primaryAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"taxRates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TaxRateFieldTaxRateFragment"}}]}}]}}]}}]}},...TaxRateFieldTaxRateFragment.definitions]} as unknown as DocumentNode<TaxRateFieldQuery, TaxRateFieldQueryVariables>;
 export const TestFeedSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"TestFeedSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"testSubscription"}}]}}]} as unknown as DocumentNode<TestFeedSubscription, TestFeedSubscriptionVariables>;
 export const TestMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TestMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TestMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"testMutation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"model"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"birthday"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<TestMutation, TestMutationVariables>;
 export const TestPageQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TestPageQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"testEcho"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"text"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]},{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AppViewerFragment"}}]}}]}},...AppViewerFragment.definitions]} as unknown as DocumentNode<TestPageQuery, TestPageQueryVariables>;
