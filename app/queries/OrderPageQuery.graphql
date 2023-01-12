@@ -5,6 +5,7 @@ query OrderPageQuery($orderId: ID!) {
   }
   order(id: $orderId) {
     id
+    canEdit
     createdAt
     code
     stripePaymentIntentUrl

@@ -1,0 +1,42 @@
+<p>
+  Hi, <%= @merchant.name %>!
+</p>
+<p>
+  Order <%= @order.code %> has been placed for <%= link_to @product.name, @product %>.
+  <br />
+  <%= link_to "Click here to view order page.", @order %>
+  <br />
+  <%= link_to "Click here to view Stripe payment details.",
+              @order.stripe_payment_intent_url %>
+</p>
+<div>
+  <h2 style="margin-bottom: 0;">Order Summary</h2>
+  <p style="margin: 0; font-style: oblique;">
+    Order placed on <%= l @order.created_at, format: :long %>.
+  </p>
+  <ul style="margin-top: 0;">
+    <% @items_by_product_item.each do |product_item, order_items| %>
+      <li>
+        <%= product_item.name %> × <%= order_items.length %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+<div>
+  <h2 style="margin-bottom: 0;">Customer Information</h2>
+  <table>
+    <tr>
+      <td style="font-weight: 600; min-width: 48px;">
+        Name
+      </td>
+      <td><%= @customer.name %></td>
+    </tr>
+    <tr>
+      <td style="font-weight: 600;">Email</td>
+      <td>
+        <%= link_to @customer.email, "mailto:#{@customer.email_with_name}" %>
+      </td>
+    </tr>
+  </table>
+</div>
+<p style="margin-top: 18px;">Have a great day!</p>

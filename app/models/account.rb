@@ -55,6 +55,21 @@ class Account < ApplicationRecord
   }
   after_destroy_commit :delete_stripe_account if Rails.env.development?
 
+  # == Methods: Members
+  # sig { returns(T::Array[String]) }
+  # def member_emails
+  #   members.pluck(:email)
+  # end
+
+  # sig { returns(T::Array[String]) }
+  # def member_emails_with_name
+  #   members
+  #     .pluck(:email, :name)
+  #     .map do |email, name|
+  #       ActionMailer::Base.email_address_with_name(email, name)
+  #     end
+  # end
+
   # == Methods: Stripe
   sig { returns(T.nilable(Stripe::Account)) }
   def stripe_account

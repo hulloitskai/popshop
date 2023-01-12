@@ -1,0 +1,19 @@
+<p>
+  Hi, <%= @customer.first_name %>!
+</p>
+<p>
+  Your <%= link_to @product.name, @product %> order has been placed.
+  <br />
+  <%= link_to "Click here to view your order.", @order %>
+</p>
+<div>
+  <h2 style="margin-bottom: 0;">Order Summary</h2>
+  <ul>
+    <% @items_by_product_item.each do |product_item, order_items| %>
+      <li>
+        <%= product_item.name %> × <%= order_items.length %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+<p>Have a great day!</p>

@@ -4,19 +4,14 @@
 class OrderPolicy < ApplicationPolicy
   # == Rules
   sig { returns(T::Boolean) }
-  def show?
+  def edit?
     user = authenticate!
     user.accounts.include?(record!.account)
   end
 
-  alias_rule :edit?, to: :show?
-
   # == Scopes
   relation_scope do |relation|
-    user = authenticate!
-    relation
-      .where(account: user.accounts)
-      .where.not(status: %w[pending cancelled])
+    relation.where.not(status: %w[pending cancelled])
   end
 
   private

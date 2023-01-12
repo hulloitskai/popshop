@@ -135,6 +135,7 @@ interface Node {
 
 type Order implements Node {
   account: Account!
+  canEdit: Boolean!
   code: String!
   createdAt: DateTime!
   customer: Customer!

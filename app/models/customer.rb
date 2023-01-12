@@ -71,10 +71,15 @@ class Customer < ApplicationRecord
   after_destroy :delete_stripe_customer
   after_save :save_stripe_customer
 
-  # == Methods: Name
+  # == Methods
   sig { returns(String) }
   def name
     "#{first_name} #{last_name}"
+  end
+
+  sig { returns(String) }
+  def email_with_name
+    ActionMailer::Base.email_address_with_name(email, name)
   end
 
   # == Methods: Stripe

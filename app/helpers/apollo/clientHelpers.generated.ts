@@ -54,9 +54,10 @@ export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type OrderKeySpecifier = ('account' | 'code' | 'createdAt' | 'customer' | 'id' | 'items' | 'product' | 'stripeCheckoutSessionUrl' | 'stripePaymentIntentUrl' | 'subtotal' | 'subtotalCents' | 'total' | 'totalCents' | 'url' | OrderKeySpecifier)[];
+export type OrderKeySpecifier = ('account' | 'canEdit' | 'code' | 'createdAt' | 'customer' | 'id' | 'items' | 'product' | 'stripeCheckoutSessionUrl' | 'stripePaymentIntentUrl' | 'subtotal' | 'subtotalCents' | 'total' | 'totalCents' | 'url' | OrderKeySpecifier)[];
 export type OrderFieldPolicy = {
 	account?: FieldPolicy<any> | FieldReadFunction<any>,
+	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
 	code?: FieldPolicy<any> | FieldReadFunction<any>,
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
 	customer?: FieldPolicy<any> | FieldReadFunction<any>,

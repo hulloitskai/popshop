@@ -7,6 +7,9 @@ module Types
     # == Interfaces
     implements NodeType
 
+    # == Fields: Authorization
+    expose_authorization_rules :edit?
+
     # == Fields: Timestamps
     field :created_at, DateTimeType, null: false
 

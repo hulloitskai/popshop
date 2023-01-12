@@ -18,6 +18,7 @@ type OrderPageProps = {
 const OrderPage: PageComponent<OrderPageProps> = ({
   data: {
     order: {
+      canEdit,
       createdAt: createdAtISO,
       code,
       stripePaymentIntentUrl,
@@ -62,34 +63,36 @@ const OrderPage: PageComponent<OrderPageProps> = ({
   // == Markup
   return (
     <Stack>
-      <Alert variant="outline" color="indigo">
-        <Stack spacing={8}>
-          <Text size="sm">
-            Displaying order information for order{" "}
-            <Code
-              color="indigo"
-              sx={({ colors }) => ({ color: colors.indigo[9] })}
-            >
-              {code}
-            </Code>
-            .
-          </Text>
-          {!!stripePaymentIntentUrl && (
-            <Button
-              component="a"
-              href={stripePaymentIntentUrl}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              variant="outline"
-              leftIcon={<ExternalLinkIcon />}
-              h="unset"
-              py={6}
-            >
-              Open in Stripe
-            </Button>
-          )}
-        </Stack>
-      </Alert>
+      {canEdit && (
+        <Alert variant="outline" color="indigo">
+          <Stack spacing={8}>
+            <Text size="sm">
+              Displaying order information for order{" "}
+              <Code
+                color="indigo"
+                sx={({ colors }) => ({ color: colors.indigo[9] })}
+              >
+                {code}
+              </Code>
+              .
+            </Text>
+            {!!stripePaymentIntentUrl && (
+              <Button
+                component="a"
+                href={stripePaymentIntentUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                variant="outline"
+                leftIcon={<ExternalLinkIcon />}
+                h="unset"
+                py={6}
+              >
+                Open in Stripe
+              </Button>
+            )}
+          </Stack>
+        </Alert>
+      )}
       <Stack spacing={4}>
         <Title order={2} size="h3">
           Customer

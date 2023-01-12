@@ -91,6 +91,12 @@ class User < ApplicationRecord
   after_update_commit :update_account_emails, if: :email_changed?
   before_destroy :remove_primary_account, prepend: true
 
+  # == Methods
+  sig { returns(String) }
+  def email_with_name
+    ActionMailer::Base.email_address_with_name(email, name)
+  end
+
   # == Methods: Admin
   sig { returns(String) }
   def self.admin_email

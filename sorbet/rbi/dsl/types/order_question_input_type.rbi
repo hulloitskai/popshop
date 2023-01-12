@@ -8,6 +8,9 @@ class Types::OrderQuestionInputType
   sig { returns(T.nilable(T::Array[::String])) }
   def choices; end
 
+  sig { returns(T.nilable(T::Boolean)) }
+  def optional; end
+
   sig { returns(::String) }
   def prompt; end
 

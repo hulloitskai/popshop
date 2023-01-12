@@ -159,6 +159,7 @@ export type Node = {
 export type Order = Node & {
   __typename?: 'Order';
   account: Account;
+  canEdit: Scalars['Boolean'];
   code: Scalars['String'];
   createdAt: Scalars['DateTime'];
   customer: Customer;

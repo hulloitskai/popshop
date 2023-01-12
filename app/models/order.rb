@@ -107,10 +107,22 @@ class Order < ApplicationRecord
   # == Callbacks
   before_validation :set_subtotal_cents
   before_validation :set_total_cents
+  after_save_commit :send_emails_upon_payment
 
   # == Callbacks: Stripe
   after_create_commit :create_stripe_checkout_session
   after_destroy_commit :expire_stripe_checkout_session
+
+  # == Emails
+  sig { returns(ActionMailer::MessageDelivery) }
+  def customer_email
+    OrderMailer.customer_email(self)
+  end
+
+  sig { returns(ActionMailer::MessageDelivery) }
+  def merchant_email
+    OrderMailer.merchant_email(self)
+  end
 
   # == Methods: Items
   sig { returns(T::Hash[ProductItem, T::Array[OrderItem]]) }
@@ -259,6 +271,17 @@ class Order < ApplicationRecord
       end || 0
     end.to_i
     self.total_cents = subtotal_cents + tax_cents
+  end
+
+  sig { void }
+  def send_emails_upon_payment
+    status_previous_change.try! do |change|
+      change => [from_status, to_status]
+      if from_status == "pending" && to_status == "paid"
+        customer_email.deliver_later
+        merchant_email.deliver_later
+      end
+    end
   end
 end
 
