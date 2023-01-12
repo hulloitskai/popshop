@@ -33,7 +33,8 @@ class OrderItem < ApplicationRecord
 
   has_many :question_responses,
            class_name: "OrderQuestionResponse",
-           dependent: :destroy
+           dependent: :destroy,
+           autosave: true
 
   sig { returns(Order) }
   def order!
@@ -60,9 +61,6 @@ class OrderItem < ApplicationRecord
               message: "does not belong to the ordered product",
             }
 
-  # == Validations: Question Responses
-  validate :validate_question_responses_count
-
   # == Methods: Questions
   sig { returns(T::Array[String]) }
   def question_ids = product_item!.question_ids
@@ -75,20 +73,5 @@ class OrderItem < ApplicationRecord
   def question_responses_ordered
     responses = question_responses.to_a
     responses.index_by(&:question_id).values_at(*T.unsafe(question_ids))
-  end
-
-  private
-
-  # == Validations: Question Responses
-  sig { void }
-  def validate_question_responses_count
-    if question_responses.size != questions.size
-      errors.add(
-        :question_responses,
-        :wrong_lenth,
-        message: "expected #{questions.size} responses, received \
-          #{question_responses.size}",
-      )
-    end
   end
 end

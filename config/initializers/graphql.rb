@@ -11,7 +11,9 @@ Rails.application.configure do
   end
 
   if Rails.env.development?
-    config.after_initialize { Schema.queries!.listen }
+    config.after_initialize do
+      Schema.queries!.listen
+    end
   end
 end
 

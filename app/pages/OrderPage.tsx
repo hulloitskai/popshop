@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import type { PageComponent } from "~/helpers/inertia";
 import { Code, Text } from "@mantine/core";
 import type { DeepRequired } from "~/helpers/utils";
@@ -22,13 +22,14 @@ const OrderPage: PageComponent<OrderPageProps> = ({
       code,
       stripePaymentIntentUrl,
       subtotal,
+      total,
       customer,
       product,
       items,
     },
   },
 }) => {
-  const { currency, items: productItems } = product;
+  const { currency } = product;
   const createdAtLabel = useMemo(() => {
     const createdAt = DateTime.fromISO(createdAtISO);
     return createdAt.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
@@ -50,8 +51,12 @@ const OrderPage: PageComponent<OrderPageProps> = ({
     [items],
   );
   const productItemsById = useMemo(
-    () => keyBy(productItems, "id"),
-    [productItems],
+    () =>
+      keyBy(
+        items.map(({ productItem }) => productItem),
+        "id",
+      ),
+    [items],
   );
 
   // == Markup
@@ -112,7 +117,30 @@ const OrderPage: PageComponent<OrderPageProps> = ({
             </Text>
             <Text size="sm">{createdAtLabel}</Text>
           </Group>
-          <CurrencyAmountLine {...{ currency }}>{subtotal}</CurrencyAmountLine>
+          <CurrencyAmountLine
+            label={
+              <Group align="center" spacing={4}>
+                <Text span>Subtotal</Text>
+                <Text span size="xs">
+                  (before tax)
+                </Text>
+              </Group>
+            }
+            amount={subtotal}
+            {...{ currency }}
+          />
+          <CurrencyAmountLine
+            label={
+              <Group align="center" spacing={4}>
+                <Text span>Total</Text>
+                <Text span size="xs">
+                  (after tax)
+                </Text>
+              </Group>
+            }
+            amount={total}
+            {...{ currency }}
+          />
           <Divider my={8} />
           <Stack align="start" spacing={4} mt="xs">
             {Object.entries(itemsByProductItemId).map(
@@ -142,15 +170,27 @@ const OrderPage: PageComponent<OrderPageProps> = ({
         <Stack>
           {Object.entries(itemsByProductItemId).flatMap(
             ([productItemId, items]) => {
-              const { name, price } = productItemsById[productItemId]!;
+              const { name, price, taxRate } = productItemsById[productItemId]!;
               return items.map(({ id, questionResponses }, index) => (
                 <Card key={id} withBorder p="xs">
                   <Text weight={600}>
                     {name} <>{items.length > 1 && <>{index + 1}</>}</>
                   </Text>
-                  <CurrencyAmountLine {...{ currency }}>
-                    {price}
-                  </CurrencyAmountLine>
+                  <CurrencyAmountLine
+                    label="Price"
+                    amount={price}
+                    {...{ currency }}
+                  />
+                  {taxRate && (
+                    <Group position="apart">
+                      <Text size="sm" color="dimmed">
+                        Tax Rate
+                      </Text>
+                      <Text size="sm">
+                        {taxRate.name} ({taxRate?.percentage}%)
+                      </Text>
+                    </Group>
+                  )}
                   {!isEmpty(questionResponses) && (
                     <>
                       <Divider my={8} />
@@ -159,8 +199,8 @@ const OrderPage: PageComponent<OrderPageProps> = ({
                           <OrderQuestionResponseField
                             key={id}
                             value={answer}
-                            {...{ question }}
                             readOnly
+                            {...{ question }}
                           />
                         ))}
                       </Stack>
@@ -195,19 +235,26 @@ export default OrderPage;
 
 type CurrencyAmountLineProps = {
   readonly currency: CurrencyFormattingInfo;
-  readonly children: string | number;
+  readonly label: ReactNode;
+  readonly amount: string | number;
 };
 
 const CurrencyAmountLine: FC<CurrencyAmountLineProps> = ({
   currency,
-  children,
+  label,
+  amount,
 }) => {
-  const formattedAmount = useFormattedCurrencyAmount(children, currency);
+  const formattedAmount = useFormattedCurrencyAmount(amount, currency);
   return (
     <Group position="apart">
-      <Text size="sm" color="dimmed">
-        Price
-      </Text>
+      <Box
+        sx={({ fontSizes, colors }) => ({
+          fontSize: fontSizes.sm,
+          color: colors.gray[6],
+        })}
+      >
+        {label}
+      </Box>
       <Text size="sm">{formattedAmount}</Text>
     </Group>
   );

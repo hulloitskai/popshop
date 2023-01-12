@@ -214,8 +214,8 @@ const TaxRateForm: FC<TaxRateFormProps> = ({ name, onCreate }) => {
           {resolve(() => {
             const { onChange, ...inputProps } = getInputProps("percentage");
             return (
-              <NumericFormat
-                customInput={InputBase}
+              <InputBase
+                component={NumericFormat}
                 decimalScale={1}
                 suffix="%"
                 label="Percentage"

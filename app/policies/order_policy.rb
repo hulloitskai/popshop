@@ -13,7 +13,10 @@ class OrderPolicy < ApplicationPolicy
 
   # == Scopes
   relation_scope do |relation|
-    relation.where.not(status: %w[pending cancelled])
+    user = authenticate!
+    relation
+      .where(account: user.accounts)
+      .where.not(status: %w[pending cancelled])
   end
 
   private

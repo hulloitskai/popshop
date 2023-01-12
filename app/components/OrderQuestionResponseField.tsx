@@ -15,13 +15,14 @@ export type OrderQuestionResponseFieldProps = Omit<InputBaseProps, "icon"> & {
 };
 
 const OrderQuestionResponseField: FC<OrderQuestionResponseFieldProps> = ({
-  question: { type, prompt, choices },
+  question: { type, optional, prompt, choices },
   ...otherProps
 }) => {
+  const { readOnly } = otherProps;
+  const inputProps = { ...otherProps, required: !optional };
   switch (type) {
     case OrderQuestionType.ShortAnswer:
-      return <TextInput label={prompt} {...otherProps} />;
-
+      return <TextInput label={prompt} {...inputProps} />;
     case OrderQuestionType.LongAnswer:
       return (
         <Textarea
@@ -29,10 +30,9 @@ const OrderQuestionResponseField: FC<OrderQuestionResponseFieldProps> = ({
           autosize
           minRows={3}
           maxRows={6}
-          {...otherProps}
+          {...inputProps}
         />
       );
-
     case OrderQuestionType.SingleChoice:
       invariant(choices, "Missing choices for single-choice question");
       return (
@@ -41,10 +41,16 @@ const OrderQuestionResponseField: FC<OrderQuestionResponseFieldProps> = ({
           placeholder="Select one"
           data={choices.map(value => ({ value, label: value }))}
           withinPortal
-          {...otherProps}
+          styles={{
+            ...(readOnly && {
+              input: {
+                cursor: "text !important",
+              },
+            }),
+          }}
+          {...inputProps}
         />
       );
-
     case OrderQuestionType.MultipleChoice:
       invariant(choices, "Missing choices for multiple-choice question");
       return (
@@ -53,13 +59,18 @@ const OrderQuestionResponseField: FC<OrderQuestionResponseFieldProps> = ({
           placeholder="Select all that apply"
           data={choices.map(value => ({ value, label: value }))}
           withinPortal
-          {...otherProps}
+          styles={{
+            ...(readOnly && {
+              input: {
+                cursor: "text !important",
+              },
+            }),
+          }}
+          {...inputProps}
         />
       );
-
     case OrderQuestionType.Checkbox:
-      return <Checkbox label={prompt} {...otherProps} />;
-
+      return <Checkbox label={prompt} {...inputProps} />;
     default:
       return null;
   }

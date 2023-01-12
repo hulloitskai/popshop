@@ -7,6 +7,7 @@
 #
 #  id              :uuid             not null, primary key
 #  choices         :string           default([]), not null, is an Array
+#  optional        :boolean          default(FALSE), not null
 #  prompt          :string           not null
 #  type            :string           not null
 #  created_at      :datetime         not null

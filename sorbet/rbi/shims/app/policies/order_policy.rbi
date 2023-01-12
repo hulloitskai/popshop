@@ -11,6 +11,7 @@ class OrderPolicy
       params(
         args: T.untyped,
         block: T.proc
+          .bind(T.attached_class)
           .params(relation: Order::PrivateRelation)
           .returns(Order::PrivateRelation),
       ).void

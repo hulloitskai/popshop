@@ -11,6 +11,7 @@ class TaxRatePolicy
       params(
         args: T.untyped,
         block: T.proc
+          .bind(T.attached_class)
           .params(relation: TaxRate::PrivateRelation)
           .returns(TaxRate::PrivateRelation),
       ).void

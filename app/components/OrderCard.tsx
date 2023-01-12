@@ -34,7 +34,14 @@ const OrderCard: FC<OrderCardProps> = ({
     () => groupBy(items, "productItem.id"),
     [items],
   );
-  const productItemsById = useMemo(() => keyBy(product.items, "id"), [product]);
+  const productItemsById = useMemo(
+    () =>
+      keyBy(
+        items.map(({ productItem }) => productItem),
+        "id",
+      ),
+    [items],
+  );
 
   // == Markup
   return (
@@ -102,7 +109,7 @@ const OrderCard: FC<OrderCardProps> = ({
                 {product.name}
               </Anchor>
               <Text size="xs" color="dimmed" mt={-4}>
-                Ordered on{" "}
+                Ordered On{" "}
                 <Text span color="dark.3" weight={500}>
                   {createdAtLabel}{" "}
                 </Text>

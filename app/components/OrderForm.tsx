@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import hash from "object-hash";
 import { sum } from "lodash-es";
 import { useFormattedCurrencyAmount } from "~/helpers/currency";
 
@@ -8,7 +9,7 @@ import OrderFormQuantityField from "./OrderFormQuantityField";
 import OrderFormCustomerFields from "./OrderFormCustomerFields";
 import OrderQuestionResponseField from "./OrderQuestionResponseField";
 
-import { OrderCreateMutationDocument } from "~/queries";
+import { OrderCreateMutationDocument, OrderQuestionType } from "~/queries";
 import type { OrderFormProductFragment } from "~/queries";
 
 export type OrderFormProps = {
@@ -16,14 +17,18 @@ export type OrderFormProps = {
 };
 
 export type OrderValues = {
-  readonly itemsByProductItemId: Record<string, OrderItemValues[]>;
+  readonly quantities: Record<string, number>;
+  readonly items: OrderItemValues[];
   readonly customer: OrderCustomerValues;
 };
 
 export type OrderItemValues = {
   readonly productItemId: string;
+  readonly count?: number;
   readonly questionResponses: OrderItemQuestionResponseValues[];
 };
+
+export type OrderItemValuesForSubmission = Omit<OrderItemValues, "count">;
 
 export type OrderItemQuestionResponseValues = {
   readonly questionId: string;
@@ -42,9 +47,9 @@ export type OrderTransformValues = (
 
 export type OrderValuesForSubmission = Omit<
   OrderValues,
-  "itemsByProductItemId"
+  "quantities" | "items"
 > & {
-  readonly items: OrderItemValues[];
+  readonly items: OrderItemValuesForSubmission[];
 };
 
 const OrderForm: FC<OrderFormProps> = ({ product }) => {
@@ -54,9 +59,8 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
   // == Form
   const initialValues = useMemo<OrderValues>(
     () => ({
-      itemsByProductItemId: Object.fromEntries(
-        product.items.map(({ id }) => [id, []]),
-      ),
+      quantities: Object.fromEntries(product.items.map(({ id }) => [id, 0])),
+      items: [],
       customer: {
         firstName: "",
         lastName: "",
@@ -67,13 +71,53 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
   );
   const form = useForm<OrderValues, OrderTransformValues>({
     initialValues,
-    transformValues: ({ itemsByProductItemId, ...values }) => ({
-      ...values,
-      items: Object.values(itemsByProductItemId).flat(),
+    transformValues: ({ items, ...values }) => ({
+      ...omit(values, "quantities"),
+      items: items.map(({ questionResponses, ...values }) => ({
+        ...omit(values, "count"),
+        questionResponses: questionResponses.filter(({ answer }) => !!answer),
+      })),
     }),
   });
-  const { values, onSubmit, setErrors, getInputProps } = form;
-  const { itemsByProductItemId } = values;
+  const { values, onSubmit, setErrors, setFieldValue, getInputProps } = form;
+  const { quantities, items } = values;
+  const quantitiesHash = useMemo(() => hash(quantities), [quantities]);
+  const itemsByProductItemId = useMemo(
+    () => groupBy(items, "productItemId"),
+    [items],
+  );
+  useEffect(() => {
+    const items = Object.entries(quantities).flatMap(
+      ([productItemId, quantity]) => {
+        if (
+          typeof quantity === "number" &&
+          !Number.isNaN(quantity) &&
+          quantity >= 0
+        ) {
+          const { questions } = productItemsById[productItemId]!;
+          return new Array(quantity).fill(null).map((_, index) => ({
+            productItemId,
+            count: quantity > 1 ? index + 1 : undefined,
+            questionResponses: questions.map(({ id: questionId, type }) => ({
+              questionId,
+              answer: resolve(() => {
+                switch (type) {
+                  case OrderQuestionType.Checkbox:
+                    return false;
+                  case OrderQuestionType.MultipleChoice:
+                    return [];
+                  default:
+                    return "";
+                }
+              }),
+            })),
+          }));
+        }
+        return [];
+      },
+    );
+    setFieldValue("items", items);
+  }, [quantitiesHash]);
 
   // == Mutation
   const onError = useApolloErrorCallback("Failed to submit order");
@@ -132,18 +176,17 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
       })}
     >
       <Stack spacing={8}>
-        {Object.entries(itemsByProductItemId).map(([productItemId, items]) => {
+        {Object.keys(quantities).map(productItemId => {
           const productItem = productItemsById[productItemId]!;
           return (
             <OrderFormQuantityField
               key={productItemId}
-              quantity={items.length}
               {...{
-                form,
                 product,
                 productItem,
                 values,
               }}
+              {...getInputProps(`quantities.${productItemId}`)}
             />
           );
         })}
@@ -175,35 +218,35 @@ const OrderForm: FC<OrderFormProps> = ({ product }) => {
               </Group>
             </Box>
             <Space />
-            {Object.values(itemsByProductItemId)
-              .flat()
-              .map(({ productItemId }, itemIndex) => {
+            {items
+              .map(({ productItemId, count }, index) => {
                 const { name, questions } = productItemsById[productItemId]!;
                 return !isEmpty(questions) ? (
                   <Card
-                    key={[productItemId, itemIndex].join(":")}
+                    key={[productItemId, count].join(":")}
                     withBorder
                     bg="gray.0"
                     p="sm"
                   >
                     <Text size="lg" weight={700}>
-                      {name} {itemIndex + 1}
+                      {name}
+                      {!!count && <> {count}</>}
                     </Text>
                     <Stack spacing={8}>
-                      {questions.map((question, index) => (
+                      {questions.map((question, questionIndex) => (
                         <OrderQuestionResponseField
-                          key={index}
-                          required
+                          key={question.id}
                           {...{ question }}
                           {...getInputProps(
-                            `itemsByProductItemId.${productItemId}.${itemIndex}.questionResponses.${index}.answer`,
+                            `items.${index}.questionResponses.${questionIndex}.answer`,
                           )}
                         />
                       ))}
                     </Stack>
                   </Card>
                 ) : null;
-              })}
+              })
+              .flat()}
             <Card withBorder bg="gray.0" p="sm">
               <Text size="lg" weight={700}>
                 Your Contact Information

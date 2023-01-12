@@ -8,6 +8,7 @@ module Types
 
     # == Fields
     field :choices, [String]
+    field :optional, Boolean, null: false
     field :prompt, String, null: false
     field :type, OrderQuestionTypeType, null: false
   end

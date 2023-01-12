@@ -602,6 +602,51 @@ class OrderQuestion
     sig { void }
     def id_will_change!; end
 
+    sig { returns(T::Boolean) }
+    def optional; end
+
+    sig { params(value: T::Boolean).returns(T::Boolean) }
+    def optional=(value); end
+
+    sig { returns(T::Boolean) }
+    def optional?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def optional_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def optional_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def optional_came_from_user?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def optional_change; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def optional_change_to_be_saved; end
+
+    sig { returns(T::Boolean) }
+    def optional_changed?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def optional_in_database; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def optional_previous_change; end
+
+    sig { returns(T::Boolean) }
+    def optional_previously_changed?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def optional_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def optional_was; end
+
+    sig { void }
+    def optional_will_change!; end
+
     sig { returns(::String) }
     def product_item_id; end
 
@@ -702,6 +747,9 @@ class OrderQuestion
     def restore_id!; end
 
     sig { void }
+    def restore_optional!; end
+
+    sig { void }
     def restore_product_item_id!; end
 
     sig { void }
@@ -730,6 +778,12 @@ class OrderQuestion
 
     sig { returns(T::Boolean) }
     def saved_change_to_id?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def saved_change_to_optional; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_optional?; end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_product_item_id; end
@@ -853,6 +907,9 @@ class OrderQuestion
 
     sig { returns(T::Boolean) }
     def will_save_change_to_id?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_optional?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_product_item_id?; end

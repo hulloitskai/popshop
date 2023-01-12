@@ -26,6 +26,8 @@ module Types
     field :stripe_payment_intent_url, String
     field :subtotal, String, null: false
     field :subtotal_cents, Integer, null: false
+    field :total, String, null: false
+    field :total_cents, Integer, null: false
 
     # == Resolvers: URLs
     sig { returns(String) }

@@ -170,6 +170,8 @@ export type Order = Node & {
   stripePaymentIntentUrl?: Maybe<Scalars['String']>;
   subtotal: Scalars['String'];
   subtotalCents: Scalars['Int'];
+  total: Scalars['String'];
+  totalCents: Scalars['Int'];
   url: Scalars['String'];
 };
 
@@ -231,12 +233,14 @@ export type OrderQuestion = Node & {
   choices?: Maybe<Array<Scalars['String']>>;
   /** ID of the object. */
   id: Scalars['ID'];
+  optional: Scalars['Boolean'];
   prompt: Scalars['String'];
   type: OrderQuestionType;
 };
 
 export type OrderQuestionInput = {
   choices?: InputMaybe<Array<Scalars['String']>>;
+  optional?: InputMaybe<Scalars['Boolean']>;
   prompt: Scalars['String'];
   type: OrderQuestionType;
 };
@@ -327,8 +331,6 @@ export type ProductItem = Node & {
   price: Scalars['String'];
   priceCents: Scalars['Int'];
   questions: Array<OrderQuestion>;
-  tax?: Maybe<Scalars['String']>;
-  taxCents?: Maybe<Scalars['Int']>;
   taxRate?: Maybe<TaxRate>;
   taxRatePercentage?: Maybe<Scalars['Float']>;
   units?: Maybe<Units>;

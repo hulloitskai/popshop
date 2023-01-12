@@ -5,6 +5,7 @@ module Types
   class OrderQuestionInputType < BaseInputObject
     # == Arguments
     argument :choices, [String], required: false
+    argument :optional, Boolean, required: false
     argument :prompt, String
     argument :type, OrderQuestionTypeType
 

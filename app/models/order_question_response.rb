@@ -38,5 +38,9 @@ class OrderQuestionResponse < ApplicationRecord
   end
 
   # == Validations
-  validates :answer, presence: true
+  validates :answer, presence: true, unless: :optional?
+
+  # == Methods
+  sig { returns(T::Boolean) }
+  def optional? = question!.optional?
 end

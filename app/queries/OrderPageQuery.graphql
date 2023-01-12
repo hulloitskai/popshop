@@ -9,6 +9,7 @@ query OrderPageQuery($orderId: ID!) {
     code
     stripePaymentIntentUrl
     subtotal
+    total
     customer {
       id
       firstName
@@ -23,16 +24,18 @@ query OrderPageQuery($orderId: ID!) {
         code
         exponent
       }
-      items {
-        id
-        name
-        price
-      }
     }
     items {
       id
       productItem {
         id
+        name
+        price
+        taxRate {
+          id
+          name
+          percentage
+        }
       }
       questionResponses {
         id

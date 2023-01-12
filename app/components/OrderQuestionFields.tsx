@@ -6,7 +6,7 @@ import {
   orderQuestionTypeHasChoices,
 } from "~/helpers/types/OrderQuestionType";
 
-import { Text } from "@mantine/core";
+import { Checkbox, Text } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
 import type { LooseKeys } from "@mantine/form/lib/types";
 
@@ -25,8 +25,9 @@ export type OrderQuestionFieldsProps<
 
 export type OrderQuestionValues = {
   readonly key: string;
-  readonly type: OrderQuestionType;
   readonly prompt: string;
+  readonly type: OrderQuestionType;
+  readonly optional: boolean;
   readonly choices: string[];
 };
 
@@ -114,6 +115,11 @@ const OrderQuestionFields = <
           }}
         />
       )}
+      <Checkbox
+        label="This question is optional."
+        mt={6}
+        {...getInputProps("optional", { type: "checkbox" })}
+      />
     </Stack>
   );
 };
@@ -121,11 +127,12 @@ const OrderQuestionFields = <
 OrderQuestionFields.initialValues = (
   question?: OrderQuestionFieldsQuestionFragment,
 ): OrderQuestionValues => {
-  const { prompt, type, choices } = question ?? {};
+  const { prompt, type, optional, choices } = question ?? {};
   return {
     key: randomId(),
     prompt: prompt || "",
     type: type || OrderQuestionType.ShortAnswer,
+    optional: optional ?? false,
     choices: choices || [],
   };
 };

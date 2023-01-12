@@ -53,7 +53,8 @@ class GraphQL::Queries
       only: /\.graphql$/,
     ) do |modified, added, removed|
       reload(modified:, removed:, added:)
-    end.tap(&:start)
+    end
+    @listener.start
   end
 
   sig { void }

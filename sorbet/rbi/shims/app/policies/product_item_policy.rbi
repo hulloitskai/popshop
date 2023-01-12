@@ -11,6 +11,7 @@ class ProductItemPolicy
       override.params(
         args: T.untyped,
         block: T.proc
+          .bind(T.attached_class)
           .params(relation: ProductItem::PrivateRelation)
           .returns(ProductItem::PrivateRelation),
       ).void

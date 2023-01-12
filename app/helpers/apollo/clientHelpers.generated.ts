@@ -54,7 +54,7 @@ export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type OrderKeySpecifier = ('account' | 'code' | 'createdAt' | 'customer' | 'id' | 'items' | 'product' | 'stripeCheckoutSessionUrl' | 'stripePaymentIntentUrl' | 'subtotal' | 'subtotalCents' | 'url' | OrderKeySpecifier)[];
+export type OrderKeySpecifier = ('account' | 'code' | 'createdAt' | 'customer' | 'id' | 'items' | 'product' | 'stripeCheckoutSessionUrl' | 'stripePaymentIntentUrl' | 'subtotal' | 'subtotalCents' | 'total' | 'totalCents' | 'url' | OrderKeySpecifier)[];
 export type OrderFieldPolicy = {
 	account?: FieldPolicy<any> | FieldReadFunction<any>,
 	code?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -67,6 +67,8 @@ export type OrderFieldPolicy = {
 	stripePaymentIntentUrl?: FieldPolicy<any> | FieldReadFunction<any>,
 	subtotal?: FieldPolicy<any> | FieldReadFunction<any>,
 	subtotalCents?: FieldPolicy<any> | FieldReadFunction<any>,
+	total?: FieldPolicy<any> | FieldReadFunction<any>,
+	totalCents?: FieldPolicy<any> | FieldReadFunction<any>,
 	url?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type OrderConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | OrderConnectionKeySpecifier)[];
@@ -94,10 +96,11 @@ export type OrderItemFieldPolicy = {
 	productItem?: FieldPolicy<any> | FieldReadFunction<any>,
 	questionResponses?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type OrderQuestionKeySpecifier = ('choices' | 'id' | 'prompt' | 'type' | OrderQuestionKeySpecifier)[];
+export type OrderQuestionKeySpecifier = ('choices' | 'id' | 'optional' | 'prompt' | 'type' | OrderQuestionKeySpecifier)[];
 export type OrderQuestionFieldPolicy = {
 	choices?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	optional?: FieldPolicy<any> | FieldReadFunction<any>,
 	prompt?: FieldPolicy<any> | FieldReadFunction<any>,
 	type?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -133,7 +136,7 @@ export type ProductCreatePayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductItemKeySpecifier = ('currency' | 'description' | 'id' | 'name' | 'orderScope' | 'price' | 'priceCents' | 'questions' | 'tax' | 'taxCents' | 'taxRate' | 'taxRatePercentage' | 'units' | ProductItemKeySpecifier)[];
+export type ProductItemKeySpecifier = ('currency' | 'description' | 'id' | 'name' | 'orderScope' | 'price' | 'priceCents' | 'questions' | 'taxRate' | 'taxRatePercentage' | 'units' | ProductItemKeySpecifier)[];
 export type ProductItemFieldPolicy = {
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -143,8 +146,6 @@ export type ProductItemFieldPolicy = {
 	price?: FieldPolicy<any> | FieldReadFunction<any>,
 	priceCents?: FieldPolicy<any> | FieldReadFunction<any>,
 	questions?: FieldPolicy<any> | FieldReadFunction<any>,
-	tax?: FieldPolicy<any> | FieldReadFunction<any>,
-	taxCents?: FieldPolicy<any> | FieldReadFunction<any>,
 	taxRate?: FieldPolicy<any> | FieldReadFunction<any>,
 	taxRatePercentage?: FieldPolicy<any> | FieldReadFunction<any>,
 	units?: FieldPolicy<any> | FieldReadFunction<any>

@@ -1,5 +1,9 @@
 import type { FormErrors, UseFormReturnType } from "@mantine/form";
-import type { GetFieldStatus, LooseKeys } from "@mantine/form/lib/types";
+import type {
+  GetFieldStatus,
+  GetInputPropsType,
+  LooseKeys,
+} from "@mantine/form/lib/types";
 
 import type { InputFieldError } from "~/queries";
 
@@ -14,8 +18,15 @@ export const useNestedForm = <Values>(
   path: LooseKeys<Values>,
 ) => {
   const getInputProps = useCallback(
-    <Field extends LooseKeys<Values>>(nestedPath: Field): any =>
-      form.getInputProps(`${String(path)}.${String(nestedPath)}`),
+    <Field extends LooseKeys<Values>>(
+      nestedPath: Field,
+      options?: {
+        type?: GetInputPropsType;
+        withError?: boolean;
+        withFocus?: boolean;
+      },
+    ): any =>
+      form.getInputProps(`${String(path)}.${String(nestedPath)}`, options),
     [form, path],
   );
   const setFieldValue = useCallback(
