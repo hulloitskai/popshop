@@ -24,14 +24,16 @@ module Mutations
       override(
         allow_incompatible: true,
       ).params(
+        items: T::Array[ProductItem],
         account: T.nilable(Account),
         attributes: T.untyped,
       ).returns(Payload)
     end
-    def resolve(account: nil, **attributes)
+    def resolve(items:, account: nil, **attributes)
       account ||= current_user!.primary_account!
       authorize!(account, to: :edit?)
-      product = account.products.build(attributes)
+      items.each { |item| item.account = account }
+      product = account.products.build(items:, **attributes)
       if product.save
         Payload.new(product:)
       else

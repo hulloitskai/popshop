@@ -116,7 +116,7 @@ const OrderQuestionFields = <
         />
       )}
       <Checkbox
-        label="This question is optional."
+        label="Answering this question is optional."
         mt={6}
         {...getInputProps("optional", { type: "checkbox" })}
       />
