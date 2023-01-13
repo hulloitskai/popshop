@@ -3,7 +3,6 @@
 
 class RemoveAccountIdFromOrders < ActiveRecord::Migration[7.0]
   def change
-    remove_column :orders, :account_id
-    add_index :orders, :code, unique: true
+    remove_column :orders, :account_id, :string
   end
 end

@@ -41,8 +41,8 @@ class OrderQuestion < ApplicationRecord
 
   has_many :responses,
            class_name: "OrderQuestionResponse",
-          foreign_key: :question_id,
           inverse_of: :question,
+          foreign_key: :question_id,
           dependent: :destroy
 
   # == Validations

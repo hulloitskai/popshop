@@ -21,6 +21,7 @@ export type OrderQuestionFieldsProps<
 > = {
   readonly form: UseFormReturnType<Values, TransformValues>;
   readonly path: LooseKeys<Values>;
+  readonly disabled?: boolean;
 };
 
 export type OrderQuestionValues = {
@@ -44,6 +45,7 @@ const OrderQuestionFields = <
 >({
   form,
   path,
+  disabled,
 }: OrderQuestionFieldsProps<Values, TransformValues>): ReactElement => {
   const types = useMemo(() => {
     const types = Object.values(OrderQuestionType);
@@ -61,7 +63,12 @@ const OrderQuestionFields = <
   // == Markup
   return (
     <Stack spacing={4}>
-      <TextInput label="Prompt" required {...getInputProps("prompt")} />
+      <TextInput
+        label="Prompt"
+        required
+        {...{ disabled }}
+        {...getInputProps("prompt")}
+      />
       <Select
         label="Response Type"
         data={types.map(type => ({
@@ -70,6 +77,7 @@ const OrderQuestionFields = <
         }))}
         required
         withinPortal
+        {...{ disabled }}
         {...getInputProps("type")}
       />
       {orderQuestionTypeHasChoices(type) && (
@@ -113,11 +121,13 @@ const OrderQuestionFields = <
               paddingBottom: 6,
             },
           }}
+          {...{ disabled }}
         />
       )}
       <Checkbox
         label="Answering this question is optional."
         mt={6}
+        {...{ disabled }}
         {...getInputProps("optional", { type: "checkbox" })}
       />
     </Stack>

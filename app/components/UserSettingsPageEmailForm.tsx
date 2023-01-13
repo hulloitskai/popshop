@@ -75,7 +75,7 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
         } else {
           invariant(errors, "Missing input errors");
           setErrors(formErrors(errors));
-          showAlert({ message: "Failed to change email" });
+          showFormErrors("Could not change email");
         }
       },
       onError,

@@ -32,7 +32,6 @@ module Mutations
     def resolve(items:, account: nil, **attributes)
       account ||= current_user!.primary_account!
       authorize!(account, to: :edit?)
-      items.each { |item| item.account = account }
       product = account.products.build(items:, **attributes)
       if product.save
         Payload.new(product:)

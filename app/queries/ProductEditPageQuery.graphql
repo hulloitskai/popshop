@@ -5,6 +5,7 @@ query ProductEditPageQuery($productId: ID!) {
   }
   product(id: $productId) {
     id
+    deletedAt
     name
     ...ProductFormProductFragment
   }

@@ -81,8 +81,9 @@ class ProductItem < ApplicationRecord
 
   # == Associations
   belongs_to :product
-  belongs_to :tax_rate, optional: true
   has_one :account, through: :product
+
+  belongs_to :tax_rate, optional: true
   has_many :questions,
            class_name: "OrderQuestion",
            dependent: :destroy,
@@ -128,9 +129,25 @@ class ProductItem < ApplicationRecord
   before_validation :normalize_question_ids
 
   # == Callbacks: Stripe
-  after_create_commit :create_stripe_product
+  after_create :create_stripe_product
   after_discard :deactivate_stripe_product
-  after_destroy_commit :deactivate_stripe_product
+  after_destroy :deactivate_stripe_product
+
+  # == Methods
+  sig { returns(T::Boolean) }
+  def destroyable?
+    order_items.blank?
+  end
+
+  sig { returns(T::Boolean) }
+  def destroy_or_discard
+    destroyable? ? !!destroy : discard
+  end
+
+  sig { void }
+  def destroy_or_discard!
+    destroyable? ? destroy! : discard!
+  end
 
   # == Methods: Tax Rate
   sig { returns(T.nilable(Float)) }
@@ -279,7 +296,8 @@ class ProductItem < ApplicationRecord
   def validate_tax_rate_account
     tax_rate.try! do |tax_rate|
       tax_rate = T.let(tax_rate, TaxRate)
-      if tax_rate.account != account!
+      account = self.account || product&.account or raise "Missing account"
+      if tax_rate.account != account
         errors.add(:tax_rate, :invalid, message: "must belong to account")
       end
     end
@@ -288,12 +306,12 @@ class ProductItem < ApplicationRecord
   # == Validations
   sig { void }
   def validate_name_uniqueness
-    account = self.account || product!.account!
-    if account.products.kept.where.not(id: id).exists?(name: name)
+    if product!.items.kept.where.not(id: id).exists?(name: name)
       errors.add(:name, :taken, message: "is already being used")
     end
   end
 
+  # == Validations: Qeustions
   sig { void }
   def validate_questions_count
     if questions.size > 4

@@ -20,6 +20,7 @@ export type ProductFormProps = {
   readonly loading: boolean;
   readonly errors: FormErrors;
   readonly onSubmit: (submission: ProductValuesForSubmission) => void;
+  readonly disabled?: boolean;
 };
 
 export type ProductValuesForSubmission = Omit<
@@ -39,6 +40,7 @@ export type ProductValues = {
 
 const ProductForm: FC<ProductFormProps> = ({
   product,
+  disabled,
   loading,
   errors,
   onSubmit: handleSubmit,
@@ -90,6 +92,7 @@ const ProductForm: FC<ProductFormProps> = ({
             label="Name"
             placeholder="Tasting Box"
             required
+            {...{ disabled }}
             {...getInputProps("name")}
           />
           <Textarea
@@ -98,6 +101,7 @@ const ProductForm: FC<ProductFormProps> = ({
             autosize
             minRows={2}
             maxRows={10}
+            {...{ disabled }}
             {...getInputProps("description")}
           />
           <CurrencyCodeField
@@ -113,6 +117,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 <div>{children}</div>
               </Tooltip>
             )}
+            {...{ disabled }}
             {...getInputProps("currencyCode")}
           />
         </Stack>
@@ -131,7 +136,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 label={
                   <>
                     Item {index + 1}
-                    {index > 0 && (
+                    {!disabled && index > 0 && (
                       <>
                         {" "}
                         <Anchor
@@ -154,7 +159,7 @@ const ProductForm: FC<ProductFormProps> = ({
                   <ProductItemFields
                     path={`items.${index}`}
                     name={items.length === 1 ? name : undefined}
-                    {...{ form, currencyCode }}
+                    {...{ form, currencyCode, disabled }}
                   />
                 </Card>
               </Input.Wrapper>
@@ -163,7 +168,7 @@ const ProductForm: FC<ProductFormProps> = ({
               variant="default"
               size="xs"
               leftIcon={<AddIcon />}
-              disabled={items.length >= 4}
+              disabled={disabled || items.length >= 4}
               styles={{ leftIcon: { marginRight: 6 } }}
               onClick={() => {
                 const values = ProductItemFields.initialValues();
@@ -174,7 +179,7 @@ const ProductForm: FC<ProductFormProps> = ({
             </Button>
           </Stack>
         </Box>
-        <Button type="submit" {...{ loading }}>
+        <Button type="submit" {...{ disabled, loading }}>
           {product ? "Save" : "Create"}
         </Button>
       </Stack>

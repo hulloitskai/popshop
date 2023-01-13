@@ -39,13 +39,6 @@ module Types
     end
 
     # == Resolvers
-    sig { returns(Account) }
-    def account
-      context.dataloader
-        .with(Sources::RecordById, Account)
-        .load(object.account_id)
-    end
-
     sig { returns(Customer) }
     def customer
       context.dataloader

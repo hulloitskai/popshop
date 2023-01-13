@@ -1,7 +1,21 @@
 fragment ProductPageProductFragment on Product {
+  name
+  deletedAt
   canEdit
   editUrl
-  name
   description
+  currency {
+    code
+  }
+  items {
+    id
+    name
+    units {
+      singular
+      plural
+    }
+    orderScope
+    price
+  }
   ...OrderFormProductFragment
 }

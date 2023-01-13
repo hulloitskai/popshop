@@ -15,6 +15,7 @@ module Types
     field :user_update, mutation: Mutations::UserUpdate
 
     field :product_create, mutation: Mutations::ProductCreate
+    field :product_delete, mutation: Mutations::ProductDelete
     field :product_update, mutation: Mutations::ProductUpdate
 
     field :order_create, mutation: Mutations::OrderCreate

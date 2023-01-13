@@ -29,6 +29,7 @@ export type ProductItemFieldsProps<
   readonly form: UseFormReturnType<Values, TransformValues>;
   readonly path: LooseKeys<Values>;
   readonly name?: string;
+  readonly disabled?: boolean;
 };
 
 export type ProductItemValues = {
@@ -59,6 +60,7 @@ const ProductItemFields = <
   path,
   currencyCode,
   name,
+  disabled,
 }: ProductItemFieldsProps<Values, TransformValues>): ReactElement => {
   const scopes = useMemo(() => {
     const scopes = Object.values(OrderScope);
@@ -85,13 +87,19 @@ const ProductItemFields = <
     <Stack spacing={4}>
       {name === undefined && (
         <>
-          <TextInput label="Name" required {...getInputProps("name")} />
+          <TextInput
+            label="Name"
+            required
+            {...{ disabled }}
+            {...getInputProps("name")}
+          />
           <Textarea
             label="Description"
-            {...getInputProps("description")}
             autosize
             minRows={1}
             maxRows={2}
+            {...{ disabled }}
+            {...getInputProps("description")}
           />
         </>
       )}
@@ -108,6 +116,7 @@ const ProductItemFields = <
             key={orderScope}
             value={orderScope}
             label={orderScopeTerms(orderScope)}
+            {...{ disabled }}
             styles={{
               radio: { cursor: "pointer" },
               label: { paddingLeft: 8 },
@@ -118,12 +127,13 @@ const ProductItemFields = <
       <CurrencyAmountField
         label={`Price (${orderScopeLabel(orderScope).toLowerCase()})`}
         required
-        {...{ currencyCode }}
+        {...{ currencyCode, disabled }}
         {...getInputProps("price")}
       />
       <TaxRateField
         label="Tax Rate"
         clearable
+        {...{ disabled }}
         {...getInputProps("taxRateId")}
       />
       {orderScope === OrderScope.PerUnit && (
@@ -132,6 +142,7 @@ const ProductItemFields = <
           description='Displayed next to the order quantity, like so: "3 boxes"'
           placeholder="boxes"
           required
+          {...{ disabled }}
           {...getInputProps("units")}
         />
       )}
@@ -145,43 +156,46 @@ const ProductItemFields = <
               label={
                 <>
                   Question {index + 1}{" "}
-                  <Anchor
-                    component="button"
-                    type="button"
-                    color="red"
-                    onClick={() => {
-                      removeListItem("questions", index);
-                    }}
-                  >
-                    (remove)
-                  </Anchor>
+                  {!disabled && (
+                    <Anchor
+                      component="button"
+                      type="button"
+                      color="red"
+                      onClick={() => {
+                        removeListItem("questions", index);
+                      }}
+                    >
+                      (remove)
+                    </Anchor>
+                  )}
                 </>
               }
             >
               <Card withBorder p="xs" pt={4} bg="gray.0">
                 <OrderQuestionFields
                   path={`${String(path)}.questions.${index}`}
-                  {...{ form }}
+                  {...{ form, disabled }}
                 />
               </Card>
             </Input.Wrapper>
           ))}
         </>
       )}
-      <Box>
-        <Anchor
-          component="button"
-          color="indigo.5"
-          size="sm"
-          disabled={questions.length >= 4}
-          onClick={() => {
-            const values = OrderQuestionFields.initialValues();
-            insertListItem("questions", values);
-          }}
-        >
-          Add Order Question
-        </Anchor>
-      </Box>
+      {!disabled && questions.length < 4 && (
+        <Box>
+          <Anchor
+            component="button"
+            color="indigo.5"
+            size="sm"
+            onClick={() => {
+              const values = OrderQuestionFields.initialValues();
+              insertListItem("questions", values);
+            }}
+          >
+            Add Order Question
+          </Anchor>
+        </Box>
+      )}
     </Stack>
   );
 };

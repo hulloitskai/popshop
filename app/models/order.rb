@@ -14,14 +14,12 @@
 #  total_cents                 :integer          not null
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
-#  account_id                  :uuid             not null
 #  customer_id                 :uuid             not null
 #  product_id                  :uuid             not null
 #  stripe_checkout_session_id  :string
 #
 # Indexes
 #
-#  index_orders_on_account_id                   (account_id)
 #  index_orders_on_code                         (code) UNIQUE
 #  index_orders_on_customer_id                  (customer_id)
 #  index_orders_on_product_id                   (product_id)
@@ -31,11 +29,9 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (account_id => accounts.id)
 #  fk_rails_...  (customer_id => customers.id)
 #  fk_rails_...  (product_id => products.id)
 #
-# rubocop:enable Layout/LineLength
 
 class Order < ApplicationRecord
   # == Concerns
@@ -71,24 +67,24 @@ class Order < ApplicationRecord
   end
 
   # == Assocations
-  belongs_to :account
   belongs_to :product
+  has_one :account, through: :product
 
-  belongs_to :customer, autosave: true
   has_many :items, class_name: "OrderItem", dependent: :destroy, autosave: true
   has_many :question_responses, through: :items
-
   has_many :product_items, through: :items
   has_many :questions, through: :product_items
 
-  sig { returns(Account) }
-  def account!
-    account or raise ActiveRecord::RecordNotFound
-  end
+  belongs_to :customer, autosave: true
 
   sig { returns(Product) }
   def product!
     product or raise ActiveRecord::RecordNotFound
+  end
+
+  sig { returns(Account) }
+  def account!
+    account or raise ActiveRecord::RecordNotFound
   end
 
   sig { returns(Customer) }
@@ -110,8 +106,8 @@ class Order < ApplicationRecord
   after_save_commit :send_emails_upon_payment
 
   # == Callbacks: Stripe
-  after_create_commit :create_stripe_checkout_session
-  after_destroy_commit :expire_stripe_checkout_session
+  after_create :create_stripe_checkout_session
+  after_destroy :expire_stripe_checkout_session
 
   # == Emails
   sig { returns(ActionMailer::MessageDelivery) }
@@ -242,11 +238,11 @@ class Order < ApplicationRecord
 
   private
 
-  # == Validations: Product
+  # == Validations: Customer
   sig { void }
-  def validate_product_account
-    if product!.account != account!
-      errors.add(:product, :invalid, message: "must belong to account")
+  def validate_customer_account
+    if customer!.account != account!
+      errors.add(:customer, :invalid, message: "must belong to account")
     end
   end
 

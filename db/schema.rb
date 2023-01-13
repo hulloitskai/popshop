@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_11_230040) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_13_181510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -189,10 +189,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_230040) do
     t.datetime "updated_at", null: false
     t.string "stripe_checkout_session_id"
     t.string "stripe_checkout_session_url"
-    t.uuid "account_id", null: false
     t.integer "subtotal_cents", null: false
     t.integer "total_cents", null: false
-    t.index ["account_id"], name: "index_orders_on_account_id"
     t.index ["code"], name: "index_orders_on_code", unique: true
     t.index ["customer_id"], name: "index_orders_on_customer_id"
     t.index ["product_id"], name: "index_orders_on_product_id"
@@ -231,7 +229,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_230040) do
     t.datetime "updated_at", null: false
     t.string "currency_code", limit: 3, null: false
     t.string "slug", null: false
-    t.index ["account_id", "name"], name: "index_products_on_account_id_and_name", unique: true
     t.index ["account_id", "slug"], name: "index_products_on_account_id_and_slug", unique: true
     t.index ["account_id"], name: "index_products_on_account_id"
   end
@@ -281,7 +278,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_230040) do
   add_foreign_key "order_question_responses", "order_items"
   add_foreign_key "order_question_responses", "order_questions", column: "question_id"
   add_foreign_key "order_questions", "product_items"
-  add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "products"
   add_foreign_key "product_items", "products"

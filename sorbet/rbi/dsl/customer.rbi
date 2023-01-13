@@ -1064,6 +1064,9 @@ class Customer
 
     Elem = type_member { { fixed: ::Customer } }
 
+    sig { returns(T.self_type) }
+    def friendly; end
+
     sig { returns(T::Array[::Customer]) }
     def to_a; end
 
@@ -1128,6 +1131,9 @@ class Customer
     end
     def destroy(*records); end
 
+    sig { returns(T.self_type) }
+    def friendly; end
+
     sig { returns(T::Array[::Customer]) }
     def load_target; end
 
@@ -1170,6 +1176,9 @@ class Customer
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Customer } }
+
+    sig { returns(T.self_type) }
+    def friendly; end
 
     sig { returns(T::Array[::Customer]) }
     def to_a; end

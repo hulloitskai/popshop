@@ -1,0 +1,5 @@
+mutation ProductDeleteMutation($input: ProductDeleteInput!) {
+  payload: productDelete(input: $input) {
+    success
+  }
+}

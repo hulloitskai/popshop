@@ -25,7 +25,7 @@ const ProductCreatePage: PageComponent<ProductCreatePageProps> = () => {
         } else {
           invariant(errors, "Missing input errors");
           setErrors(formErrors(errors));
-          showAlert({ message: "Failed to create product." });
+          showFormErrors("Could not create product");
         }
       },
       onError,

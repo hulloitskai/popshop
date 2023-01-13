@@ -13,6 +13,10 @@ module Types
     field :edit_url, String, null: false
     field :url, String, null: false
 
+    # == Field: Timestamps
+    field :created_at, DateTimeType, null: false
+    field :deleted_at, DateTimeType, method: :discarded_at
+
     # == Fields
     field :account, AccountType, null: false
     field :currency, CurrencyType, null: false

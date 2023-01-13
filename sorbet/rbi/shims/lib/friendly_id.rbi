@@ -1,7 +1,6 @@
 # typed: strong
 
-module FriendlyId
-  mixes_in_class_methods FriendlyId::Base
-  mixes_in_class_methods FriendlyId::Reserved
-  mixes_in_class_methods FriendlyId::Slugged
+module FriendlyId::Slugged
+  sig { returns(T::Boolean) }
+  def should_generate_new_friendly_id?; end
 end

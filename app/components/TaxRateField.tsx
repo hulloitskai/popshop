@@ -188,7 +188,7 @@ const TaxRateForm: FC<TaxRateFormProps> = ({ name, onCreate }) => {
         } else {
           invariant(errors, "Missing errors");
           setErrors(formErrors(errors));
-          showAlert({ message: "Failed to create order" });
+          showFormErrors("Could not create order");
         }
       },
       onError,

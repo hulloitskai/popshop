@@ -38,9 +38,10 @@ class Account < ApplicationRecord
   # == Associations
   belongs_to :owner, class_name: "User"
 
-  has_many :products, dependent: :destroy
+  has_many :products, inverse_of: :account, dependent: :destroy
   has_many :orders, -> { reverse_chronological }, through: :products
-  has_many :tax_rates, dependent: :destroy
+
+  has_many :tax_rates, inverse_of: :account, dependent: :destroy
 
   sig { returns(User) }
   def owner!
@@ -48,12 +49,12 @@ class Account < ApplicationRecord
   end
 
   # == Callbacks: Stripe
-  after_create_commit :create_stripe_account
-  after_update_commit :update_stripe_account, if: -> {
+  after_create :create_stripe_account
+  after_update :update_stripe_account, if: -> {
     T.bind(self, Account)
     name_previously_changed? || stripe_account_email_previously_changed?
   }
-  after_destroy_commit :delete_stripe_account if Rails.env.development?
+  after_destroy :delete_stripe_account if Rails.env.development?
 
   # == Methods: Members
   # sig { returns(T::Array[String]) }

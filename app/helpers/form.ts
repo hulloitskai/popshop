@@ -1,3 +1,5 @@
+import scrollIntoView from "scroll-into-view";
+
 import type { FormErrors, UseFormReturnType } from "@mantine/form";
 import type {
   GetFieldStatus,
@@ -11,6 +13,21 @@ export const formErrors = (errors: InputFieldError[]): FormErrors => {
   return Object.fromEntries(
     errors.map(({ field, message }) => [field, message]),
   );
+};
+
+export const showFormErrors = (alert: string): void => {
+  showAlert({
+    title: alert,
+    message:
+      "There were some problems with your submission! Please review the " +
+      "errors shown in the form.",
+  });
+  setTimeout(() => {
+    const element = document.querySelector('[aria-invalid="true"]');
+    if (element instanceof HTMLElement) {
+      scrollIntoView(element);
+    }
+  }, 100);
 };
 
 export const useNestedForm = <Values>(

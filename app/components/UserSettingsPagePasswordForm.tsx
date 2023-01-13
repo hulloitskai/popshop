@@ -66,7 +66,7 @@ const UserSettingsPagePasswordForm: FC<
             onError: errors => {
               reset();
               setErrors(errors);
-              showAlert({ message: "Failed to change password." });
+              showFormErrors("Could not change password");
             },
             onFinish: () => setLoading(false),
           });

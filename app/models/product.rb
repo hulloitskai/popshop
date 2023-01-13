@@ -19,7 +19,6 @@
 # Indexes
 #
 #  index_products_on_account_id           (account_id)
-#  index_products_on_account_id_and_name  (account_id,name) UNIQUE
 #  index_products_on_account_id_and_slug  (account_id,slug) UNIQUE
 #
 # Foreign Keys
@@ -32,6 +31,7 @@ class Product < ApplicationRecord
   include Identifiable
   include Discardable
   include ::Named
+  include Slugged
 
   # == Concerns: FriendlyId
   include FriendlyId::Concern
@@ -41,9 +41,10 @@ class Product < ApplicationRecord
   belongs_to :account
   has_many :items,
            class_name: "ProductItem",
+           inverse_of: :product,
            dependent: :destroy,
            autosave: true
-  has_many :orders, dependent: :destroy_async
+  has_many :orders, dependent: :destroy_async, inverse_of: :product
 
   sig { returns(Account) }
   def account!
@@ -52,28 +53,53 @@ class Product < ApplicationRecord
 
   sig { override.params(values: T::Enumerable[::ProductItem]).void }
   def items=(values)
-    items.kept.where.missing(:order_items).destroy_all
-    items.kept.where.associated(:order_items).discard_all
+    items.kept.each(&:destroy_or_discard!)
     items.concat(values)
   end
 
   # == Validations
-  validates :name, uniqueness: { scope: :account }
   validates :slug, uniqueness: { scope: :account }
   validates :currency_code, presence: true, inclusion: { in: Currencies.codes }
+  validate :validate_name_uniqueness
 
   # == Validations: Items
   validates :items, presence: true
   validates_associated :items
   validate :validate_items_count
 
-  # == Methods: Currency
+  # == Callbacks
+  before_discard :generate_slug!
+
+  # == Methods
+  sig { returns(T::Boolean) }
+  def destroyable?
+    items.all?(&:destroyable?)
+  end
+
+  sig { returns(T::Boolean) }
+  def destroy_or_discard
+    destroyable? ? !!destroy : discard
+  end
+
+  sig { void }
+  def destroy_or_discard!
+    destroyable? ? destroy! : discard!
+  end
+
   sig { returns(Money::Currency) }
   def currency
     Money::Currency.find(currency_code)
   end
 
   private
+
+  # == Validations
+  sig { void }
+  def validate_name_uniqueness
+    if account!.products.kept.where.not(id: id).exists?(name: name)
+      errors.add(:name, :taken, message: "is already being used")
+    end
+  end
 
   # == Validations: Items
   sig { void }

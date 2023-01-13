@@ -37,11 +37,12 @@ export type InputFieldErrorFieldPolicy = {
 	field?: FieldPolicy<any> | FieldReadFunction<any>,
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productUpdate' | 'taxRateCreate' | 'taxRateDelete' | 'testMutation' | 'userChangeEmail' | 'userResendEmailConfirmationInstructions' | 'userUpdate' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productDelete' | 'productUpdate' | 'taxRateCreate' | 'taxRateDelete' | 'testMutation' | 'userChangeEmail' | 'userResendEmailConfirmationInstructions' | 'userUpdate' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	accountOnboardToStripe?: FieldPolicy<any> | FieldReadFunction<any>,
 	orderCreate?: FieldPolicy<any> | FieldReadFunction<any>,
 	productCreate?: FieldPolicy<any> | FieldReadFunction<any>,
+	productDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	productUpdate?: FieldPolicy<any> | FieldReadFunction<any>,
 	taxRateCreate?: FieldPolicy<any> | FieldReadFunction<any>,
 	taxRateDelete?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -118,12 +119,14 @@ export type PageInfoFieldPolicy = {
 	hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>,
 	startCursor?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductKeySpecifier = ('account' | 'canDelete' | 'canEdit' | 'currency' | 'description' | 'editUrl' | 'id' | 'items' | 'name' | 'url' | ProductKeySpecifier)[];
+export type ProductKeySpecifier = ('account' | 'canDelete' | 'canEdit' | 'createdAt' | 'currency' | 'deletedAt' | 'description' | 'editUrl' | 'id' | 'items' | 'name' | 'url' | ProductKeySpecifier)[];
 export type ProductFieldPolicy = {
 	account?: FieldPolicy<any> | FieldReadFunction<any>,
 	canDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	canEdit?: FieldPolicy<any> | FieldReadFunction<any>,
+	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
+	deletedAt?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
 	editUrl?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -136,6 +139,12 @@ export type ProductCreatePayloadFieldPolicy = {
 	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductDeletePayloadKeySpecifier = ('account' | 'clientMutationId' | 'success' | ProductDeletePayloadKeySpecifier)[];
+export type ProductDeletePayloadFieldPolicy = {
+	account?: FieldPolicy<any> | FieldReadFunction<any>,
+	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
+	success?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ProductItemKeySpecifier = ('currency' | 'description' | 'id' | 'name' | 'orderScope' | 'price' | 'priceCents' | 'questions' | 'taxRate' | 'taxRatePercentage' | 'units' | ProductItemKeySpecifier)[];
 export type ProductItemFieldPolicy = {
@@ -302,6 +311,10 @@ export type StrictTypedTypePolicies = {
 	ProductCreatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductCreatePayloadKeySpecifier | (() => undefined | ProductCreatePayloadKeySpecifier),
 		fields?: ProductCreatePayloadFieldPolicy,
+	},
+	ProductDeletePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ProductDeletePayloadKeySpecifier | (() => undefined | ProductDeletePayloadKeySpecifier),
+		fields?: ProductDeletePayloadFieldPolicy,
 	},
 	ProductItem?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ProductItemKeySpecifier | (() => undefined | ProductItemKeySpecifier),

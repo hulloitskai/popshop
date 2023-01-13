@@ -483,51 +483,6 @@ class Order
 
   module GeneratedAttributeMethods
     sig { returns(::String) }
-    def account_id; end
-
-    sig { params(value: ::String).returns(::String) }
-    def account_id=(value); end
-
-    sig { returns(T::Boolean) }
-    def account_id?; end
-
-    sig { returns(T.nilable(::String)) }
-    def account_id_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def account_id_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def account_id_came_from_user?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def account_id_change; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def account_id_change_to_be_saved; end
-
-    sig { returns(T::Boolean) }
-    def account_id_changed?; end
-
-    sig { returns(T.nilable(::String)) }
-    def account_id_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def account_id_previous_change; end
-
-    sig { returns(T::Boolean) }
-    def account_id_previously_changed?; end
-
-    sig { returns(T.nilable(::String)) }
-    def account_id_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def account_id_was; end
-
-    sig { void }
-    def account_id_will_change!; end
-
-    sig { returns(::String) }
     def code; end
 
     sig { params(value: ::String).returns(::String) }
@@ -753,9 +708,6 @@ class Order
     def product_id_will_change!; end
 
     sig { void }
-    def restore_account_id!; end
-
-    sig { void }
     def restore_code!; end
 
     sig { void }
@@ -787,12 +739,6 @@ class Order
 
     sig { void }
     def restore_updated_at!; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_account_id; end
-
-    sig { returns(T::Boolean) }
-    def saved_change_to_account_id?; end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_code; end
@@ -1131,9 +1077,6 @@ class Order
     def updated_at_will_change!; end
 
     sig { returns(T::Boolean) }
-    def will_save_change_to_account_id?; end
-
-    sig { returns(T::Boolean) }
     def will_save_change_to_code?; end
 
     sig { returns(T::Boolean) }
@@ -1307,6 +1250,9 @@ class Order
 
     Elem = type_member { { fixed: ::Order } }
 
+    sig { returns(T.self_type) }
+    def friendly; end
+
     sig { returns(T::Array[::Order]) }
     def to_a; end
 
@@ -1371,6 +1317,9 @@ class Order
     end
     def destroy(*records); end
 
+    sig { returns(T.self_type) }
+    def friendly; end
+
     sig { returns(T::Array[::Order]) }
     def load_target; end
 
@@ -1413,6 +1362,9 @@ class Order
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Order } }
+
+    sig { returns(T.self_type) }
+    def friendly; end
 
     sig { returns(T::Array[::Order]) }
     def to_a; end

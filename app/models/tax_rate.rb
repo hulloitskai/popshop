@@ -41,8 +41,8 @@ class TaxRate < ApplicationRecord
   validates :percentage, presence: true, numericality: { greater_than: 0.0 }
 
   # == Callbacks: Stripe
-  after_create_commit :create_stripe_tax_rate
-  after_destroy_commit :deactivate_stripe_tax_rate
+  after_create :create_stripe_tax_rate
+  after_destroy :deactivate_stripe_tax_rate
 
   # == Methods: Stripe
   sig { returns(T.nilable(String)) }
