@@ -36,9 +36,9 @@
 class Order < ApplicationRecord
   # == Concerns
   include Identifiable
+  include FriendlyIdable
 
-  # == Concerns: FriendlyId
-  include FriendlyId::Concern
+  # == Configuration
   friendly_id :code, slug_column: :code
 
   # == Attributes

@@ -30,9 +30,9 @@ class Customer < ApplicationRecord
   # == Concerns
   include Identifiable
   include Slugged
+  include FriendlyIdable
 
-  # == Concerns: FriendlyId
-  include FriendlyId::Concern
+  # == Configuration
   friendly_id :slug
 
   # == Attributes

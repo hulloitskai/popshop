@@ -29,12 +29,12 @@
 class Product < ApplicationRecord
   # == Concerns
   include Identifiable
+  include Slugged
+  include FriendlyIdable
   include Discardable
   include ::Named
-  include Slugged
 
-  # == Concerns: FriendlyId
-  include FriendlyId::Concern
+  # == Configuration
   friendly_id :name, use: %i[slugged scoped], scope: :account
 
   # == Associations
