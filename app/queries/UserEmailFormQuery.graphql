@@ -2,6 +2,6 @@ query UserEmailFormQuery {
   viewer {
     id
     email
-    unconfirmedEmail
+    unverifiedEmail
   }
 }

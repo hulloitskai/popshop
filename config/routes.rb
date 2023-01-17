@@ -8,29 +8,46 @@ Rails.application.routes.draw do
 
   # == Devise
   devise_for :users,
-             except: ["passwords"],
-            controllers: {
-              sessions: "users/sessions",
-              registrations: "users/registrations",
-            },
-            path: :user,
-            path_names: {
-              sign_in: :login,
-              sign_out: :logout,
-              sign_up: :register,
-              edit: :settings,
-            }
+             skip: %i[confirmations passwords],
+             controllers: {
+               sessions: "users/sessions",
+               registrations: "users/registrations",
+               confirmations: "users/confirmations",
+               passwords: "users/passwords",
+             },
+             path: "/user",
+             path_names: {
+               sign_in: "login",
+               sign_out: "logout",
+               sign_up: "register",
+               edit: "settings",
+               confirmation: "verification",
+             }
+  devise_scope :user do
+    get :login, to: "users/sessions#new"
+    scope :user, module: "users", as: :user do
+      resource :confirmation,
+               only: %i[new show],
+               path: "/verification",
+               path_names: {
+                 new: "resend",
+               }
+      resource :password,
+               only: %i[new edit update],
+               path_names: {
+                 new: "reset",
+                 edit: "change",
+               }
+    end
+  end
 
-  # == API
-  scope :api do
+  # == GraphQL
+  scope :graphql, controller: :graphql do
     mount GraphiQL::Rails::Engine,
           at: :/,
           as: :graphiql,
-          graphql_path: "/api/graphql"
-    scope :graphql, controller: :graphql do
-      get :/, to: redirect("/api")
-      post :/, action: :execute, as: :graphql
-    end
+          graphql_path: "/graphql"
+    post :/, action: :execute, as: :graphql
   end
 
   # == Pages
@@ -40,7 +57,7 @@ Rails.application.routes.draw do
   resources :products, only: %i[show new edit]
   resources :orders, only: :show do
     member do
-      get :success
+      get :complete
       get :cancel
     end
   end

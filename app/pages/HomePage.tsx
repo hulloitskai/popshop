@@ -69,7 +69,7 @@ const NewUserCard: FC = () => {
           </Text>
           <Button
             component={Link}
-            href="/user/login"
+            href="/login"
             variant="outline"
             leftIcon={<LoginIcon />}
             w={buttonWidth}

@@ -1,23 +1,22 @@
 import type { FC } from "react";
-import { Inertia } from "@inertiajs/inertia";
-
 import { PasswordInput } from "@mantine/core";
+import { Inertia } from "@inertiajs/inertia";
 
 import { createApolloLink } from "~/helpers/apollo/link";
 
-export type UserSignInPageFormValues = {
+export type UserLoginPageFormValues = {
   readonly email: string;
   readonly password: string;
 };
 
-export type UserSignInPageFormProps = {};
+export type UserLoginPageFormProps = {};
 
-const UserSignInPageForm: FC<UserSignInPageFormProps> = () => {
+const UserLoginPageForm: FC<UserLoginPageFormProps> = () => {
   const removeInvalidResponseCallback = useRef<VoidFunction>();
   const router = useRouter();
   const client = useApolloClient();
   const [loading, setLoading] = useState(false);
-  const { getInputProps, onSubmit, reset } = useForm<UserSignInPageFormValues>({
+  const { getInputProps, onSubmit, reset } = useForm<UserLoginPageFormValues>({
     initialValues: {
       email: "",
       password: "",
@@ -83,4 +82,4 @@ const UserSignInPageForm: FC<UserSignInPageFormProps> = () => {
   );
 };
 
-export default UserSignInPageForm;
+export default UserLoginPageForm;

@@ -24,7 +24,7 @@ class ApplicationService
 
     sig { returns(T.attached_class) }
     def start
-      if Rails.const_defined?(:Server)
+      if Rails.server?
         puts "=> Initializing #{name}" # rubocop:disable Rails/Output
       end
       instance

@@ -15,9 +15,9 @@ class OrdersController < ApplicationController
   end
 
   sig { void }
-  def success
+  def complete
     order = T.must(@order)
-    order.update!(status: "paid")
+    order.complete!
     redirect_to(
       product_path(order.product),
       notice: "Order completed successfully.",

@@ -103,11 +103,18 @@ class Order < ApplicationRecord
   # == Callbacks
   before_validation :set_subtotal_cents
   before_validation :set_total_cents
-  after_save_commit :send_emails_upon_payment
+  after_update_commit :send_completion_emails
 
   # == Callbacks: Stripe
   after_create :create_stripe_checkout_session
   after_destroy :expire_stripe_checkout_session
+
+  # == Initialization
+  sig { params(args: T.untyped).void }
+  def initialize(*args)
+    super
+    @send_completion_emails = T.let(false, T::Boolean)
+  end
 
   # == Emails
   sig { returns(ActionMailer::MessageDelivery) }
@@ -118,6 +125,14 @@ class Order < ApplicationRecord
   sig { returns(ActionMailer::MessageDelivery) }
   def merchant_email
     OrderMailer.merchant_email(self)
+  end
+
+  # == Methods
+  sig { returns(T::Boolean) }
+  def complete!
+    return false unless status == "pending"
+    @send_completion_emails = true
+    update!(status: "paid")
   end
 
   # == Methods: Items
@@ -199,7 +214,7 @@ class Order < ApplicationRecord
   def create_stripe_checkout_session
     Stripe::Checkout::Session.create(
       {
-        success_url: success_order_url(self),
+        success_url: complete_order_url(self),
         cancel_url: cancel_order_url(self),
         mode: :payment,
         client_reference_id: id!,
@@ -270,14 +285,11 @@ class Order < ApplicationRecord
   end
 
   sig { void }
-  def send_emails_upon_payment
-    status_previous_change.try! do |change|
-      change => [from_status, to_status]
-      if from_status == "pending" && to_status == "paid"
-        customer_email.deliver_later
-        merchant_email.deliver_later
-      end
-    end
+  def send_completion_emails
+    return unless @send_completion_emails
+    customer_email.deliver_later
+    merchant_email.deliver_later
+    @send_completion_emails = false
   end
 end
 

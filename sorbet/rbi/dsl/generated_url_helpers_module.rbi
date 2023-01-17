@@ -9,13 +9,13 @@ module GeneratedUrlHelpersModule
   include ::ActionDispatch::Routing::PolymorphicRoutes
 
   sig { params(args: T.untyped).returns(String) }
-  def api_status_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def cancel_order_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def cancel_user_registration_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def complete_order_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def dashboard_url(*args); end
@@ -43,6 +43,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def graphql_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def login_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def mailcatcher_url(*args); end
@@ -153,7 +156,7 @@ module GeneratedUrlHelpersModule
   def root_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def success_order_url(*args); end
+  def status_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_url(*args); end

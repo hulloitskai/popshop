@@ -13,7 +13,7 @@ class DashboardController < ApplicationController
       redirect_to(dashboard_path, alert: "Failed to connect with Stripe")
     else
       data = query!("DashboardPageQuery")
-      render(inertia: "DashboardPage", props: { data: data })
+      render(inertia: "DashboardPage", props: { data: })
     end
   end
 end

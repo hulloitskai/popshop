@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { PasswordInput } from "@mantine/core";
+
 import PasswordWithStrengthCheckField from "./PasswordWithStrengthCheckField";
 
 export type UserSettingsPagePasswordFormValues = {

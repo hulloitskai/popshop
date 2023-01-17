@@ -5,7 +5,7 @@ import type { ButtonProps } from "@mantine/core";
 
 import {
   UserChangeEmailMutationDocument,
-  UserResendEmailConfirmationInstructionsMutationDocument,
+  UserSendEmailVerificationInstructionsMutationDocument,
 } from "~/queries";
 import type { UserSettingsPageViewerFragment } from "~/queries";
 
@@ -21,13 +21,13 @@ export type UserSettingsPageEmailFormProps = {
 const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
   viewer,
 }) => {
-  const { email, unconfirmedEmail } = viewer;
+  const { email, unverifiedEmail } = viewer;
   const router = useRouter();
 
   // == Form
   const initialValues = useMemo<UserSettingsPageEmailFormValues>(
     () => ({
-      email: unconfirmedEmail || email,
+      email: unverifiedEmail || email,
       currentPassword: "",
     }),
     [viewer],
@@ -55,15 +55,15 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
     {
       onCompleted: ({ payload: { user, errors } }) => {
         if (user) {
-          const { unconfirmedEmail } = user;
+          const { unverifiedEmail } = user;
           router.reload({
             onSuccess: () => {
-              if (unconfirmedEmail) {
+              if (unverifiedEmail) {
                 showNotice({
-                  title: "Confirm new email",
+                  title: "Email verification required",
                   message:
-                    "Please check your email and follow the confirmation " +
-                    "link to confirm your new email address.",
+                    "Please check your email and follow the link to " +
+                    "verify your new email address.",
                 });
               } else {
                 showNotice({
@@ -103,25 +103,25 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             placeholder="email@example.com"
             required
             {...getInputProps("email")}
-            {...(unconfirmedEmail
+            {...(unverifiedEmail
               ? {
                   rightSectionWidth: 110,
                   rightSection: (
                     <Badge size="xs" color="yellow.8" variant="outline">
-                      Unconfirmed
+                      Unverified
                     </Badge>
                   ),
                 }
               : {})}
           />
-          {email && unconfirmedEmail && (
+          {email && unverifiedEmail && (
             <Text size="xs" color="dimmed" mt={4}>
-              Last confirmed email:{" "}
+              Last verified email:{" "}
               <Text color="gray.7" weight={500} span>
                 {email}
               </Text>
               <br />
-              Check your inbox to confirm your new email address.
+              Check your inbox for a link to verify your new email address.
             </Text>
           )}
         </Box>
@@ -133,7 +133,7 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
             <PasswordInput
               label="Current Password"
               description="Please confirm your current password to make changes."
-              placeholder="potato-123"
+              placeholder="password"
               required
               {...{ style }}
               {...getInputProps("currentPassword")}
@@ -148,8 +148,11 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
           >
             Change Email
           </Button>
-          {unconfirmedEmail && (
-            <ResendConfirmationEmailButton variant="outline" {...{ viewer }} />
+          {unverifiedEmail && (
+            <ResendEmailVerificationInstructionsButton
+              variant="outline"
+              {...{ viewer }}
+            />
           )}
         </Stack>
       </Stack>
@@ -159,29 +162,28 @@ const UserSettingsPageEmailForm: FC<UserSettingsPageEmailFormProps> = ({
 
 export default UserSettingsPageEmailForm;
 
-export type ResendConfirmationEmailButtonProps = Omit<
+export type ResendEmailVerificationInstructionsButtonprops = Omit<
   ButtonProps,
   "children"
 > & {
   readonly viewer: UserSettingsPageViewerFragment;
 };
 
-const ResendConfirmationEmailButton: FC<ResendConfirmationEmailButtonProps> = ({
-  viewer: { email },
-  ...otherProps
-}) => {
+const ResendEmailVerificationInstructionsButton: FC<
+  ResendEmailVerificationInstructionsButtonprops
+> = ({ viewer: { email }, ...otherProps }) => {
   const onError = useApolloErrorCallback(
-    "Failed to resend email confirmation instructions",
+    "Failed to re-send verification email",
   );
   const [runMutation, { loading }] = useMutation(
-    UserResendEmailConfirmationInstructionsMutationDocument,
+    UserSendEmailVerificationInstructionsMutationDocument,
     {
       onCompleted: () => {
         showNotice({
-          title: "Confirmation email resent",
+          title: "Verification email re-sent",
           message:
-            "Please check your email and follow the confirmation " +
-            "link to confirm your new email address.",
+            "Please check your email and follow the link to verify your " +
+            "new email address.",
         });
       },
       onError,
@@ -201,7 +203,7 @@ const ResendConfirmationEmailButton: FC<ResendConfirmationEmailButtonProps> = ({
       {...{ loading }}
       {...otherProps}
     >
-      Resend Confirmation Email
+      Resend Verification Email
     </Button>
   );
 };

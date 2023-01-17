@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module Mutations
-  class UserResendEmailConfirmationInstructions < BaseMutation
+  class UserSendEmailVerificationInstructions < BaseMutation
     class Payload < T::Struct
       const :success, TrueClass, default: true
     end
@@ -25,7 +25,7 @@ module Mutations
       user = User.find_by(email: email)
       if user.present?
         if user.pending_reconfirmation?
-          user.resend_confirmation_instructions
+          user.send_reconfirmation_instructions
         else
           raise GraphQL::ExecutionError, "Email already confirmed."
         end

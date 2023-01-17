@@ -37,7 +37,7 @@ export type InputFieldErrorFieldPolicy = {
 	field?: FieldPolicy<any> | FieldReadFunction<any>,
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productDelete' | 'productUpdate' | 'taxRateCreate' | 'taxRateDelete' | 'testMutation' | 'userChangeEmail' | 'userResendEmailConfirmationInstructions' | 'userUpdate' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('accountOnboardToStripe' | 'orderCreate' | 'productCreate' | 'productDelete' | 'productUpdate' | 'taxRateCreate' | 'taxRateDelete' | 'testMutation' | 'userChangeEmail' | 'userSendEmailVerificationInstructions' | 'userSendPasswordResetInstructions' | 'userUpdate' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	accountOnboardToStripe?: FieldPolicy<any> | FieldReadFunction<any>,
 	orderCreate?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -48,7 +48,8 @@ export type MutationFieldPolicy = {
 	taxRateDelete?: FieldPolicy<any> | FieldReadFunction<any>,
 	testMutation?: FieldPolicy<any> | FieldReadFunction<any>,
 	userChangeEmail?: FieldPolicy<any> | FieldReadFunction<any>,
-	userResendEmailConfirmationInstructions?: FieldPolicy<any> | FieldReadFunction<any>,
+	userSendEmailVerificationInstructions?: FieldPolicy<any> | FieldReadFunction<any>,
+	userSendPasswordResetInstructions?: FieldPolicy<any> | FieldReadFunction<any>,
 	userUpdate?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
@@ -218,13 +219,13 @@ export type UnitsFieldPolicy = {
 	plural?: FieldPolicy<any> | FieldReadFunction<any>,
 	singular?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type UserKeySpecifier = ('email' | 'id' | 'name' | 'primaryAccount' | 'unconfirmedEmail' | UserKeySpecifier)[];
+export type UserKeySpecifier = ('email' | 'id' | 'name' | 'primaryAccount' | 'unverifiedEmail' | UserKeySpecifier)[];
 export type UserFieldPolicy = {
 	email?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	primaryAccount?: FieldPolicy<any> | FieldReadFunction<any>,
-	unconfirmedEmail?: FieldPolicy<any> | FieldReadFunction<any>
+	unverifiedEmail?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type UserChangeEmailPayloadKeySpecifier = ('clientMutationId' | 'errors' | 'user' | UserChangeEmailPayloadKeySpecifier)[];
 export type UserChangeEmailPayloadFieldPolicy = {
@@ -232,8 +233,13 @@ export type UserChangeEmailPayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	user?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type UserResendEmailConfirmationInstructionsPayloadKeySpecifier = ('clientMutationId' | 'success' | UserResendEmailConfirmationInstructionsPayloadKeySpecifier)[];
-export type UserResendEmailConfirmationInstructionsPayloadFieldPolicy = {
+export type UserSendEmailVerificationInstructionsPayloadKeySpecifier = ('clientMutationId' | 'success' | UserSendEmailVerificationInstructionsPayloadKeySpecifier)[];
+export type UserSendEmailVerificationInstructionsPayloadFieldPolicy = {
+	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
+	success?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type UserSendPasswordResetInstructionsPayloadKeySpecifier = ('clientMutationId' | 'success' | UserSendPasswordResetInstructionsPayloadKeySpecifier)[];
+export type UserSendPasswordResetInstructionsPayloadFieldPolicy = {
 	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
 	success?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -364,9 +370,13 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | UserChangeEmailPayloadKeySpecifier | (() => undefined | UserChangeEmailPayloadKeySpecifier),
 		fields?: UserChangeEmailPayloadFieldPolicy,
 	},
-	UserResendEmailConfirmationInstructionsPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | UserResendEmailConfirmationInstructionsPayloadKeySpecifier | (() => undefined | UserResendEmailConfirmationInstructionsPayloadKeySpecifier),
-		fields?: UserResendEmailConfirmationInstructionsPayloadFieldPolicy,
+	UserSendEmailVerificationInstructionsPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | UserSendEmailVerificationInstructionsPayloadKeySpecifier | (() => undefined | UserSendEmailVerificationInstructionsPayloadKeySpecifier),
+		fields?: UserSendEmailVerificationInstructionsPayloadFieldPolicy,
+	},
+	UserSendPasswordResetInstructionsPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | UserSendPasswordResetInstructionsPayloadKeySpecifier | (() => undefined | UserSendPasswordResetInstructionsPayloadKeySpecifier),
+		fields?: UserSendPasswordResetInstructionsPayloadFieldPolicy,
 	},
 	UserUpdatePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UserUpdatePayloadKeySpecifier | (() => undefined | UserUpdatePayloadKeySpecifier),
