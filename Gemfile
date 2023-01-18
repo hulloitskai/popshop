@@ -46,6 +46,12 @@ gem "good_job", "~> 3.6"
 # Use Mailjet to send emails.
 gem "mailjet", "~> 1.7"
 
+# Use Mailgun to send emails.
+gem "mailgun-ruby", "~> 1.2"
+
+# Send emails with Sendgrid.
+gem "sendgrid-ruby", "~> 6.6"
+
 # Use FriendlyId to create human-friendly identifiers for models
 gem "friendly_id", "~> 5.4"
 
