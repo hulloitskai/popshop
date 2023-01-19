@@ -51,6 +51,7 @@ export const imports: Array<ImportsMap | PresetName> = [
       "useDidUpdate",
       "useElementSize",
       "useMediaQuery",
+      "useWindowEvent",
     ],
     "@mantine/notifications": ["showNotification"],
     "@mantine/modals": ["openModal", "closeAllModals"],

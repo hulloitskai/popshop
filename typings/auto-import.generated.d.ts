@@ -102,4 +102,5 @@ declare global {
   const useSubscription: typeof import('@apollo/client')['useSubscription']
   const useSyncExternalStore: typeof import('react')['useSyncExternalStore']
   const useTransition: typeof import('react')['useTransition']
+  const useWindowEvent: typeof import('@mantine/hooks')['useWindowEvent']
 }
