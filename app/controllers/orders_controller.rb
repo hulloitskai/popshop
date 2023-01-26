@@ -20,7 +20,9 @@ class OrdersController < ApplicationController
     order.complete!
     redirect_to(
       product_path(order.product),
-      notice: "Order completed successfully.",
+      notice:
+        "Order completed successfully. An order confirmation email should be " \
+        "arriving in your inbox soon!",
     )
   end
 

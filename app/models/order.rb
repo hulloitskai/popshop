@@ -100,6 +100,9 @@ class Order < ApplicationRecord
   # == Validations: Product
   validate :validate_product_account
 
+  # == Validations: Customer
+  validate :validate_customer_account
+
   # == Callbacks
   before_validation :set_subtotal_cents
   before_validation :set_total_cents
@@ -253,11 +256,19 @@ class Order < ApplicationRecord
 
   private
 
+  # == Validations: Product
+  sig { void }
+  def validate_product_account
+    if product!.account != account!
+      errors.add(:product, :invalid, message: "must belong to same account")
+    end
+  end
+
   # == Validations: Customer
   sig { void }
   def validate_customer_account
     if customer!.account != account!
-      errors.add(:customer, :invalid, message: "must belong to account")
+      errors.add(:customer, :invalid, message: "must belong to same account")
     end
   end
 
