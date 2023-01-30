@@ -13,7 +13,7 @@ import ArrowTopRightOnSquareIcon from "~icons/heroicons/arrow-top-right-on-squar
 
 import { TestPageQuery } from "~/queries";
 
-type TestPageProps = {
+export type TestPageProps = {
   readonly data: TestPageQuery;
   readonly name: string;
 };
@@ -31,13 +31,9 @@ const TestPage: PageComponent<TestPageProps> = ({
     values: { name },
     getInputProps,
   } = useForm<TestPageFormValues>({
-    initialValues: resolve<TestPageFormValues>(() => {
-      return { name: initialName };
-    }),
+    initialValues: { name: initialName },
   });
-  const nameDescription = useMemo(() => {
-    return `Your name is: ${name}`;
-  }, [name]);
+  const nameDescription = useMemo(() => `Your name is: ${name}`, [name]);
 
   // == Callbacks
   const showModal = useCallback(() => {

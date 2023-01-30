@@ -94,11 +94,14 @@ class TaxRate < ApplicationRecord
   sig { void }
   def deactivate_stripe_tax_rate
     stripe_tax_rate_id.try! do |tax_rate_id|
-      Stripe::TaxRate.update(
-        tax_rate_id,
-        { active: false },
-        { stripe_account: stripe_account_id! },
-      )
+      suppress(Stripe::InvalidRequestError) do
+        Stripe::TaxRate.update(
+          tax_rate_id,
+          { active: false },
+          { stripe_account: stripe_account_id! },
+        )
+        update_column("stripe_tax_rate_id", nil) if persisted? # rubocop:disable Rails/SkipsModelValidations
+      end
     end
   end
 end

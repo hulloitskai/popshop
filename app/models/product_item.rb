@@ -245,18 +245,24 @@ class ProductItem < ApplicationRecord
   sig { void }
   def deactivate_stripe_product
     stripe_product_id.try! do |product_id|
-      Stripe::Product.update(
-        product_id,
-        { active: false },
-        { stripe_account: stripe_account_id! },
-      )
+      suppress(Stripe::InvalidRequestError) do
+        Stripe::Product.update(
+          product_id,
+          { active: false },
+          { stripe_account: stripe_account_id! },
+        )
+        update_column("stripe_product_id", nil) if persisted? # rubocop:disable Rails/SkipsModelValidations
+      end
     end
     stripe_price_id.try! do |price_id|
-      Stripe::Price.update(
-        price_id,
-        { active: false },
-        { stripe_account: stripe_account_id! },
-      )
+      suppress(Stripe::InvalidRequestError) do
+        Stripe::Price.update(
+          price_id,
+          { active: false },
+          { stripe_account: stripe_account_id! },
+        )
+        update_column("stripe_price_id", nil) if persisted? # rubocop:disable Rails/SkipsModelValidations
+      end
     end
   end
 

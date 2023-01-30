@@ -3,33 +3,31 @@ import type { PageComponent } from "~/helpers/inertia";
 import { Code, Text } from "@mantine/core";
 import type { DeepRequired } from "~/helpers/utils";
 
+import OrderQuestionResponseField from "~/components/OrderQuestionResponseField";
+
 import ExternalLinkIcon from "~icons/heroicons/arrow-top-right-on-square-20-solid";
 
 import type { OrderPageQuery } from "~/queries";
 
 import { useFormattedCurrencyAmount } from "~/helpers/currency";
 import type { CurrencyFormattingInfo } from "~/helpers/currency";
-import OrderQuestionResponseField from "~/components/OrderQuestionResponseField";
 
-type OrderPageProps = {
+export type OrderPageProps = {
   readonly data: DeepRequired<OrderPageQuery, ["order"]>;
 };
 
-const OrderPage: PageComponent<OrderPageProps> = ({
-  data: {
-    order: {
-      canEdit,
-      createdAt: createdAtISO,
-      code,
-      stripePaymentIntentUrl,
-      subtotal,
-      total,
-      customer,
-      product,
-      items,
-    },
-  },
-}) => {
+const OrderPage: PageComponent<OrderPageProps> = ({ data: { order } }) => {
+  const {
+    canEdit,
+    createdAt: createdAtISO,
+    code,
+    stripePaymentIntentUrl,
+    subtotal,
+    total,
+    customer,
+    product,
+    items,
+  } = order;
   const { currency } = product;
   const createdAtLabel = useMemo(() => {
     const createdAt = DateTime.fromISO(createdAtISO);

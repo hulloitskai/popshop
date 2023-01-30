@@ -243,13 +243,16 @@ class Order < ApplicationRecord
 
   sig { returns(T.nilable(Stripe::Checkout::Session)) }
   def expire_stripe_checkout_session
-    stripe_checkout_session.try! do |session|
-      if session.status == "open"
-        Stripe::Checkout::Session.expire(
-          session.id,
-          {},
-          { stripe_account: stripe_account_id! },
-        )
+    suppress(Stripe::InvalidRequestError) do
+      stripe_checkout_session.try! do |session|
+        if session.status == "open"
+          Stripe::Checkout::Session.expire(
+            session.id,
+            {},
+            { stripe_account: stripe_account_id! },
+          )
+          update_column("stripe_checkout_session_id", nil) if persisted? # rubocop:disable Rails/SkipsModelValidations
+        end
       end
     end
   end

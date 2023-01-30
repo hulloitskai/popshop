@@ -44,7 +44,7 @@ class Product < ApplicationRecord
            inverse_of: :product,
            dependent: :destroy,
            autosave: true
-  has_many :orders, dependent: :destroy_async, inverse_of: :product
+  has_many :orders, dependent: :destroy, inverse_of: :product
 
   sig { returns(Account) }
   def account!

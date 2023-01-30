@@ -141,7 +141,10 @@ class Account < ApplicationRecord
   sig { void }
   def delete_stripe_account
     stripe_account_id.try! do |account_id|
-      Stripe::Account.delete(account_id)
+      suppress(Stripe::InvalidRequestError) do
+        Stripe::Account.delete(account_id)
+        update_column("stripe_account_id", nil) if persisted? # rubocop:disable Rails/SkipsModelValidations
+      end
     end
   end
 end

@@ -51,8 +51,8 @@ const OrderFormQuantityField: FC<OrderFormQuantityFieldProps> = ({
 
   // == Total
   const totalAmount = useMemo(() => {
-    if (taxAmount) {
-      return subtotalAmount + taxAmount * quantity;
+    if (taxRatePercentage) {
+      return subtotalAmount + subtotalAmount * (taxRatePercentage / 100);
     }
   }, [subtotalAmount, taxAmount, quantity]);
   const formattedTotalAmount = useMemo(() => {

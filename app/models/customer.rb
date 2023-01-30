@@ -137,10 +137,11 @@ class Customer < ApplicationRecord
   def delete_stripe_customer
     customer_id = stripe_customer_id
     if customer_id.present?
-      Stripe::Customer.delete(
-        customer_id,
-        { stripe_account: stripe_account_id! },
-      ).tap do
+      suppress(Stripe::InvalidRequestError) do
+        Stripe::Customer.delete(
+          customer_id,
+          { stripe_account: stripe_account_id! },
+        )
         update_column("stripe_customer_id", nil) if persisted? # rubocop:disable Rails/SkipsModelValidations
       end
     end
