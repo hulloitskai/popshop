@@ -1,7 +1,6 @@
 app = "popshop"
 kill_signal = "SIGINT"
 kill_timeout = 5
-processes = []
 
 [deploy]
   release_command = "bin/release"
@@ -9,8 +8,8 @@ processes = []
 [env]
   RAILS_DEFAULT_URL = "https://popshop.itskai.me"
   RAILS_STORAGE_SERVICE = "test"
-  RAILS_MAILER_FROM="Popshop <popshop@itskai.me>"
-  RAILS_MAILER_REPLY_TO="Kai <hullo@itskai.me>"
+  RAILS_MAILER_FROM = "Popshop <robot@popshop.itskai.me>"
+  RAILS_MAILER_REPLY_TO = "Kai <hullo@itskai.me>"
   POSTGRES_URL = "postgresql://top2.nearest.of.itskai-db.internal"
   POSTGRES_USERNAME = "popshop"
   POSTGRES_DATABASE = "popshop"
@@ -27,25 +26,25 @@ processes = []
   protocol = "tcp"
   script_checks = []
 
-  [services.concurrency]
-    hard_limit = 25
-    soft_limit = 20
-    type = "connections"
+[services.concurrency]
+  hard_limit = 25
+  soft_limit = 20
+  type = "connections"
 
-  [[services.ports]]
-    force_https = true
-    handlers = ["http"]
-    port = 80
+[[services.ports]]
+  force_https = true
+  handlers = ["http"]
+  port = 80
 
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
+[[services.ports]]
+  handlers = ["tls", "http"]
+  port = 443
 
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "15s"
-    restart_limit = 0
-    timeout = "2s"
+[[services.tcp_checks]]
+  grace_period = "1s"
+  interval = "15s"
+  restart_limit = 0
+  timeout = "2s"
 
 [[statics]]
   guest_path = "/app/public"
