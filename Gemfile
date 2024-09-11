@@ -116,8 +116,8 @@ gem "graphql-rails_logger"
 gem "graphiql-rails"
 
 # Serve and bundle frontend with Vite
-gem "vite_rails", "~> 3.0.13"
-gem "vite_ruby", "~> 3.2.11"
+gem "vite_rails", "3.0.13"
+gem "vite_ruby", "3.2.11"
 
 # Use Inertia framework for server-driven SPAs
 gem "inertia_rails", "~> 3.1.0"
