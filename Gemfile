@@ -41,7 +41,7 @@ gem "ruby-vips", "~> 2.1", require: false
 gem "aws-sdk-s3", "~> 1.117", require: false
 
 # Use Good Job as the backend for Active Job
-gem "good_job", "~> 3.6"
+gem "good_job", "3.6.0"
 
 # Use Mailjet to send emails.
 gem "mailjet", "~> 1.7"
