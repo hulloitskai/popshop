@@ -55,6 +55,14 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
+  resolve: {
+    alias: [
+      {
+        find: /^@apollo\/client$/,
+        replacement: "@apollo/client/index",
+      },
+    ],
+  },
   ssr: {
     format: "cjs",
   },
