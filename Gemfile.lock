@@ -173,7 +173,7 @@ GEM
       logger
     faraday-net_http (3.3.0)
       net-http
-    ffi (1.17.0-arm64-darwin)
+    ffi (1.17.0)
     fiber-storage (1.0.0)
     friendly_id (5.5.1)
       activerecord (>= 4.0.0)
@@ -281,6 +281,8 @@ GEM
     netrc (0.11.0)
     nio4r (2.7.3)
     nokogiri (1.16.7-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     parallel (1.26.3)
@@ -430,6 +432,7 @@ GEM
       sorbet-static (= 0.5.11558)
     sorbet-runtime (0.5.11558)
     sorbet-static (0.5.11558-universal-darwin)
+    sorbet-static (0.5.11558-x86_64-linux)
     sorbet-static-and-runtime (0.5.11558)
       sorbet (= 0.5.11558)
       sorbet-runtime (= 0.5.11558)
@@ -505,6 +508,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-23
+  x86_64-linux
 
 DEPENDENCIES
   action_policy (~> 0.6.3)
