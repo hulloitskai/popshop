@@ -16,12 +16,7 @@ export const formErrors = (errors: InputFieldError[]): FormErrors => {
 };
 
 export const showFormErrors = (alert: string): void => {
-  showAlert({
-    title: alert,
-    message:
-      "There were some problems with your submission! Please review the " +
-      "errors shown in the form.",
-  });
+  showAlert({ message: alert });
   setTimeout(() => {
     const element = document.querySelector('[aria-invalid="true"]');
     if (element instanceof HTMLElement) {
