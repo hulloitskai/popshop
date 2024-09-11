@@ -102,7 +102,8 @@ class ProductItem < ApplicationRecord
 
   sig { override.params(values: T::Enumerable[OrderQuestion]).void }
   def questions=(values)
-    super(values).tap do
+    questions = super(values)
+    T.cast(questions, Kernel).tap do
       ids = values.map(&:id!)
       if persisted?
         update_column("question_ids", ids) # rubocop:disable Rails/SkipsModelValidations

@@ -1,4 +1,5 @@
 app/**/*.generated.*
+app/helpers/apollo/introspection.ts
 app/routes
 bin/
 dist/

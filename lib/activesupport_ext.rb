@@ -5,7 +5,7 @@ class ActiveSupport::ErrorReporter
   T::Sig::WithoutRuntime.sig do
     type_parameters(:T)
       .params(
-        error_class: Class,
+        error_class: T::Class[T.anything],
         fallback: T.proc.returns(T.type_parameter(:T)),
         severity: Symbol,
         context: T::Hash[Symbol, T.untyped],

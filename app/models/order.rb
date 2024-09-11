@@ -32,7 +32,7 @@
 #  fk_rails_...  (customer_id => customers.id)
 #  fk_rails_...  (product_id => products.id)
 #
-
+# rubocop:enable Layout/LineLength
 class Order < ApplicationRecord
   # == Concerns
   include Identifiable
